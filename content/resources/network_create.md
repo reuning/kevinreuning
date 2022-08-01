@@ -1,0 +1,56 @@
+---
+title: Instructions for Loading State Networks
+weight: 1
+---
+
+The data for the state networks are available on the [Harvard Dataverse](https://dataverse.harvard.edu/dataverse/state_networks). Below I explain how to load networks from this. As in the article, each state-chamber-full-cycle is separated. The networks themselves are in the Edge_Lists.zip while useful information about the nodes for each network are in Metadata.zip.
+
+Edge list
+------
+Each csv in Edge_Lists represents 1 network. The first two columns are
+the sender/receiver identified with their "EID" (the identifier provided by
+NIMP). The third column is used to identify what threshold the edge was
+identified for. For robustness there were 5 thresholds estimated: .9, .95,
+.975, .99, .995. The number in that column goes from 1 to 5 and reflects each
+threshold. If an edge is a 3, then it means it was identified at the .975
+threshold. When identifying edges you should use all edges at that level and
+above.
+
+The networks in the article use the .975 threshold and so edges greater than
+or equal to 3 were included. I recommend using this network for most analysis and then reproducing analysis at other levels for robustness checks.
+
+Metadata
+------
+Each csv file in Metadata contains the node level attributes for a network.
+EIDs are given to match them. The other variables are:
+
+- ContributorName: Name of contributor
+- CatCodeIndustry: Industry as identified by NIMP
+- CatCodeGroup: Group as identified by NIMP
+- CatCodeBusiness: Business as identified by NIMP
+- PerDem: Percent donated to Democratic candidates that full-cycle
+- PerRep: Percent donated to Republican candidates that full-cycle
+- DemCol: Color used for nodes based on PerDem
+- RepCol: Color used for nodes bad on PerRep
+- Total: Total donated that full-cycle.
+
+More information on the nodes can be found on the [NIMP website.](https://www.followthemoney.org/)
+
+Loading Networks in R
+------
+
+The following code provides an example of how to load a network in R using the igraph package for the Colorado lower house network from 2013 to 2014.
+
+{% highlight R %}
+library(igraph)
+net <- read.csv("Edge_Lists/CO-2013-2014-House.csv")
+meta_df <- read.csv("Metadata/CO-2013-2014-House.csv")
+net <- net[net$edge>=3,]
+net <- as.matrix(net[,1:2])
+net <- graph_from_data_frame(net, vertices=meta_df, directed=F)
+{% endhighlight %}
+
+
+Harvard Dataverse
+------
+<script src="https://dataverse.harvard.edu/resources/js/widgets.js?alias=state_networks&amp;dvUrl=https://dataverse.harvard.edu&amp;widgetScope=state_networks&amp;widget=iframe&amp;heightPx=500"></script>
