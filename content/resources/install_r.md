@@ -1,6 +1,7 @@
 ---
 title: Guide to Installing R and RStudio
 weight: 3
+type: page
 ---
 
 In order to install RStudio you need to first install R (and for Mac you need to install XQuartz). The instructions walk through how to do this and where to find everything.

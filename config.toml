@@ -1,7 +1,7 @@
 baseURL = 'http://kevinreuning.com/'
 languageCode = 'en-us'
 title = 'Kevin Reuning'
-theme = "soho"
+theme = 'soho'
 
 
 summarylength = 10
