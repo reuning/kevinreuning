@@ -1,0 +1,107 @@
+% Jason R. Blevins - Curriculum Vitae
+%
+% Copyright (C) 2004-2012 Jason R. Blevins
+%
+% You may use use this document as a template to create your own CV
+% and you may redistribute the source code freely.  No attribution is
+% required in any resulting documents.  I do ask that you please leave
+% this notice and the above URL in the source code if you choose to
+% redistribute this file.
+\documentclass[10pt,letterpaper]{article}
+\usepackage{enumitem}
+
+\usepackage[dvipsnames]{xcolor}
+\usepackage[english]{babel}
+\usepackage[autostyle, english = american]{csquotes}
+\MakeOuterQuote{"}
+\usepackage{hyperref}
+\usepackage{geometry}
+
+\usepackage{longtable,booktabs,array}
+\renewcommand{\toprule}[2]{}
+\renewcommand{\bottomrule}[2]{}
+\renewcommand{\midrule}[2]{}
+
+\setlength\LTleft\parindent
+%\setlength\LTright\fill
+\usepackage{calc}
+
+% Set your name here
+\def\name{Kevin Reuning}
+
+% The following metadata will show up in the PDF properties
+\hypersetup{
+	colorlinks = true,
+	urlcolor = darkgray,
+	pdfauthor = {\name},
+	pdfkeywords = {political science, politics, social movements, protests, political parties},
+	pdftitle = {\name: Curriculum Vitae},
+	pdfsubject = {Curriculum Vitae},
+	pdfpagemode = UseNone
+}
+
+\geometry{
+	body={6.5in, 9.0in},
+	left=1.0in,
+	top=1.0in
+}
+
+% Customize page headers
+\pagestyle{myheadings}
+\markright{\name}
+\thispagestyle{empty}
+
+% Custom section fonts
+\usepackage{sectsty}
+\sectionfont{\rmfamily\mdseries\Large}
+\subsectionfont{\rmfamily\mdseries\itshape\large}
+
+% Other possible font commands include:
+% \ttfamily for teletype,
+% \sffamily for sans serif,
+% \bfseries for bold,
+% \scshape for small caps,
+% \normalsize, \large, \Large, \LARGE sizes.
+
+% Don't indent paragraphs.
+%\setlength\parindent{0em}
+
+% Make lists without bullets and compact spacing
+
+
+%% No secetion numbering
+\setcounter{secnumdepth}{0}
+
+%% Figure out idents
+\setlist{leftmargin=!,labelindent=-10pt,itemindent=-15pt, label=}
+
+%% From the pandoc template
+\providecommand{\tightlist}{%
+	\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+\begin{document} 
+	
+	% Place name at left
+	%{\huge \name}
+	
+	% Alternatively, print name centered and bold:
+	\centerline{\huge \bf \name}
+	\bigskip
+	
+	\begin{tabular}{l l r}
+		222 Harrison Hall &	Email: & \ttfamily{\href{mailto:kevin.reuning@gmail.com}{kevin.reuning@gmail.com}} \\	
+		Oxford, OH 45056\hspace{.39\textwidth} & Web: & \ttfamily{\href{www.kevinreuning.com}{www.kevinreuning.com}} \\
+		& Phone: & 612-598-6118 \\
+	\end{tabular}
+	
+	$body$ 
+	
+	% Footer
+	\medskip
+	\begin{center}
+		\begin{small}
+			Last updated: \today
+		\end{small}
+	\end{center}
+	
+\end{document}

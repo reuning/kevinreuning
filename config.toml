@@ -21,8 +21,7 @@ licenseURL = "https://creativecommons.org/licenses/by-sa/4.0"
 
 ## Set custom theme color.
 # themeColor = "#fc2803"
-
-## Set custom CSS and/or JS to override site defaults.
+customCss = ["css/custom.css"]
 
   ## Set as many as you want.
   [[params.socialIcons]]
@@ -61,7 +60,7 @@ licenseURL = "https://creativecommons.org/licenses/by-sa/4.0"
   url = "/resources/"
 
 [markup]
-
+	defaultMarkdownHandler = "pandoc"
   [markup.highlight]
   codeFences = true
   guessSyntax = false
@@ -72,3 +71,16 @@ licenseURL = "https://creativecommons.org/licenses/by-sa/4.0"
   noClasses = true # if false, you need to provide you own custom CSS
   style = "monokai"
   tabWidth = 4
+
+[security]
+  enableInlineShortcodes = false
+  [security.exec]
+    allow = ['^dart-sass-embedded$', '^go$', '^npx$', '^postcss$', '^pandoc$', '^nvim$']
+    osEnv = ['(?i)^(PATH|PATHEXT|APPDATA|TMP|TEMP|TERM)$']
+
+  [security.funcs]
+    getenv = ['^HUGO_']
+
+  [security.http]
+    methods = ['(?i)GET|POST']
+    urls = ['.*']
