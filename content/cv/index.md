@@ -1,12 +1,13 @@
 ---
 title: CV
 type: page
+cv: 1
 ---
 
-# Education {#education .unnumbered}
+# Education 
 
 ## The Pennsylvania State University
-Ph.D. Political Science, August 2018\
+Ph.D. Political Science, August 2018
 Fields: American Politics and Methodology
 
 > Dissertation: Party Coalitions, Party Ideology, and Party Action:
@@ -16,26 +17,18 @@ Fields: American Politics and Methodology
 > John McCarthy (Penn State sociology), and Michael Nelson
 
 ## The Pennsylvania State University 
-M.A. Political Science, 2015\
+M.A. Political Science, 2015
 Fields: American Politics and Methodology
 
 ## Case Western Reserve University
 B.A. Political Science and Mathematics (minor in Economics), 2010
 
-# Academic Positions {#academic-positions .unnumbered}
+# Academic Positions 
 
 Assistant Professor, Miami University -
 
 
-# Peer Reviewed Articles {#peer-reviewed-articles .unnumbered}
-
-
-\noindent  
-
-\vspace{-1em}  
-\setlength{\parindent}{-0.2in}  
-\setlength{\leftskip}{0.2in}  
-\setlength{\parskip}{8pt}
+# Peer Reviewed Articles 
 
 - [Hannah, A. Lee](https://people.wright.edu/lee.hannah), **Kevin Reuning**, and [Anne Whitesell](https://annewhitesell.com/). Forthcoming. ["The Party Replies: Examining Local Party Responsiveness to Prospective Campaign Volunteers."](https://doi.org/10.1177%2F10659129221119751) *Political Research Quarterly*
 
@@ -176,9 +169,9 @@ Politics and Policy Conference
 # Masters' Committees 
 
 ----            ----
-**Chair**:      Jacob Bemis, Wilson Maier, Lily Wilmont (2022); Shannan Lunar, 
+**Chair**:      Jacob Bemis, Wilson Maier, Lily Wilmont (2022); 
                 Emily Cain, Blake Mullenix (2021); Virginia Bulger (2019)
-**Committee**:  Selena Mungur (Expected 2022); Sara Carnahan, Muriel Truax (2020)
+**Committee**:  Shannan Lunar (2021); Sara Carnahan, Muriel Truax (2020)
 ----            ----
 
 ## Honors Thesis 
