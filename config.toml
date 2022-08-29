@@ -20,7 +20,7 @@ license = "CC BY-SA 4.0"
 licenseURL = "https://creativecommons.org/licenses/by-sa/4.0"
 
 ## Set custom theme color.
-# themeColor = "#fc2803"
+themeColor = "#03a2ab"
 customCss = ["css/custom.css"]
 
   ## Set as many as you want.
@@ -60,23 +60,17 @@ customCss = ["css/custom.css"]
   url = "/cv/"
 
   [[menu.main]]
+  name = "Teaching"
+  identifier = "teaching"
+  weight = 350
+  url = "/teaching/"
+
+  [[menu.main]]
   name = "Resources"
   identifier = "resources"
   weight = 300
   url = "/resources/"
 
-[markup]
-	defaultMarkdownHandler = "pandoc"
-  [markup.highlight]
-  codeFences = true
-  guessSyntax = false
-  hl_Lines = ""
-  lineNoStart = 1
-  lineNos = false
-  lineNumbersInTable = true
-  noClasses = true # if false, you need to provide you own custom CSS
-  style = "monokai"
-  tabWidth = 4
 
 [security]
   enableInlineShortcodes = false

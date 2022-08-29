@@ -9,26 +9,19 @@
   }
 }
 
-div.post {
-    margin-top: 5em;
-  }
-
 
 .vertical-align {
   align-items: center;
   justify-content: center;
-  height: 100%;
 }
 
 @media (min-width: 48em) {
-  .vertical-align {
-    margin-top: 232px;
-  }
   .content {
     max-width: 60rem;
     margin-left: 20rem;
     margin-right: 2rem;
-    margin-bottom: -40px;
-    min-height: 100%;
+    margin-top: 2rem;
+    margin-bottom: 0px;
+    min-height: 85%;
   }
 }

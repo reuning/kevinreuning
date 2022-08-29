@@ -2,6 +2,7 @@
 title: CV
 type: page
 cv: 1
+markup: pandoc
 ---
 
 # Education 

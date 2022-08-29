@@ -1,0 +1,4 @@
+{{ $data := index .Site.Data.courses (.Get 0) }}
+{{ range $data.Semesters }}
+     <a href="{{ .Page.Site.BaseUrl }}/syllabi/{{- .File -}}">{{- .Sem -}}</a> 
+{{ end }}
