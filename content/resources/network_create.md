@@ -41,16 +41,17 @@ Loading Networks in R
 
 The following code provides an example of how to load a network in R using the igraph package for the Colorado lower house network from 2013 to 2014.
 
-{% highlight R %}
+
+{{< highlight R >}}
 library(igraph)
 net <- read.csv("Edge_Lists/CO-2013-2014-House.csv")
 meta_df <- read.csv("Metadata/CO-2013-2014-House.csv")
 net <- net[net$edge>=3,]
 net <- as.matrix(net[,1:2])
 net <- graph_from_data_frame(net, vertices=meta_df, directed=F)
-{% endhighlight %}
+{{< / highlight >}}
 
 
 Harvard Dataverse
 ------
-<script src="https://dataverse.harvard.edu/resources/js/widgets.js?alias=state_networks&amp;dvUrl=https://dataverse.harvard.edu&amp;widgetScope=state_networks&amp;widget=iframe&amp;heightPx=500"></script>
+{{< dataverse >}}

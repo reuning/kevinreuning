@@ -66,6 +66,12 @@ customCss = ["css/custom.css"]
   url = "/teaching/"
 
   [[menu.main]]
+  name = "Research"
+  identifier = "research"
+  weight = 375
+  url = "/research/"
+
+  [[menu.main]]
   name = "Resources"
   identifier = "resources"
   weight = 300
