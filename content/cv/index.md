@@ -107,6 +107,9 @@ Assistant Professor, Miami University -
 **PL SC 426: Political Parties and Interest Groups**:    May 2017
 ----------------------------------------------------------------------------------------------------------------
 
+# Book Reviews
+
+- *Small Power: How Local Parties Shape Elections.* By David Doherty, Conor M. Dowling, and Michael G. Miller. New York in *Perspectives on Politics*
 
 # Invited Talks
 
