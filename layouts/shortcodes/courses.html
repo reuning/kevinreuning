@@ -1,4 +1,9 @@
 {{ $data := index .Site.Data.courses (.Get 0) }}
-{{ range $data.Semesters }}
-     <a href="{{ .Page.Site.BaseUrl }}/syllabi/{{- .File -}}">{{- .Sem -}}</a> 
+{{ $len := (len $data.Semesters) }}
+{{ range $index, $elem := $data.Semesters }}
+     {{ if ne (add $index 1) $len }}
+     <a href="{{ .Page.Site.BaseUrl }}/syllabi/{{- $elem.File -}}">{{- $elem.Sem -}}</a>,
+     {{ else }}
+     <a href="{{ .Page.Site.BaseUrl }}/syllabi/{{- $elem.File -}}">{{- $elem.Sem -}}</a> 
+     {{ end }}
 {{ end }}
