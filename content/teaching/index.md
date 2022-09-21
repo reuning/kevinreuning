@@ -17,7 +17,7 @@ POL 306: Applied Research Methods covers research design (external, internal and
 POL 345U: Social Movements and Protest focused on how social movements mobilize, individual level participation, and the impacts of social movements. Students select a social movement early on in the semester and then wrote three short papers on that movement: the history of the movement, the participants of the movement, and analysis of the movement. The final project requires them to revise and combine those papers into a single paper that described and analyzed the movement. Students in this course are mainly upper level political science majors. 
 
 ### Syllabi
-{{< courses pol345y >}}
+{{< courses pol345u >}}
 
 
 ## POL 345Y Class and Inequality
