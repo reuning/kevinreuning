@@ -42,6 +42,11 @@ customCss = ["css/custom.css"]
   url = "https://twitter.com/KevinReuning"
 
   [[params.socialIcons]]
+  icon = "fab fa-mastodon"
+  title = "Mastodon"
+  url = "https://home.social/@kevinreuning"
+
+  [[params.socialIcons]]
   icon = "fa fa-envelope"
   title = "Email"
   url = "mailto:kevinreuning@gmail.com"
