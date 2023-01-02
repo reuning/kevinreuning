@@ -1,7 +1,7 @@
 baseURL = 'https://kevinreuning.com/'
 languageCode = 'en-us'
 title = 'Kevin Reuning'
-theme = 'soho'
+theme = ['soho']
 
 
 summarylength = 10
@@ -25,31 +25,31 @@ licenseURL = "https://creativecommons.org/licenses/by-sa/4.0"
 themeColor = "#03a2ab"
 customCss = ["css/custom.css"]
 
-  ## Set as many as you want.
-  [[params.socialIcons]]
-  icon = "ai ai-google-scholar"
-  title = "Google Scholar"
-  url = "https://scholar.google.com/citations?user=yVgvTK4AAAAJ&hl=en"
+## Set as many as you want.
+[[params.socialIcons]]
+icon = "ai ai-google-scholar"
+title = "Google Scholar"
+url = "https://scholar.google.com/citations?user=yVgvTK4AAAAJ&hl=en"
 
-  [[params.socialIcons]]
-  icon = "fab fa-github"
-  title = "GitHub"
-  url = "https://github.com/reuning/"
+[[params.socialIcons]]
+icon = "fab fa-github"
+title = "GitHub"
+url = "https://github.com/reuning/"
 
-  [[params.socialIcons]]
-  icon = "fab fa-twitter"
-  title = "Twitter"
-  url = "https://twitter.com/KevinReuning"
+[[params.socialIcons]]
+icon = "fab fa-twitter"
+title = "Twitter"
+url = "https://twitter.com/KevinReuning"
 
-  [[params.socialIcons]]
-  icon = "fab fa-mastodon"
-  title = "Mastodon"
-  url = "https://home.social/@kevinreuning"
+[[params.socialIcons]]
+icon = "fab fa-mastodon"
+title = "Mastodon"
+url = "https://home.social/@kevinreuning"
 
-  [[params.socialIcons]]
-  icon = "fa fa-envelope"
-  title = "Email"
-  url = "mailto:kevinreuning@gmail.com"
+[[params.socialIcons]]
+icon = "fa fa-envelope"
+title = "Email"
+url = "mailto:kevinreuning@gmail.com"
 
 
 [menu]
@@ -97,3 +97,4 @@ customCss = ["css/custom.css"]
   [security.http]
     methods = ['(?i)GET|POST']
     urls = ['.*']
+
