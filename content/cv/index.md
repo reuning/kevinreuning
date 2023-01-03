@@ -33,9 +33,10 @@ Assistant Professor, Miami University -
 
 - [Hannah, A. Lee](https://people.wright.edu/lee.hannah), **Kevin Reuning**, and [Anne Whitesell](https://annewhitesell.com/). Forthcoming. ["The Party Replies: Examining Local Party Responsiveness to Prospective Campaign Volunteers."](https://doi.org/10.1177%2F10659129221119751) *Political Research Quarterly*
 
-- **Reuning, Kevin** and Sean McElwee. Forthcoming. ["The precarious: how American voters view the working class."](https://www.tandfonline.com/doi/full/10.1080/21565503.2021.1908149) *Politics, Groups and Identities*.
-
 - [Whitesell, Anne](https://annewhitesell.com/), **Kevin Reuning**, and [A. Lee Hannah](https://people.wright.edu/lee.hannah). Forthcoming. ["Local Political Party Presence Online"](https://doi.org/10.1177%2F13540688211056617) *Party Politics*.
+
+- **Reuning, Kevin** and Sean McElwee. 2022. ["The precarious: how American voters view the working class."](https://doi.org/10.1080/21565503.2021.1908149) *Politics, Groups and Identities*, 10(5):788-806.
+
 
 - **Reuning, Kevin**, [Anne Whitesell](https://annewhitesell.com/), and [A. Lee Hannah](https://people.wright.edu/lee.hannah). 2022. ["Facebook algorithm changes may have amplified local republican parties"](https://journals.sagepub.com/doi/full/10.1177/20531680221103809) *Research & Politics*. April-June 2022:1-6.
 
@@ -57,7 +58,7 @@ Assistant Professor, Miami University -
 
 # Editor Reviewed Publications
 
-- Cooney, Samantha R., [Patrick J. Gauding](https://patrickgauding.com/), [Anna A. Meier](http://annameier.net/), and **Kevin Reuning**. Forthcoming. "Community, Solidarity, and Collective Power: The Role of Graduate Student Organizations and Graduate Worker Unions" in *Strategies for Navigating Graduate School and Beyond*, eds. Kevin G. Lorentz II, Daniel J. Mallinson, Julia Marin Hellwege, Davin Phoenix, and J. Cherie Strachan.
+- Cooney, Samantha R., [Patrick J. Gauding](https://patrickgauding.com/), [Anna A. Meier](http://annameier.net/), and **Kevin Reuning**. 2022. "Community, Solidarity, and Collective Power: The Role of Graduate Student Organizations and Graduate Worker Unions" in *Strategies for Navigating Graduate School and Beyond*, eds. Kevin G. Lorentz II, Daniel J. Mallinson, Julia Marin Hellwege, Davin Phoenix, and J. Cherie Strachan. American Political Science Association.
 
 -   [Fariss, Christopher J.](http://cfariss.com/), [Michael R. Kenwick](http://sites.psu.edu/mikekenwick/), and **Kevin Reuning**. 2020. ["Measurement models."](http://cfariss.com/documents/FarissKenwickReuning2019_MesurmentModels.pdf) Chap 20 in *SAGE Handbook of Research Methods in Political Science and International Relations*, eds. Luigi Curini and Robert Franzese.
 
@@ -109,7 +110,7 @@ Assistant Professor, Miami University -
 
 # Book Reviews
 
-- *Small Power: How Local Parties Shape Elections.* By David Doherty, Conor M. Dowling, and Michael G. Miller. New York in *Perspectives on Politics*
+- [*Small Power: How Local Parties Shape Elections.* By David Doherty, Conor M. Dowling, and Michael G. Miller. New York in *Perspectives on Politics*](https://www.cambridge.org/core/journals/perspectives-on-politics/article/small-power-how-local-parties-shape-elections-by-david-doherty-conor-m-dowling-and-michael-g-miller-new-york-oxford-university-press-2022-320p-2995-paper/8D41202FA12C9A84992A08CB5F5CD0E5)
 
 # Invited Talks
 
