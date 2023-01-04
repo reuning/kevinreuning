@@ -25,8 +25,9 @@ Fields: American Politics and Methodology
 B.A. Political Science and Mathematics (minor in Economics), 2010
 
 # Academic Positions 
+## Miami University
 
-Assistant Professor, Miami University -
+Assistant Professor 2018 -
 
 
 # Peer Reviewed Articles 
@@ -162,7 +163,7 @@ Politics and Policy Conference
 
 ----                ----
 **Substantive**:    Social movements, protest, American political parties, and collective action.
-**Methodology**:    Measurement models and time series.
+**Methodology**:    Measurement models, social network analysis, and time series.
 ----                ----
 
 # Awards & Fellowships
@@ -191,9 +192,10 @@ Alex Dyer (2022); Alex Foltz (2021)
 +:-----------------------------------------------------------------------------------------------------------+
 |**Journal/Edited Volume Reviewer**: American Journal of Political Science; American Review of Politics;     |
 | American Sociological Review (2); Ask: Research and Methods; British Journal of Political Science;         |
-| Journal of Adolescence; Labor Studies Journal; Sociological Forum; Journal of International Communication; |
-| and Political Analysis; Public Opinion Quarterly; Research in Social Movements, Conflict and Change;       |
-| State Politics and Policy Quarterly.                                                                       |
+| Journal of Adolescence; Journal of International Communication; Labor Studies Journal; Mobilization;       |
+| Perspectives on Psychological Sciences; Political Analysis; Public Opinion Quarterly;                      |
+| Research in Social Movements, Conflict and Change; State Politics and Policy Quarterly; Science; and       |
+| Sociological Forum                                                                                         |
 +------------------------------------------------------------------------------------------------------------+
 |**Book Manuscript Proposal Review**: Cambridge University Press.                                            |
 +------------------------------------------------------------------------------------------------------------+
