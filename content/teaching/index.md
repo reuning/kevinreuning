@@ -25,3 +25,9 @@ POL 345Y: Class and Inequality focuses on the role of economic inequality in Ame
 
 ### Syllabi
 {{< courses pol345y >}}
+
+## POL 491/591 Social Network Analysis
+POL 491/591 Social Network Analysis focuses on social network analysis for data analytics majors and advanced political science and sociology students. It covers a variety of network statistics as well as theory testing. The course also gives students a range of applications across a wide variety of fields including political science, sociology, criminology, anthropology, and business.
+
+### Syllabi
+{{< courses pol491 >}}

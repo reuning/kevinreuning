@@ -34,7 +34,7 @@ Assistant Professor 2018 -
 
 - [Hannah, A. Lee](https://people.wright.edu/lee.hannah), **Kevin Reuning**, and [Anne Whitesell](https://annewhitesell.com/). Forthcoming. ["The Party Replies: Examining Local Party Responsiveness to Prospective Campaign Volunteers."](https://doi.org/10.1177%2F10659129221119751) *Political Research Quarterly*
 
-- [Whitesell, Anne](https://annewhitesell.com/), **Kevin Reuning**, and [A. Lee Hannah](https://people.wright.edu/lee.hannah). Forthcoming. ["Local Political Party Presence Online"](https://doi.org/10.1177%2F13540688211056617) *Party Politics*.
+- [Whitesell, Anne](https://annewhitesell.com/), **Kevin Reuning**, and [A. Lee Hannah](https://people.wright.edu/lee.hannah). 2023. ["Local Political Party Presence Online"](https://doi.org/10.1177%2F13540688211056617) *Party Politics*, 29(1), 164–175.
 
 - **Reuning, Kevin** and Sean McElwee. 2022. ["The precarious: how American voters view the working class."](https://doi.org/10.1080/21565503.2021.1908149) *Politics, Groups and Identities*, 10(5):788-806.
 
