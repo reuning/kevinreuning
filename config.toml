@@ -84,6 +84,12 @@ url = "mailto:kevinreuning@gmail.com"
   weight = 300
   url = "/resources/"
 
+  [[menu.main]]
+  name = "R Bootcamp"
+  identifier = "r_bootcamp"
+  weight = 300
+  url = "/presentations/"
+
 
 [security]
   enableInlineShortcodes = false
