@@ -10,3 +10,5 @@ command = "pandoc --template=static/header.tex content/cv/index.md  -o static/CV
 
 [[plugins]]
   package = "netlify-plugin-checklinks"
+    [plugins.inputs]
+    skipPatterns = ["/presentations/"]
