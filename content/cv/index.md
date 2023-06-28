@@ -32,7 +32,7 @@ Assistant Professor 2018 -
 
 # Peer Reviewed Articles 
 
-- [Hannah, A. Lee](https://people.wright.edu/lee.hannah), **Kevin Reuning**, and [Anne Whitesell](https://annewhitesell.com/). Forthcoming. ["The Party Replies: Examining Local Party Responsiveness to Prospective Campaign Volunteers."](https://doi.org/10.1177%2F10659129221119751) *Political Research Quarterly*
+- [Hannah, A. Lee](https://people.wright.edu/lee.hannah), **Kevin Reuning**, and [Anne Whitesell](https://annewhitesell.com/). 2023. ["The Party Replies: Examining Local Party Responsiveness to Prospective Campaign Volunteers."](https://doi.org/10.1177/10659129221119751) *Political Research Quarterly*, 76(2):931–943 
 
 - [Whitesell, Anne](https://annewhitesell.com/), **Kevin Reuning**, and [A. Lee Hannah](https://people.wright.edu/lee.hannah). 2023. ["Local Political Party Presence Online"](https://doi.org/10.1177%2F13540688211056617) *Party Politics*, 29(1), 164–175.
 
