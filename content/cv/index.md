@@ -38,10 +38,9 @@ Assistant Professor 2018 -
 
 - **Reuning, Kevin** and Sean McElwee. 2022. ["The precarious: how American voters view the working class."](https://doi.org/10.1080/21565503.2021.1908149) *Politics, Groups and Identities*, 10(5):788-806.
 
-
 - **Reuning, Kevin**, [Anne Whitesell](https://annewhitesell.com/), and [A. Lee Hannah](https://people.wright.edu/lee.hannah). 2022. ["Facebook algorithm changes may have amplified local republican parties"](https://journals.sagepub.com/doi/full/10.1177/20531680221103809) *Research & Politics*. April-June 2022:1-6.
 
-- [Hassell, Hans J. G.](http://myweb.fsu.edu/hanhassell4/), [Matthew R. Miles](http://www.matthewrmiles.com/) and **Kevin Reuning**. 2022. ["Does the Ideology Ideology of the Newsroom Affect the Provision of Media Slant?"](https://www-tandfonline-com.proxy.lib.miamioh.edu/doi/abs/10.1080/10584609.2021.1986613) *Political Communications* 39(2):184-201. [Replication materials](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/LQMGBG)
+- [Hassell, Hans J. G.](http://myweb.fsu.edu/hanhassell4/), [Matthew R. Miles](http://www.matthewrmiles.com/) and **Kevin Reuning**. 2022. ["Does the Ideology Ideology of the Newsroom Affect the Provision of Media Slant?"](https://www-tandfonline-com.proxy.lib.miamioh.edu/doi/abs/10.1080/10584609.2021.1986613) *Political Communication* 39(2):184-201. [Replication materials](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/LQMGBG)
 
 - [Bucci, Laura](https://www.lauracbucci.com) and **Kevin Reuning.** 2021. ["The State of Labor in the Democratic Party Coalition."](https://journals.sagepub.com/doi/abs/10.1177/1354068820949372) *Party Politics*. 27(6):1243-1253
 
@@ -61,7 +60,7 @@ Assistant Professor 2018 -
 
 - Cooney, Samantha R., [Patrick J. Gauding](https://patrickgauding.com/), [Anna A. Meier](http://annameier.net/), and **Kevin Reuning**. 2022. "Community, Solidarity, and Collective Power: The Role of Graduate Student Organizations and Graduate Worker Unions" in *Strategies for Navigating Graduate School and Beyond*, eds. Kevin G. Lorentz II, Daniel J. Mallinson, Julia Marin Hellwege, Davin Phoenix, and J. Cherie Strachan. American Political Science Association.
 
--   [Fariss, Christopher J.](http://cfariss.com/), [Michael R. Kenwick](http://sites.psu.edu/mikekenwick/), and **Kevin Reuning**. 2020. ["Measurement models."](http://cfariss.com/documents/FarissKenwickReuning2019_MesurmentModels.pdf) Chap 20 in *SAGE Handbook of Research Methods in Political Science and International Relations*, eds. Luigi Curini and Robert Franzese.
+- [Fariss, Christopher J.](http://cfariss.com/), [Michael R. Kenwick](http://sites.psu.edu/mikekenwick/), and **Kevin Reuning**. 2020. ["Measurement models."](http://cfariss.com/documents/FarissKenwickReuning2019_MesurmentModels.pdf) Chap 20 in *SAGE Handbook of Research Methods in Political Science and International Relations*, eds. Luigi Curini and Robert Franzese.
 
 # Working Papers
 
@@ -175,9 +174,10 @@ Politics and Policy Conference
 # Masters' Committees 
 
 ----            ----
-**Chair**:      Jacob Bemis, Wilson Maier, Lily Wilmont (2022); 
+**Chair**:      Isabelle Sistino; Jacob Bemis, Wilson Maier, Lily Wilmont (2022); 
                 Emily Cain, Blake Mullenix (2021); Virginia Bulger (2019)
-**Committee**:  Shannan Lunar (2021); Sara Carnahan, Muriel Truax (2020)
+**Committee**:  Tess Von Hemel (2022); Shannan Lunar (2021); Sara Carnahan, 
+                Muriel Truax (2020)
 ----            ----
 
 ## Honors Thesis 
@@ -189,9 +189,12 @@ Alex Dyer (2022); Alex Foltz (2021)
 
 ## Service to the Discipline
 
+- Division Chair for State Politics, APSA 2024
+- Co-Programming Chair PolNet, 2023
+
 +:-----------------------------------------------------------------------------------------------------------+
 |**Journal/Edited Volume Reviewer**: American Journal of Political Science; American Review of Politics;     |
-| American Sociological Review (2); Ask: Research and Methods; British Journal of Political Science;         |
+| American Sociological Review; Ask: Research and Methods; British Journal of Political Science;         |
 | Journal of Adolescence; Journal of International Communication; Labor Studies Journal; Mobilization;       |
 | Perspectives on Psychological Sciences; Political Analysis; Public Opinion Quarterly;                      |
 | Research in Social Movements, Conflict and Change; State Politics and Policy Quarterly; Science; and       |
@@ -201,7 +204,6 @@ Alex Dyer (2022); Alex Foltz (2021)
 +------------------------------------------------------------------------------------------------------------+
 |**Full Manuscript Review**: Princeton University Press.                                                     |
 +------------------------------------------------------------------------------------------------------------+
-
 
 ## Service to the University 
 
