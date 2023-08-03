@@ -64,9 +64,13 @@ Assistant Professor 2018 -
 
 # Working Papers
 
-- "Counting Crowds: Measuring Contentious Political Action across the United States" with Jay Ulfeder and Chris Fariss.
+- "The Political Activities of Union Locals" 
 
-- "Outside the Convention: Partisan Activism and Protestor Motivations at the 2016 RNC and DNC" with [Lee Ann Banaszak](http://sites.psu.edu/leeannbanaszak/).
+- "Campaign Activity and Voters' Perceptions of Candidate Ideology" with Hans Hassell and Michael Heseltine 
+
+- "Party Networks Online: Using Facebook to Identify “Us” and “Them”" with Anne Whitesell and Lee Hannah.
+
+- "Counting Crowds: Measuring Contentious Political Action across the United States" with Jay Ulfeder and Chris Fariss.
 
 - "Shifting Coalitions: The Effect of Extended Party Networks on State Legislature Ideology"
 
@@ -93,16 +97,17 @@ Assistant Professor 2018 -
 
 +:----------------------------------------------------------------------------------------------+
 |**POL 306: Applied Research Methods**:                                                         |
-|Fall 2018; Spring 2019; Fall 2019; Spring 2020; Fall 2020; Spring 2021; Spring 2022; Fall 2022 |
+|Fall 2018; Spring 2019; Fall 2019; Spring 2020; Fall 2020; Spring 2021;                        |
+|Spring 2022; Fall 2022; Fall 2023                                                              |
 +-----------------------------------------------------------------------------------------------+
 |**POL 345U: Social Movements and Protest**:                                                    | 
 |Fall 2018; Spring 2020; Fall 2020; Spring 2021; Spring 2022; Spring 2023                       |
 +-----------------------------------------------------------------------------------------------+
 |**POL 345Y: Class and Inequality in American Politics**:                                       |
-|Fall 2019; Spring 2021; Fall 2022                                                              |
+|Fall 2019; Spring 2021; Fall 2022; Fall 2023                                                   |
 +-----------------------------------------------------------------------------------------------+
 |**POL 491/591: Social Network Analysis**:                                                      |
-|Spring 20223                                                                                   |
+|Spring 2023                                                                                    |
 +-----------------------------------------------------------------------------------------------+
 
 ## Pennsylvania State University
@@ -123,6 +128,10 @@ Assistant Professor 2018 -
 
 
 # Presentations 
+
+- "Counting Crowds: Measuring Contentious Political Action across the United States"  2022 American Political Science Association with Jay Ulfeder and Chris Fariss.
+
+- "Party Networks Online: Using Facebook to Identify “Us” and “Them”" 2022 American Political Science Association with Anne Whitesell and Lee Hannah.
 
 - "Explaining Loss and Victory: How Local Parties Explain Election Outcomes" 2021 American Political Science Association with Anne Whitesell and Lee Hannah.
 
@@ -177,7 +186,7 @@ Politics and Policy Conference
 # Masters' Committees 
 
 ----            ----
-**Chair**:      Isabelle Sistino; Jacob Bemis, Wilson Maier, Lily Wilmont (2022); 
+**Chair**:      Isabelle Sistino (2023); Jacob Bemis, Wilson Maier, Lily Wilmont (2022); 
                 Emily Cain, Blake Mullenix (2021); Virginia Bulger (2019)
 **Committee**:  Tess Von Hemel (2022); Shannan Lunar (2021); Sara Carnahan, 
                 Muriel Truax (2020)
@@ -194,14 +203,16 @@ Alex Dyer (2022); Alex Foltz (2021)
 
 - Division Chair for State Politics, APSA 2024
 - Co-Programming Chair PolNet, 2023
+- Conference panel discussant: MPSA 2022; APSA 2021; MPSA 2019
+- Conference panel chair: MPSA 2022; MPSA 2019
 
 +:-----------------------------------------------------------------------------------------------------------+
 |**Journal/Edited Volume Reviewer**: American Journal of Political Science; American Review of Politics;     |
-| American Sociological Review; Ask: Research and Methods; British Journal of Political Science;         |
+| American Sociological Review; Ask: Research and Methods; British Journal of Political Science;             |
 | Journal of Adolescence; Journal of International Communication; Labor Studies Journal; Mobilization;       |
 | Perspectives on Psychological Sciences; Political Analysis; Public Opinion Quarterly;                      |
-| Research in Social Movements, Conflict and Change; State Politics and Policy Quarterly; Science; and       |
-| Sociological Forum                                                                                         |
+| Research in Social Movements, Conflict and Change; State Politics and Policy Quarterly; Science;           |
+| Sociological Forum; and Survey Research Methods                                                            |
 +------------------------------------------------------------------------------------------------------------+
 |**Book Manuscript Proposal Review**: Cambridge University Press.                                            |
 +------------------------------------------------------------------------------------------------------------+
