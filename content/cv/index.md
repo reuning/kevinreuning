@@ -201,8 +201,8 @@ Alex Dyer (2022); Alex Foltz (2021)
 
 ## Service to the Discipline
 
-- Division Chair for State Politics, APSA 2024
-- Co-Programming Chair PolNet, 2023
+- Division Chair for State Politics and Policy Division, 2024 APSA
+- Program Co-Chair for PolNet, 2023
 - Conference panel discussant: MPSA 2022; APSA 2021; MPSA 2019
 - Conference panel chair: MPSA 2022; MPSA 2019
 
@@ -225,7 +225,8 @@ Alex Dyer (2022); Alex Foltz (2021)
 
 #### University:
 - Representative, Miami University Senate (Fall 2021 -)
-- Alternate, Data Analytics Degree Program Steering Committee (Fall 2018-)
+- Faculty Fellow, Center for Analytics and Data Science (2021 - )
+- Data Analytics Degree Program Steering Committee (Fall 2018-)
  
 #### Department of Political Science:
 - Member, Mentoring Task Force (Fall 2019 -)
