@@ -256,3 +256,29 @@ Alex Dyer (2022); Alex Foltz (2021)
 **Programming:**    Python, C++, Javascript
 **Other:**          LaTeX
 ----                ----
+
+<!--- 
+# References 
+
+----
+**Monica Schneider**
+Professor, Miami University
+mschneider@miamioh.edu 
+(513)432-3831
+----
+
+----
+**Christopher J. Fariss**
+Assistant Professor, University of Michigan 
+cjfariss@umich.edu
+(858)774-2350
+----
+
+----
+**Hans J.G. Hassell** 
+Associate Professor, Florida State University
+hans.hassell@fsu.edu
+(858)876-5740
+----
+
+---> 

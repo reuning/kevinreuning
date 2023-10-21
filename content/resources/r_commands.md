@@ -17,18 +17,25 @@ Types of Variables (and stuff about them)
 
 Useful Functions
 ---
-- `setwd()` Used to set the the 'work directory' for R. By setting this R knows where to look for files when you call something like `read.csv()`. Ex: `setwd("/users/kevinreuning/downloads")` or `setwd("C:/users/reunink/downloads")`
-- `read.csv()` Used to read in a csv file. You need to place a file name in quotes to read it in. The function will output a dataframe that you need to save. Ex: `df <- read.csv('file_name.csv')`
+- `setwd()` Used to set the the 'work directory' for R. By setting this R knows where to look for files when you call something like `read_csv()`. Ex: `setwd("/users/kevinreuning/downloads")` or `setwd("C:/users/reunink/downloads")`
+- `read_csv()` Used to read in a csv file. You need to place a file name in quotes to read it in. The function will output a dataframe that you need to save. Ex: `df <- read_csv('file_name.csv')`. If `read_csv()` is not found then run `library(readr)`. If that library isn't found then run `install.packages("readr")` to install it.
 - `mean()`, `median()`, `sd()`, `range()` Used to calculate the mean, median, standard deviation or range of a vector. Remember set `na.rm=T` if you have missing values. Ex: `median(df$income)`
 - `table()` Creates a frequency table out of one or two vectors.  Ex: `table(df$pid, df$education)` (would create a frequency table of party identification and education).
 - `prop.table()` Turns a frequency table into a table of proportions. The first argument will be just the table. It will default to do a proportion out of all cells, if you want something else you need to use `margin=1` or `margin=2`. `margin=1` will create proportions across rows (so each row will sum to 1), while `margin=2` will create proportions across columns. Ex: `prop.table(table(df$pid, df$education), marin=2)`
-- `plot()` Makes simple plots in R. You can specify what will be the x or y axis using `x=` or `y=`. To make a simple scatter plot it is then: `plot(x=df$var1, y=df$var2)`. There are a lot of things you can set to make the plot look better:
-  - `col=` The color of the plots (expects a color in quotes such as `'red'`)
-  - `xlab=` or `ylab=` Sets the x or y label, whatever you put should be in quotes.
-  - `main=` The main title, just like `xlab` and `ylab`.
-  - `pch=` Allows you to change the points (can be a number between 0 and 25, just try a few).
-- `hist()` Makes a histogram of the vector. You can pick the number of bins by setting `breaks=`. Ex: `hist(df$var1, breaks=10)`.
 
+[ggplot2](https://ggplot2.tidyverse.org/)
+---
+- To use ggplot2 functions you first need to run `library(ggplot2)`. You have to do this **each time** you re-open R/RStudio. If you get an error you need to install it by running `install.packages("ggplot2")`,
+- Each plot starts with `ggplot()` function which includes the data you are using: `ggplot(data=df)`. 
+- To build a plot you have to do two things 1) add on a `geom_*()` function and tell that function how to map variables in your data to aesthetics of the plot. 
+- **Histogram:** `ggplot(data=df) + geom_histogram(mapping=aes(x=var1))`. This creates a histogram of the variable `var1` in the dataframe `df`. 
+- **Density plot:** `ggplot(data=df) + geom_density(mapping=aes(x=var1))`. This creates a density plot of the variable `var1` in the dataframe `df`. 
+- **Scatter plot:** `ggplot(data=df) + geom_point(mapping=aes(x=var1, y=var2))`. This creates a scatter plot with `var1` on the x-axis and `var2` on the y-axis. 
+- **Line of best fit:** `ggplot(data=df) + geom_smooth(mapping=aes(x=var1, y=var2), method="lm")`. This plots the line that best fits `var1` and `var2`. It uses OLS, or a linear model, to estimate that line (which is why `method="lm"`). 
+- **Scatter with a line:** You can combine the above two without repeating the mapping twice by including that in the initial call to `ggplot()`. Example: `ggplot(data=df, mapping=aes(x=var1, y=var2)) + geom_point() + geom_smooth(method="lm")`
+- Additional things: 
+  - You can change the labels by adding on he function `labs()` and setting `x=`, `y=` and `title=` in it. Ex: `ggplot(data=df) + geom_histogram(mapping=aes(x=var1)) + labs(x="Variable 1", y="Frequency", title="Histogram of Variable 1")`
+  - You can also set `color=`, `size=`, `fill=`, and other aesthetics when you call `geom_*`. These can be assigned to a variable or set for all observations as the same thing: `geom_point(mapping=aes(x=var1, y=var2, size=var3), color="green")`. This creates points where the size is a function of `var3` but they are all green colored (note what goes in and not in the call to `aes()`). 
 
 
 Linear Regression
@@ -37,11 +44,16 @@ Linear Regression
 - There are a variety of functions you can call on the output from `lm()` or `glm()` to access important information:
   - `summary()` can be called to provide a summary of the model. Ex: `summary(mod)`
   - `nobs()` calculates the number of observations used in your model.
-  - `confint()` calculates a 95% confidence interval for your estimated parameters. You can change it to any percentile by setting `level=` (it defaults to `level=0.95`)
-  - `abline()` adds the regression line from an estimated model to an already created scater plot. You call `abline()` after making the plot. For example if you've already ran `plot(y=df$Y, x=df$X)` and `mod <- lm(Y~X, data=df)`, then you'd just call `abline(mod)`.
+  - `confint()` calculates a 95% confidence interval for your estimated parameters. You can change it to any percentile by setting `level=` (it defaults to `level=0.95`).
   - `coef()` and `vcov()` access the coefficients and variance-covariance matrix of your model.
   - `predict()` calculates the predictions for observations in your data (note you can use `newdata=` to provide different data for predictions).
 - Finally it is often useful to call the residuals or predictions from your model by doing: `mod$residuals` or `mod$fitted.values`. This assumes that `mod` is the output from `lm()`.
+
+Linear Regression and ggplot
+---
+- You can give the output of a linear regression directly to `ggplot()` and it will turn it into a dataframe which includes your data used in the regression as well as a bunch of other things like the residuals, the fitted/predicted values, etc. These additional variables will all start with a period. 
+- For example: `ggplot(data=mod) + geom_point(mapping=aes(x=.fitted, y=.resid))` will create a scatter plot where observations are plotted by their residual and the fitted (predicted) value. 
+  - This works by using `fortify()`, To see what is added to your data run `fortify(mod)` by itself. 
 
 Common problems
 ---
@@ -58,3 +70,12 @@ Some other functions (no longer central to POL 306)
 - `cor()` Calculates the correlation between two vectors. You should provide the two vectors as the first two arguments. In addition you can select what type of correlation using `method=` (look at the help file for the options `?cor()`). The one different part of `cor()` is that it handles missing values differently than other functions. To have it ignore all missing files set `use='complete.obs'`. EX: `cor(df$per_cap_income, df$violent_crime_rate, use='complete.obs')`
 - `cor.test()` Same as `cor()` but provides hypothesis testing as well.  
 - `glm()` acts a lot like `lm()` but provides other types of models. To select a model you use `family=`. A logit model can be estimated by setting `family=binomial()`.
+
+Basic plots
+---
+- `plot()` Makes simple plots in R. You can specify what will be the x or y axis using `x=` or `y=`. To make a simple scatter plot it is then: `plot(x=df$var1, y=df$var2)`. There are a lot of things you can set to make the plot look better:
+  - `col=` The color of the plots (expects a color in quotes such as `'red'`)
+  - `xlab=` or `ylab=` Sets the x or y label, whatever you put should be in quotes.
+  - `main=` The main title, just like `xlab` and `ylab`.
+  - `pch=` Allows you to change the points (can be a number between 0 and 25, just try a few).
+- `hist()` Makes a histogram of the vector. You can pick the number of bins by setting `breaks=`. Ex: `hist(df$var1, breaks=10)`.

@@ -1,1 +1,2 @@
+/presentations https://reuning-presentations.netlify.app/index.html 200!
 /presentations/* https://reuning-presentations.netlify.app/:splat 200!
