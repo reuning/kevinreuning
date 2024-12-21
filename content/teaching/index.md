@@ -13,6 +13,13 @@ POL 306: Applied Research Methods covers research design (external, internal and
 ### Syllabi
 {{< courses pol306 >}}
 
+## POL 307 Public Opinion Research Lab
+POL 307: Public Opinion Research Lab covers the fundamentals of surveying. Students learn to write survey questions, field a survey and analyze results. When possible the course fields a real survey of Ohio voters, collecting data for the students to present. Students are evaluated through weekly in class quizzes, regular homework, a midterm, and a final project. The course has a combination of political science and data analytics students in it. 
+
+### Syllabi
+{{< courses pol307 >}}
+
+
 ## POL 345U Social Movements and Protest
 POL 345U: Social Movements and Protest focused on how social movements mobilize, individual level participation, and the impacts of social movements. Students select a social movement early on in the semester and then wrote three short papers on that movement: the history of the movement, the participants of the movement, and analysis of the movement. The final project requires them to revise and combine those papers into a single paper that described and analyzed the movement. Students in this course are mainly upper level political science majors. 
 

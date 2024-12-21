@@ -27,7 +27,8 @@ B.A. Political Science and Mathematics (minor in Economics), 2010
 # Academic Positions 
 ## Miami University
 
-Assistant Professor 2018 -
+- Associate Professor 2024 -
+- Assistant Professor 2018 - 2024
 
 
 # Peer Reviewed Articles 
@@ -72,8 +73,6 @@ Assistant Professor 2018 -
 
 - "Counting Crowds: Measuring Contentious Political Action across the United States" with Jay Ulfeder and Chris Fariss.
 
-- "Shifting Coalitions: The Effect of Extended Party Networks on State Legislature Ideology"
-
 
 # Editor Reviewed Blog Posts
 
@@ -100,14 +99,18 @@ Assistant Professor 2018 -
 |Fall 2018; Spring 2019; Fall 2019; Spring 2020; Fall 2020; Spring 2021;                        |
 |Spring 2022; Fall 2022; Fall 2023                                                              |
 +-----------------------------------------------------------------------------------------------+
+|**POL 307: Public Opinion Lab**:                                                               |
+|Fall 2024                                                                                      |
++-----------------------------------------------------------------------------------------------+
 |**POL 345U: Social Movements and Protest**:                                                    | 
 |Fall 2018; Spring 2020; Fall 2020; Spring 2021; Spring 2022; Spring 2023                       |
+|Spring 2024                                                                                    |
 +-----------------------------------------------------------------------------------------------+
 |**POL 345Y: Class and Inequality in American Politics**:                                       |
-|Fall 2019; Spring 2021; Fall 2022; Fall 2023                                                   |
+|Fall 2019; Spring 2021; Fall 2022; Fall 2023; Fall 2024                                        |
 +-----------------------------------------------------------------------------------------------+
 |**POL 491/591: Social Network Analysis**:                                                      |
-|Spring 2023                                                                                    |
+|Spring 2023; Spring 2024                                                                       |
 +-----------------------------------------------------------------------------------------------+
 
 ## Pennsylvania State University
@@ -128,6 +131,12 @@ Assistant Professor 2018 -
 
 
 # Presentations 
+
+- "Union Locals in a Polarized Country: A Survey of Ohio Union Locals" 2024 Midwest Political Science Association 
+
+- "Campaign Activity and Voters' Perceptions of Candidate Ideology" 2024 Midwest Political Science Association with Hans Hassell and Michael J. Heseltine
+
+- "Reassessing the Effect of Candidate Extremism on Vote Choice and Turnout" 2024 Midwest Political Science Association with Austin Cutler and Hans Hassell
 
 - "Counting Crowds: Measuring Contentious Political Action across the United States"  2022 American Political Science Association with Jay Ulfeder and Chris Fariss.
 
@@ -186,8 +195,8 @@ Politics and Policy Conference
 # Masters' Committees 
 
 ----            ----
-**Chair**:      Isabelle Sistino (2023); Jacob Bemis, Wilson Maier, Lily Wilmont (2022); 
-                Emily Cain, Blake Mullenix (2021); Virginia Bulger (2019)
+**Chair**:      Olivia Balakos (Expected 2025); Isabelle Sistino (2023); Jacob Bemis, Wilson Maier, 
+                Lily Wilmont (2022); Emily Cain, Blake Mullenix (2021); Virginia Bulger (2019)
 **Committee**:  Tess Von Hemel (2022); Shannan Lunar (2021); Sara Carnahan, 
                 Muriel Truax (2020)
 ----            ----
@@ -208,11 +217,12 @@ Alex Dyer (2022); Alex Foltz (2021)
 
 +:-----------------------------------------------------------------------------------------------------------+
 |**Journal/Edited Volume Reviewer**: American Journal of Political Science; American Review of Politics;     |
-| American Sociological Review; Ask: Research and Methods; British Journal of Political Science;             |
-| Journal of Adolescence; Journal of International Communication; Labor Studies Journal; Mobilization;       |
-| Perspectives on Psychological Sciences; Political Analysis; Public Opinion Quarterly;                      |
-| Research in Social Movements, Conflict and Change; State Politics and Policy Quarterly; Science;           |
-| Sociological Forum; and Survey Research Methods                                                            |
+| American Sociological Review; Ask: Research and Methods; British Journal of Political Science; Electoral   |
+| Studies; Journal of Adolescence; Journal of International Communication; Labor Studies Journal;            |
+| Mobilization; Perspectives on Politics; Perspectives on Psychological Sciences; Political Analysis;        |
+| Political Behavior; Public Opinion Quarterly; PS: Political Science & Politics; Research in Social         |
+| Movements, Conflict and Change; State Politics and Policy Quarterly; Science; Social Networks;             |
+| Sociological Forum; Sociological Methods and Research; and Survey Research Methods                         |
 +------------------------------------------------------------------------------------------------------------+
 |**Book Manuscript Proposal Review**: Cambridge University Press.                                            |
 +------------------------------------------------------------------------------------------------------------+

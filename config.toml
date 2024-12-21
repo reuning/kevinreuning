@@ -27,27 +27,22 @@ customCss = ["css/custom.css"]
 
 ## Set as many as you want.
 [[params.socialIcons]]
-icon = "ai ai-google-scholar"
+icon = "fa-brands fa-google-scholar"
 title = "Google Scholar"
 url = "https://scholar.google.com/citations?user=yVgvTK4AAAAJ&hl=en"
 
 [[params.socialIcons]]
-icon = "fab fa-github"
+icon = "fa-brands fa-github"
 title = "GitHub"
 url = "https://github.com/reuning/"
 
 [[params.socialIcons]]
-icon = "fab fa-twitter"
-title = "Twitter"
-url = "https://twitter.com/KevinReuning"
+icon = "fa-brands fa-bluesky"
+title = "Bluesky"
+url = "https://bsky.app/profile/reuning.bsky.social"
 
 [[params.socialIcons]]
-icon = "fab fa-mastodon"
-title = "Mastodon"
-url = "https://home.social/@kevinreuning"
-
-[[params.socialIcons]]
-icon = "fa fa-envelope"
+icon = "fa-solid fa-envelope"
 title = "Email"
 url = "mailto:kevinreuning@gmail.com"
 
@@ -85,8 +80,8 @@ url = "mailto:kevinreuning@gmail.com"
   url = "/resources/"
 
   [[menu.main]]
-  name = "R Bootcamp"
-  identifier = "r_bootcamp"
+  name = "Training/Bootcamps"
+  identifier = "r_training"
   weight = 300
   url = "/presentations/"
 
