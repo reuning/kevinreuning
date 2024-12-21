@@ -1,6 +1,5 @@
 ---
 title: Instructions for Loading State Networks
-weight: 1
 ---
 
 The data for the state networks are available on the [Harvard Dataverse](https://dataverse.harvard.edu/dataverse/state_networks). Below I explain how to load networks from this. As in the article, each state-chamber-full-cycle is separated. The networks themselves are in the Edge_Lists.zip while useful information about the nodes for each network are in Metadata.zip.
@@ -42,16 +41,17 @@ Loading Networks in R
 The following code provides an example of how to load a network in R using the igraph package for the Colorado lower house network from 2013 to 2014.
 
 
-{{< highlight R >}}
+```R
 library(igraph)
 net <- read.csv("Edge_Lists/CO-2013-2014-House.csv")
 meta_df <- read.csv("Metadata/CO-2013-2014-House.csv")
 net <- net[net$edge>=3,]
 net <- as.matrix(net[,1:2])
 net <- graph_from_data_frame(net, vertices=meta_df, directed=F)
-{{< / highlight >}}
+```
 
 
 Harvard Dataverse
 ------
-{{< dataverse >}}
+
+<script src="https://dataverse.harvard.edu/resources/js/widgets.js?alias=state_networks&amp;dvUrl=https://dataverse.harvard.edu&amp;widgetScope=state_networks&amp;widget=iframe&amp;heightPx=500"></script>

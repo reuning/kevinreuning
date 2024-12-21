@@ -1,0 +1,22 @@
+project:
+  type: website
+  render: 
+    - "*.qmd"
+    - "!*.md"
+
+website:
+  title: "Kevin Reuning"
+  sidebar:
+    contents:
+      - cv/index.qmd
+      - href: index.qmd
+        text: Home
+      - teaching/index.qmd
+      - section: Resources
+        contents: resources
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+

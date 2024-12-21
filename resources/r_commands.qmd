@@ -1,10 +1,9 @@
 ---
 title: Helpful R Commands
-weight: 2
 ---
 
-Types of Variables (and stuff about them)
----
+## Types of Variables (and stuff about them)
+
 
 - Integer/Numeric variables: A number, stored by just using `<-` to assign the number to a variable. Ex: `x <- 4`
 - Strings/Characters: A phrase or word, always surrounded by quotation marks. Ex: `y <- "A variable"`
@@ -15,16 +14,16 @@ Types of Variables (and stuff about them)
   - Note: `[ ]` can also be used for vectors but without a the comma as there is only one dimension. In addition you can put logical statements inside the brackets to subset particular rows or columns.  
 
 
-Useful Functions
----
+## Useful Functions
+
 - `setwd()` Used to set the the 'work directory' for R. By setting this R knows where to look for files when you call something like `read_csv()`. Ex: `setwd("/users/kevinreuning/downloads")` or `setwd("C:/users/reunink/downloads")`
 - `read_csv()` Used to read in a csv file. You need to place a file name in quotes to read it in. The function will output a dataframe that you need to save. Ex: `df <- read_csv('file_name.csv')`. If `read_csv()` is not found then run `library(readr)`. If that library isn't found then run `install.packages("readr")` to install it.
 - `mean()`, `median()`, `sd()`, `range()` Used to calculate the mean, median, standard deviation or range of a vector. Remember set `na.rm=T` if you have missing values. Ex: `median(df$income)`
 - `table()` Creates a frequency table out of one or two vectors.  Ex: `table(df$pid, df$education)` (would create a frequency table of party identification and education).
 - `prop.table()` Turns a frequency table into a table of proportions. The first argument will be just the table. It will default to do a proportion out of all cells, if you want something else you need to use `margin=1` or `margin=2`. `margin=1` will create proportions across rows (so each row will sum to 1), while `margin=2` will create proportions across columns. Ex: `prop.table(table(df$pid, df$education), marin=2)`
 
-[ggplot2](https://ggplot2.tidyverse.org/)
----
+## [ggplot2](https://ggplot2.tidyverse.org/)
+
 - To use ggplot2 functions you first need to run `library(ggplot2)`. You have to do this **each time** you re-open R/RStudio. If you get an error you need to install it by running `install.packages("ggplot2")`,
 - Each plot starts with `ggplot()` function which includes the data you are using: `ggplot(data=df)`. 
 - To build a plot you have to do two things 1) add on a `geom_*()` function and tell that function how to map variables in your data to aesthetics of the plot. 
@@ -38,8 +37,8 @@ Useful Functions
   - You can also set `color=`, `size=`, `fill=`, and other aesthetics when you call `geom_*`. These can be assigned to a variable or set for all observations as the same thing: `geom_point(mapping=aes(x=var1, y=var2, size=var3), color="green")`. This creates points where the size is a function of `var3` but they are all green colored (note what goes in and not in the call to `aes()`). 
 
 
-Linear Regression
----
+## Linear Regression
+
 - `lm()` is used to estimate a linear regression. You will want to start by giving it a formula which is in the form: `dv ~ iv1 + iv2+ iv3` where `dv` and `iv`s are variables in a dataframe (note that they are not in quotations). You will then want to also pass it your dataframe using the `data=` argument. Ex: `mod <- lm(welf_percap~liberal+leg_control+gov, data=df)`
 - There are a variety of functions you can call on the output from `lm()` or `glm()` to access important information:
   - `summary()` can be called to provide a summary of the model. Ex: `summary(mod)`
@@ -49,22 +48,22 @@ Linear Regression
   - `predict()` calculates the predictions for observations in your data (note you can use `newdata=` to provide different data for predictions).
 - Finally it is often useful to call the residuals or predictions from your model by doing: `mod$residuals` or `mod$fitted.values`. This assumes that `mod` is the output from `lm()`.
 
-Linear Regression and ggplot
----
+## Linear Regression and ggplot
+
 - You can give the output of a linear regression directly to `ggplot()` and it will turn it into a dataframe which includes your data used in the regression as well as a bunch of other things like the residuals, the fitted/predicted values, etc. These additional variables will all start with a period. 
 - For example: `ggplot(data=mod) + geom_point(mapping=aes(x=.fitted, y=.resid))` will create a scatter plot where observations are plotted by their residual and the fitted (predicted) value. 
   - This works by using `fortify()`, To see what is added to your data run `fortify(mod)` by itself. 
 
-Common problems
----
+## Common problems
+
 - I keep getting `NA` as a result.
   - You probably have missing variables in your vector (they are listed as `NA`). Most functions will take `na.rm=T` as an argument to fix this. By setting `na.rm` to `True` you are telling the R function to ignore missing values.
 - R is just showing a `+` and nothing is happening.
   - This happens when R thinks that something more is coming. This is often because there is an open parentheses or quotation mark. If you hit the ESC key it will cancel that command and you will see `>` again.
 
 
-Some other functions (no longer central to POL 306)
----
+## Some other functions (no longer central to POL 306)
+
 - `chisq.test()` Calculates a chi-squared test. The two variables should come first and second. Ex: `chisq.test(df$pid, df$education)`
 - `t.test()` Calculates a t-test on two variables. The easiest way to use it is with the formula interface where you write your interval variable, then the ~ (tilde) and then the variable that divided your groups. You can simplify this by using the `data=` argument if both variables are in a dataframe. In addition `alternative=` is used to set the alternative hypothesis. It can be: 'two.sided', 'greater', or 'less' Ex: `t.test(per_cap_income~dem_control, data=df, alternative='two.sided')`
 - `cor()` Calculates the correlation between two vectors. You should provide the two vectors as the first two arguments. In addition you can select what type of correlation using `method=` (look at the help file for the options `?cor()`). The one different part of `cor()` is that it handles missing values differently than other functions. To have it ignore all missing files set `use='complete.obs'`. EX: `cor(df$per_cap_income, df$violent_crime_rate, use='complete.obs')`

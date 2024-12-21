@@ -3,3 +3,6 @@
 .netlify
 node_modules
 public
+
+/.quarto/
+/_site

@@ -1,8 +1,8 @@
 ---
 title: CV
-type: page
-cv: 1
-markup: pandoc
+format:
+    html: default
+    pdf: default
 ---
 
 # Education 

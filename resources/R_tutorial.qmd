@@ -1,6 +1,6 @@
 ---
-title: Guide to Installing R Tutorial
-weight: 3
+title: Installing POL 306 R Tutorial
+order: 3
 ---
 
 We will be using a set of tutorials that run in R as an aide. To run them you need to install several packages (packages are addons for R that allow us to do things that base R does not). If you want to understand the details of what we are doing I've written an explanation below the steps.
@@ -10,19 +10,19 @@ Steps:
 0. [Have R and RStudio installed.](/resources/install_r/)
 1. Open RStudio. On the leftside there will be a box called "R Console" you will type everything I tell you to in there.
 2. In the console type the below line and hit enter. This will install a package called `remotes`
-~~~~ R
+```R
 install.packages("remotes")
-~~~~
+```
 3. Some text should popup that ends with "The downloaded binary packages are in" followed by a long file path. You might also get some red text that says "WARNING: Rtools..." this is not an important warning. If anything says "Error" contact me.
 4. Now type the below line and hit enter to install `POL306` which has all the tutorials in it
-~~~~ R
+```R
 remotes::install_github("reuning/POL306")
-~~~~
+```
 5. You will see more text again, although tis time there will be a lot more. Generally, as long as there is no red text it should be fine.
 6. Run one last line to check to make sure everything worked. You should see a message welcoming you to the tutorial, if you see "Error in library(POL306) : there is no package called ‘kevin’" then contact me.
-~~~~ R
+```R
 library(POL306)
-~~~~
+```
 7. Close and reopen RStudio, you should have a Tutorial tab in the top right, click on it. It should list *Introduction to R* as the first tutorial. If not, contact me.
 
 
