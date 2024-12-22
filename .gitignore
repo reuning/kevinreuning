@@ -6,3 +6,4 @@ public
 
 /.quarto/
 /_site
+/.luarc.json
