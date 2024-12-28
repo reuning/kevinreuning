@@ -6,17 +6,34 @@ project:
 
 website:
   title: "Kevin Reuning"
-  sidebar:
-    contents:
+  navbar:
+    left:
       - cv/index.qmd
-      - href: index.qmd
-        text: Home
       - teaching/index.qmd
-      - section: Resources
-        contents: resources
+      - sidebar:resources
+      - text: Union Elections
+        href: https://unionelections.org/
+    right:
+      - text: Google Scholar
+        href: https://scholar.google.com/citations?user=yVgvTK4AAAAJ
+      - text: Bluesky
+        href: https://bsky.app/profile/reuning.bsky.social
+      - icon: envelope
+        href: mailto:Kevin.Reuning@gmail.com
+      - icon: github
+        href: https://github.com/reuning/
+  sidebar: 
+    - id: resources
+      title: Resources
+      style: "docked"
+      background: light
+      collapse-level: 2
+      contents: 
+        resources/*
+
 
 format:
   html:
-    theme: cosmo
+    theme: [literia]
     toc: true
 
