@@ -1,0 +1,347 @@
+---
+title: "Statnet vs igraph"
+categories: 
+    - R
+    - POL 491
+    - Network Analysis
+knitr: 
+    opts_chunk: 
+        message: false 
+  
+---
+
+There are two main packages used in social network analysis in R: Statnet and igraph. [Statnet](https://statnet.org/) is actually a suite of package with a focus on network modeling using Exponential Random Graph Models. In contrast, [igraph](https://r.igraph.org/) is a single package with a broad range of network analysis tools but little focus on modeling graphs. In addition, igraph is also available in [Python](https://python.igraph.org/), [Mathematica](http://szhorvat.net/mathematica/IGraphM) and [C](https://igraph.org/c).
+
+There are many other packages out there that deal with specific network problems but in my experience most of them integrate into the statnet or igraph framework (or both). 
+
+The purpose of this page is not to demonstrate what all you can do with igraph and statnet or to show which one of these are better. Instead I want to show you basic operations in both so it is easier to translate code from package to another if necessary.
+
+### Loading a Network  
+
+Both packages have function(s) to convert dataframes or matrices into their own network object. The biggest difference here is that igraph has an array of functions to deal with a variety of common network types, while statnet uses only one function (`network()`). 
+
+In the below examples we use two datasets. The adjacency matrix is the [Islamic State Group network available via UCINET](https://sites.google.com/site/ucinetsoftware/datasets/covert-networks/islamic-state-group). The edgelist is campaign donors in the 2016 Nevada State Senate election that is part of my own data on campaign donors available on the [Harvard Dataverse.](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/YMDFPW)
+
+If you want to follow along the Nevada egdelist data is [here](network_data/NV-2013-2016-Edges.csv) and the metadata is [here](network_data/NV-2013-2016-Meta.csv). 
+
+::: {.panel-tabset}
+
+## Statnet 
+
+The `network()` function can be used to convert both an adjacency matrix or an edgelist. You can set the type of data using `matrix.type` argument but it will also guess. In general if you provide a matrix it will assume it is an adjacency matrix. If you provide a data.frame it will assume it is an edgelist. 
+
+In order to convert our dataframe into a matrix we need to use `as.matrix()` but this can create a problem if some of our columns are not numbers. OFten the first column in your adjacency csv is the vertex names. To deal with this when we read in the data using `read.csv()` we are going to set `row.names=1` which makes the first column in your csv into rownames instead of treating it as a regular column.
+
+```{r}
+library(network)
+
+adj_df <- read.csv("network_data/IS_BBC_61_IS_BBC-FRIENDS.csv", row.names=1)
+adj_mat <- as.matrix(adj_df)
+statnet_net <- network(adj_mat, directed=FALSE)
+
+```
+
+Reading in an edgelist is comparatively easy. Assuming that you have a csv with your first column as where the edge starts and your second column as where the edge ends then just put that dataframe directly into the `network()` call. 
+
+```{r}
+library(network)
+
+edge_df <- read.csv("network_data/NV-2013-2016-Edges.csv")
+statnet_net <- network(edge_df, directed=FALSE)
+
+```
+
+There are some additional arguments to worry about (there are more as well but this should cover most cases):
+
+- `directed` is whether the network is directed (default is `TRUE`).
+- `loops` is whether edges can point towards themselves(default is `FALSE`).
+- `multiple` is whether there are multiple types of edges  (default is `FALSE`). 
+
+## igraph 
+
+igraph has a set of functions that can be used to convert different data types into a network. For adjacency matrix we use `graph_from_adjacency_matrix()` and `graph_from_data_frame()` but there is also `read_graph()` which can be used to read data directly from a file, including a wide range of formats (pajek, graphml, gml, etc).
+
+In order to convert our dataframe into a matrix we need to use `as.matrix()` but this can create a problem if some of our columns are not numbers. OFten the first column in your adjacency csv is the vertex names. To deal with this when we read in the data using `read.csv()` we are going to set `row.names=1` which makes the first column in your csv into rownames instead of treating it as a regular column.
+
+```{r}
+library(igraph)
+
+adj_df <- read.csv("network_data/IS_BBC_61_IS_BBC-FRIENDS.csv", row.names=1)
+adj_mat <- as.matrix(adj_df)
+igraph_net <- graph_from_adjacency_matrix(adj_mat, mode="undirected")
+
+```
+
+Reading in an edgelist is comparatively easy. Assuming that you have a csv with your first column as where the edge starts and your second column as where the edge ends then just put that dataframe directly into the `graph_from_data_frame()` call. 
+
+```{r}
+library(igraph)
+
+edge_df <- read.csv("network_data/NV-2013-2016-Edges.csv")
+igraph_net <- graph_from_data_frame(edge_df, directed=FALSE)
+```
+
+The additional arguments are a bit different across the two functions. 
+
+- In `graph_from_adjacency_matrix()` you use `mode` to indicate the type of matrix and there are a variety of options to deal with non-symmetric matrices that you want to treat as undirected (the default is `directed`). 
+- In `graph_from_data_frame()` the only additional argument is whether it is directed or not (the default is `TRUE`).
+
+:::
+
+### Loading Data with Vertex Attributes
+
+Both igraph and statnet have ways to add vertex attributes on to your network during the creation of the network. In this example I am only using the edgelist data. If you are using adjacency data the same steps can be used for the statnet package but for igraph I _think_ you have to first get it into an edgelist format. 
+
+::: {.panel-tabset}
+
+## Statnet 
+
+Your `metadata` or vertex attributes will be in an additional dataframe with the first column as the vertex identifier. This needs to be the same as the vertex identifier you have in your edgelist or adjacency matrix. 
+
+```{r}
+library(network)
+
+edge_df <- read.csv("network_data/NV-2013-2016-Edges.csv")
+meta_df <- read.csv("network_data/NV-2013-2016-Meta.csv")
+
+statnet_net <- network(edge_df, vertices=meta_df, 
+                directed=FALSE)
+
+```
+
+## igraph 
+
+Your `metadata` or vertex attributes will be in an additional dataframe with the first column as the vertex identifier. This needs to be the same as the vertex identifier you have in your edgelist or adjacency matrix. 
+
+
+```{r}
+library(igraph)
+
+edge_df <- read.csv("network_data/NV-2013-2016-Edges.csv")
+meta_df <- read.csv("network_data/NV-2013-2016-Meta.csv")
+
+igraph_net <- graph_from_data_frame(edge_df, vertices=meta_df, 
+                directed=FALSE)
+
+```
+
+:::
+
+### Accessing and Modifying Attributes 
+
+Both igraph and statnet allow you to modify vertex and edge attributes (and graph attributes). In addition the functions here are _very_ similar but there are also some shortcuts in each package as well that are _not_ similar. 
+
+:::{.callout-warning}
+
+The biggest difference between the two is that statnet modifies the network object in place while igraph does not. 
+
+:::
+
+::: {.panel-tabset}
+
+## Statnet 
+
+To access a vertex attribute you use `get.vertex.attribute()` with the network object and name of the attribute you want to access. 
+
+You can set a vertex attribute using `set.vertex.attribute()` along with the network object, the name of the attribute you want to access, the value(s) and which vertex (or vertices) you want to modify. **When you call this it modifies the network in-place and nothing is returned**
+
+Each vertex has a numeric ID from 1 to the number of vertices n the network. 
+
+```{r}
+#| echo: false
+
+detach("package:igraph", unload=TRUE)
+
+```
+
+
+```{r}
+library(network)
+
+total_donations <- get.vertex.attribute(statnet_net, "Total")
+## Access the first 10 donation amounts
+total_donations[1:10]
+
+## Change the first vertex to have a "Total" of 100
+set.vertex.attribute(statnet_net, "Total", value=100, 
+    v=1)
+
+modified_donations <- get.vertex.attribute(statnet_net, "Total")
+modified_donations[1:10]
+
+## Convert the total amount for all vertices to be in $1,000s
+set.vertex.attribute(statnet_net, "Total", total_donations/1000)
+
+
+thousand_donations <- get.vertex.attribute(statnet_net, "Total")
+## Access the first 10 donation amounts
+thousand_donations[1:10]
+```
+
+You can also access and modify vertex attributes using `%v%` as an operator instead. This simplifies the above code, though it isn't possible to modify an individual vertex.
+
+```{r}
+## Access the attribute PerRep
+percent_rep <- statnet_net %v% "PerRep"
+percent_rep[1:10]
+
+## Convert this to a proportion and store it
+
+statnet_net %v% "Proportion_Rep" <- percent_rep/100
+```
+
+Access and modifying edge attributes follows in a similar way but with `get.edge.attibute()`, `get.edge.attribute()` and `%e%`. 
+
+## igraph 
+
+To access a vertex attribute you use `vertex_attr()` with the network object and name of the attribute you want to access. 
+
+You can set a vertex attribute using `set_vertex_attribute()` along with the network object, the name of the attribute you want to access, the value(s) and which vertex (or vertices) you want to modify. **When you call this the new network object is returned.**
+
+Each vertex has a numeric ID from 1 to the number of vertices n the network. 
+
+
+```{r}
+#| echo: false
+
+detach("package:network", unload=TRUE)
+
+```
+
+
+```{r}
+library(igraph)
+
+total_donations <- vertex_attr(igraph_net, "Total")
+## Access the first 10 donation amounts
+total_donations[1:10]
+
+## Change the first vertex to have a "Total" of 100
+igraph_net <- set_vertex_attr(igraph_net, "Total", value=100, 
+    index=1)
+
+modified_donations <- vertex_attr(igraph_net, "Total")
+modified_donations[1:10]
+
+## Convert the total amount for all vertices to be in $1,000s
+igraph_net <- set_vertex_attr(igraph_net, "Total", value=total_donations/1000)
+
+
+thousand_donations <- vertex_attr(igraph_net, "Total")
+## Access the first 10 donation amounts
+thousand_donations[1:10]
+```
+
+In addition to this there are two other ways to modify vertex attributes. The first is to access them using `V()$` the second is to directly assign values using `vertex_attr() <- `. 
+
+```{r}
+## Access the attribute PerRep
+percent_rep <- V(igraph_net)$PerRep
+percent_rep[1:10]
+
+## Convert this to a proportion and store it
+V(igraph_net)$Proportion_Rep <- percent_rep/100
+
+## The above and below are equivalent 
+vertex_attr(igraph_net, "Proportion_Rep") <- percent_rep/100
+```
+
+One benefit of this feature is that it is able to access and modify attributes based on other attributes. For example, imagine I want to create a new variable that indicates whether groups gave only to Republicans or only to Democrats, or both: 
+
+```{r}
+V(igraph_net)$Type <- "Both"
+vertex_attr(igraph_net, "Type", V(igraph_net)[PerDem == 100]) <- "Democrat Only"
+vertex_attr(igraph_net, "Type", V(igraph_net)[PerRep == 100])  <- "Republican Only"
+
+## Create a table to see he counts 
+table(V(igraph_net)$Type)
+
+```
+
+Access and modifying edge attributes follows in a similar way but with `get.edge.attibute()`, `get.edge.attribute()` and `%e%`. 
+
+::: 
+
+### Extracting Data from Networks 
+
+One common occurrence in network analysis is extracting nodal/vertex data out from your network. For example, you might want to use regression analysis to look at whether centrality of a node is related to other nodal characteristics. To do this you'll load the data into a network, calculate the centrality scores, and then want to append this to your data. The easiest way (in my opinion) is to add these centrality statistics as a vertex attribute then convert the network into a vertex based dataframe. 
+
+::: {.panel-tabset}
+
+
+## Statnet 
+
+For statnet this is accomplished using `as.data.frame()` and indicating whether you want to convert to a vertex or edge dataframe using the `unit=` argument. In the below example I calculate the degree and betweenness centrality of each node, then convert it to a dataframe and show the first 5 rows.
+
+```{r}
+#| echo: false
+
+detach("package:igraph", unload=TRUE)
+
+```
+
+```{r}
+library(network)
+library(sna)
+
+statnet_net %v% "degree" <- degree(statnet_net, gmode="graph")
+statnet_net %v% "between" <- betweenness(statnet_net, gmode="graph")
+
+df <- as.data.frame(statnet_net, unit="vertices")
+
+df[1:5,]
+
+```
+
+
+## igraph 
+
+For graiph this is accomplished using `as_data_frame()` and indicating whether you want to convert to a vertex or edge dataframe using the `what=` argument. In the below example I calculate the degree and betweenness centrality of each node, then convert it to a dataframe and show the first 5 rows. 
+
+```{r}
+#| echo: false
+
+detach("package:sna", unload=TRUE)
+detach("package:network", unload=TRUE)
+
+```
+
+```{r}
+library(igraph)
+
+V(igraph_net)$degree <- degree(igraph_net)
+V(igraph_net)$between <- betweenness(igraph_net)
+
+df <- as_data_frame(igraph_net, what="vertices")
+
+df[1:5,]
+
+```
+
+:::
+
+### Using Both Packages
+
+You need to be careful when you load both igraph and the statnet suite of packages. They have several functions with the _exact_ same names. The example below shows what happens when you do this:
+
+```{r}
+#| error: true
+#| 
+library(igraph)
+library(sna)
+
+
+degree(statnet_net)[1:10] #will work
+degree(igraph_net)[1:10] #won't work 
+```
+
+A solution to this is to prepend function calls with the library the come from: 
+
+```{r}
+sna::degree(statnet_net)[1:10] #will work
+igraph::degree(igraph_net)[1:10] #will work 
+
+```
+
+
+You can also unload packages using `detach("package:igraph", unload=TRUE)` or `detach("package:sna", unload=TRUE)`
