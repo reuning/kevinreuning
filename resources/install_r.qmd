@@ -1,5 +1,7 @@
 ---
 title: Installing R and RStudio
+categories: 
+    - R
 ---
 
 In order to install RStudio you need to first install R. The instructions walk through how to do this and where to find everything.

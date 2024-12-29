@@ -1,5 +1,8 @@
 ---
 title: Instructions for Loading State Networks
+categories: 
+    - R
+    - Network Analysis
 ---
 
 The data for the state networks are available on the [Harvard Dataverse](https://dataverse.harvard.edu/dataverse/state_networks). Below I explain how to load networks from this. As in the article, each state-chamber-full-cycle is separated. The networks themselves are in the Edge_Lists.zip while useful information about the nodes for each network are in Metadata.zip.

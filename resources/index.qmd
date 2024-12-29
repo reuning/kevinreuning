@@ -1,0 +1,7 @@
+---
+title: Resources
+listing: 
+    contents: "*.qmd"
+    type: table
+    categories: true
+---

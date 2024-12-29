@@ -1,6 +1,11 @@
 ---
 title: Helpful R Commands
+categories: 
+    - R
+    - POL 306
 ---
+
+Below is some general R help mainly used for POL 306. 
 
 ## Types of Variables (and stuff about them)
 
@@ -70,8 +75,8 @@ title: Helpful R Commands
 - `cor.test()` Same as `cor()` but provides hypothesis testing as well.  
 - `glm()` acts a lot like `lm()` but provides other types of models. To select a model you use `family=`. A logit model can be estimated by setting `family=binomial()`.
 
-Basic plots
----
+## Basic plots
+
 - `plot()` Makes simple plots in R. You can specify what will be the x or y axis using `x=` or `y=`. To make a simple scatter plot it is then: `plot(x=df$var1, y=df$var2)`. There are a lot of things you can set to make the plot look better:
   - `col=` The color of the plots (expects a color in quotes such as `'red'`)
   - `xlab=` or `ylab=` Sets the x or y label, whatever you put should be in quotes.

@@ -1,6 +1,8 @@
 ---
 title: Installing POL 306 R Tutorial
-order: 3
+categories: 
+    - R
+    - POL 306
 ---
 
 We will be using a set of tutorials that run in R as an aide. To run them you need to install several packages (packages are addons for R that allow us to do things that base R does not). If you want to understand the details of what we are doing I've written an explanation below the steps.
