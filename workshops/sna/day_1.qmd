@@ -367,7 +367,7 @@ comps$membership ## Membership for each node
 
 ## Process 
 
-Now we are going to use a network of political donors in Ohio. Download the edgelist data [here](data/edge_OH.csv) and the nodal data [here](data/meta_OH.csv). More info is [here](https://kevinreuning.com/resources/network_create/). 
+Now we are going to use a network of political donors in Ohio. Download the edgelist data [here](data/edge_OH.csv) and the nodal data [here](data/meta_OH.csv). More info is [here](../../resources/network_create.qmd). 
 
 Need to do the following: 
 
