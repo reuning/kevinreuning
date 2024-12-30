@@ -1,0 +1,3 @@
+/presentations/pages/bertopic.html          /blog/bertopic.html
+/presentations/workshops/*                  /workshops/:splat
+/presentations/pages/*                      /resources/:splat  
