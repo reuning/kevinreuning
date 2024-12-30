@@ -1,9 +1,6 @@
 [build]
-publish = "public"
-command = "pandoc --template=static/header.tex content/cv/index.md  -o static/CV.pdf && hugo --gc --minify --theme soho"
-
-[[plugins]]
-  package = "netlify-plugin-hugo-cache-resources"
+publish = "_site"
+command = "quarto render"
 
 [[plugins]]
   package = "netlify-plugin-submit-sitemap"
