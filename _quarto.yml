@@ -9,11 +9,16 @@ execute:
 
 website:
   title: "Kevin Reuning"
+  site-url: "https://kevinreuning.com/"
+  open-graph: true
   navbar:
     left:
       - cv/index.qmd
       - teaching/index.qmd
-      - sidebar:resources
+      - research/index.qmd
+      - blog/index.qmd
+      - sidebar:workshops
+      - resources/index.qmd
       - text: Union Elections
         href: https://unionelections.org/
     right:
@@ -26,17 +31,23 @@ website:
       - icon: github
         href: https://github.com/reuning/
   sidebar: 
-    - id: resources
-      title: Resources
-      style: "docked"
-      background: light
+    - id: workshops
+      title: Workshops
       collapse-level: 2
+      style: "docked"
       contents: 
-        resources/*
-
-
+        - section: One off
+          contents: workshops/individual/*
+        - section: R Bootcamp
+          contents: workshops/r_bootcamp/*
+        - section: SNA
+          contents: workshops/sna/*
+  
 format:
   html:
     theme: [literia]
     toc: true
+    include-in-header: 
+      - text: |
+          <script defer data-domain="kevinreuning.com" src="https://plausible.io/js/script.file-downloads.outbound-links.js"></script>
 
