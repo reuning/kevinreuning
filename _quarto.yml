@@ -4,6 +4,9 @@ project:
     - "*.qmd"
     - "!*.md"
 
+execute:
+  freeze: true
+
 website:
   title: "Kevin Reuning"
   navbar:
