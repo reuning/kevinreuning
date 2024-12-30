@@ -3,7 +3,14 @@
 .netlify
 node_modules
 public
+_freeze
 
-/.quarto/
-/_site
+.quarto
+_site
+.venv
+
+
 anes*.csv
+*/*_cache/
+*/*_files/
+.vdoc.r
