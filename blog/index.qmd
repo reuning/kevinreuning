@@ -1,8 +1,9 @@
 ---
-title: Blog
+title: Plots on Politics
 listing: 
     contents: "*.qmd"
     sort: "date desc"
     type: default
     categories: true
+    feed: true
 ---
