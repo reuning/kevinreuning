@@ -1,0 +1,610 @@
+---
+title: "Introduction to R: Plotting and Reports"
+format: 
+    clean-revealjs:
+        width: 1600
+        height: 900
+        slide-number: false
+        callout-icon: false
+        execute:
+            echo: true
+revealjs-plugins:
+  - codefocus
+---
+
+
+## Goals for Today
+
+- Finish off discussing plots (more on smooths, facetting, etc)
+- Discuss some principles of data visualization 
+- Using Quarto to create reports. 
+
+# Data for Today 
+
+Today we are going to keep using a subset of country data from [The Quality of Governance Institute](https://www.gu.se/en/quality-government/qog-data).
+
+- Download the [data we'll be using here](images/country_data.csv)
+- You can open it with `read_csv()` and if you need more help check out the [first day of slides.](https://kevinreuning.com/presentations/workshops/r_bootcamp/day_1.html)
+- There is a description of all the [variables I've included here.](https://kevinreuning.com/presentations/workshops/r_bootcamp/country_data.html) 
+- We need the following packages installed: `install.packages(c("tidyverse"))`
+
+```{r}
+library(tidyverse)
+setwd("images")
+df <- read_csv("country_data.csv")
+```
+
+
+# Smooths and Grouping
+
+## Plotting 
+
+Last week we discussed how to make plots in R:
+
+```{r}
+#| fig-align: center
+p <- ggplot(df, aes(y=van_part, x=mad_gdppc,color=fh_polity2)) + 
+    geom_point(size=3) + labs(x="GDP per Capita", y="Voter Participation") + 
+    scale_color_gradient2("Democracy", low="purple", 
+    high="springgreen4", mid="gray", midpoint=5) + 
+    theme_minimal() + scale_x_log10()
+p
+```
+
+
+## Showing a trend
+
+`geom_smooth()` can be used to add a trend line to our data. 
+
+```{r}
+p + geom_smooth()
+```
+
+## Dangers of `geom_smooth()`
+
+`geom_smooth()` is very powerful, but it is easy to have no idea what you are doing with it as defining `trend` is really hard. 
+
+You change the type of trend it makes using the `method=` argument
+
+## Different Smooths - Linear
+
+```{r}
+# Linear regression is "lm"
+p + geom_smooth(method="lm") 
+```
+
+## Different Smooths - Loess line
+
+```{r}
+# A local regression line is "loess"
+p + geom_smooth(method="loess") 
+```
+
+## Different Smooths - Spline
+
+```{r}
+# A spline is "gam"
+p + geom_smooth(method="gam") 
+```
+
+---
+
+
+
+::: {.callout-warning}
+If you cannot explain what is happening to make that line then you should probably avoid using it. 
+:::
+
+## Multiple Smooths
+
+If we have multiple types of observations, we can plot smooths for each one by setting `color=` or `group=` to that variable.
+
+
+```{.r}
+df_new <- df %>% mutate(
+    fert_groups = cut(wdi_fertility, breaks=c(0, 1.9, 2.3, Inf), 
+            labels=c("Below", "Replacement", "Above"))
+            ) %>%
+    group_by(fert_groups) %>% drop_na(fert_groups)
+p <- ggplot(df_new, aes(x=bl_asymf, y=mad_gdppc)) + 
+    geom_point(size=3)  + 
+    labs(y="GDP per Capita", x="Average Schooling") + 
+    theme_minimal() + scale_y_log10()  
+p + geom_smooth(aes(group=fert_groups)) 
+```
+::: {.callout-note}
+You can use `aes()` in a `geom_*()` if you want to specify something for just that part of the plot.
+:::
+
+## Multiple Smooths
+
+```{r}
+#| echo: false
+df_new <- df %>% mutate(
+    fert_groups = cut(wdi_fertility, breaks=c(0, 1.9, 2.3, Inf), 
+            labels=c("Below", "Replacement", "Above"))
+            ) %>%
+    group_by(fert_groups) %>% drop_na(fert_groups)
+p <- ggplot(df_new, aes(x=bl_asymf, y=mad_gdppc)) + 
+    geom_point(size=3)  + 
+    labs(y="GDP per Capita", x="Average Schooling") + 
+    theme_minimal() + scale_y_log10() 
+p + geom_smooth(aes(group=fert_groups), method="lm") 
+```
+
+## Multiple Smooths Improved
+
+```{r}
+#| output-location: slide
+df_new <- df %>% mutate(
+    fert_groups = cut(wdi_fertility, breaks=c(0, 1.9, 2.3, Inf), 
+            labels=c("Below", "Replacement", "Above"))
+            ) %>%
+    group_by(fert_groups) %>% drop_na(fert_groups)
+p <- ggplot(df_new, aes(x=bl_asymf, y=mad_gdppc, color=fert_groups)) + 
+    geom_point(size=3)  + 
+    labs(y="GDP per Capita", x="Average Schooling") + 
+    theme_minimal() + scale_y_log10() + 
+    scale_color_brewer("Fertility Rate", type="qual", palette = 2) + 
+    geom_smooth(method="lm") 
+p 
+```
+
+
+
+
+# Facets
+
+## Introduction
+
+Sometimes it is easier to understand the groups if you create individual plots for each group. We call these plots facet and make them with `facet_wrap()` 
+
+To identify what groups to make you put `~variable`. 
+
+## Example
+
+```{r}
+# using plot from previous one still. 
+p + geom_smooth(method="lm") +
+    facet_wrap(~fert_groups)
+```
+
+## Check 
+
+Pick two interval variables, and an additional variable that is categorical and binary. Make a scatter plot of the two interval variables and add a smooth, and facet on a variable as well. 
+
+Don't forget labels. 
+
+
+## Example from Day 1
+
+```{r}
+#| echo: true
+#| fig-align: center
+#| output-location: slide
+df %>% 
+    mutate(type = cut(fh_polity2,  breaks=c(0, 3, 7, 10), 
+                        labels=c("Autocracy", "Anocracy", "Democracy"))) %>% 
+    drop_na(type) %>%  
+    ggplot(aes(y=wdi_afp, x=mad_gdppc)) + 
+    geom_smooth(method="lm", color='black') + 
+    geom_point(color='orangered3') + 
+    facet_wrap(~type) + 
+    scale_x_log10(labels=scales::label_dollar()) +
+    theme_minimal() + theme(strip.text=element_text(size=20)) + 
+    labs(y="Percent of Labor\nForce in Military", 
+    x="GDP per Capita\n(Log scale)") 
+```
+
+::: {.fragment .current-only data-code-focus="2-3"}
+Mutating our variables
+:::
+
+::: {.fragment .current-only data-code-focus="4"}
+Dropping variables with missing values
+:::
+
+::: {.fragment .current-only data-code-focus="5"}
+Setting my `x` and `y` variables
+:::
+
+::: {.fragment .current-only data-code-focus="6"}
+Creating a linear regression line, in black.
+:::
+
+::: {.fragment .current-only data-code-focus="7"}
+Scatter plot with nice colors
+:::
+
+::: {.fragment .current-only data-code-focus="8"}
+Facet on `type`
+:::
+
+
+::: {.fragment .current-only data-code-focus="9"}
+Change the x-axis to be logged and make the axis labels nicer.
+:::
+
+::: {.fragment .current-only data-code-focus="10"}
+Setting the theme up
+:::
+
+::: {.fragment .current-only data-code-focus="11-12"}
+Labels!
+:::
+
+
+## Additional Help
+
+- References/tutorials: <https://ggplot2.tidyverse.org/>
+
+- Book that discusses principles of data viz and ggplot2: <https://socviz.co/>
+
+
+# Principles of Better Graphics
+
+## General principles: Less is usually more
+
+Less is usually more
+
+-   Plots don't need to have a lot of bells and whistle.
+-   You are should direct attention to what is important.
+-   At the same time\...
+    -   Everything should have a label
+    -   You can use grid lines to highlight (relevant differences
+
+## General principles: Follow assumptions
+
+People have assumptions about how plots work, don't break them unless you make it **very** clear that you are.
+
+
+![](images/Day_4_gun_violence.jpg){fig-align="center"}
+
+
+## Some Assumptions
+
+Some assumptions people make: 
+
+- If one of the variables is time, it usually is on the x-axis.
+- The further you are from the bottom left the higher the number.
+- The axis are continuous (and often linear)
+
+## Example - Breaking Assumptions
+
+![](images/Day_4_flipped_1.png){fig-align="center"}
+
+
+## Example - Following Assumptions
+
+General principles: Follow assumptions
+
+![](images/Day_4_flipped_2.png){fig-align="center"}
+
+## General principles: Make it clear
+
+Make it clear to the viewer what they are supposed to take away from it.
+
+- If they should look at trends, add a trend line
+- If they are making comparisons across groups put those groups together
+
+## Example: Making it Unclear 
+
+![](images/Day_4_comparisons_1.png){fig-align="center"}
+
+## Example: Making it clear 
+
+![](images/Day_4_comparisons_2.png){fig-align="center"}
+
+## Longer Example - Local Party Social Media
+
+\normalsize 
+
+- Interested in how local parties in the US use social media.
+- Collected social media info for  6,000 local parties.
+- Used Crowdtangle to download all their facebook posts from 2016 to 2021.
+- Dataset contained 3,907,203 posts with 26 variables per post.
+
+\footnotesize 
+Co-Authors: Anne Whitesell (Miami University); Lee A. Hannah (Wright State University)
+
+
+## Social Media Data
+
+Social media data can be very interesting:
+
+- We have the text of the posts.
+- We have the reactions to the post (number of likes, comments shares)
+- We have the *exact* time the post was made.
+
+## Looking at Trends
+
+Always good to look at trends in data: 
+
+-  Calculate daily number of posts.
+-  Calculate the average number of reactions per post per day.
+
+
+## Some of the code
+
+```{.r}
+p1 <- ggplot(tmp, aes(x=lubridate, y=N, fill=Party, 
+    color=Party, shape=Party)) + 
+    geom_point(alpha=.2) + geom_smooth(size=1,method = loess,
+    method.args=list("span" =.5)) + 
+    theme_minimal() + 
+    scale_y_continuous(labels = scales::label_comma()) + 
+    scale_color_manual("Party",
+    values=col_pal)  + 
+    scale_fill_manual(values=col_pal) + 
+    # geom_vline(xintercept = lubridate::as_date("2020-11-03"), linetype="dashed") + 
+    labs(y="Number of Posts", x="")
+```
+
+
+## Plot 
+
+![](images/Day_4_all_posts.png){fig-align="center"}
+
+
+# Quarto 
+
+## One Document to Rule them All
+
+With Quarto we can do our analysis, write-up the results, and present plots all in a single document. 
+
+This has a few benefits:
+
+- We can easily update the analysis in our final report. 
+- You can export the report to a variety of document types. 
+- It makes it easy to show how you did what you did. 
+
+Note: This entire presentation is written in Quarto and [available here.](https://github.com/reuning/R-Bootcamp)
+
+## Creating a Quarto Document 
+
+In RStudio go to File $\rightarrow$ New File $\rightarrow$ Quarto Document. You can change the Title and then click **Create**
+
+![](images/Day_4_Quarto.png){fig-align="center"}
+
+
+## Lay of the Land
+
+There are two ways to edit Quarto files:
+
+- Source: Shows the underlying code. 
+- Visual: A modified version of the code that shows what it looks like. 
+
+When you want to see your final document click the  **Render** button with the blue arrow. 
+
+Click it now (it will ask you to save the file, save it where your country data is located). 
+
+## Render Document 
+
+When you Render a document Quarto does a few things:
+
+- It runs the R Code in the blocks. 
+- It formats everything in the way you've indicated. 
+- It converts it to the final document type (for us an HTML page). 
+
+## Editing Quarto 
+
+Switch to the **Source** version of the document (the button near the top). 
+
+You should see something like:
+
+````` markdown
+---
+title: "Country Report"
+format: html
+editor: visual
+---
+
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{{r}}
+1 + 1
+```
+
+`````
+
+## What is Going On?
+
+````` markdown
+---
+title: "Country Report"
+format: html
+editor: visual
+---
+
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{{r}}
+1 + 1
+```
+
+`````
+
+::: {.fragment .current-only data-code-focus="1-5"}
+General Parameters for our document.
+:::
+
+::: {.fragment .current-only data-code-focus="7-13"}
+Normal every day writing
+:::
+
+::: {.fragment .current-only data-code-focus="7,11"}
+Headers
+:::
+
+::: {.fragment .current-only data-code-focus="15-17"}
+R code that we want to run in our document. 
+:::
+
+
+## Lets Make a Document
+
+What do we want to do? 
+
+- We have a plot we made already, lets put that into our Quarto document
+- Lets add background information about the data as well and a description of what we find. 
+
+## Code Execution 
+
+Whenever we want to execute code in a Quarto document we surround it with:
+
+```` markdown
+```{{r}}
+## Run Code Here
+```
+````
+
+Our code needs to execute without having anything saved, so we need to include both opening the data _and_ making the plot. 
+
+## Opening our Data
+
+If the Quarto document add the code to open the file, remember to load the necessary package as well (if you saved everything in the same folder you don't need to worry about the working directory).
+
+Call the `data` object by itself afterwards as a check, and then render the whole thing. 
+
+. . .
+
+```` markdown
+```{{r}}
+library(tidyverse)
+data <- read_csv("country_data.csv")
+data
+```
+````
+
+## Hiding Stuff
+
+We can modify how the code is executed by adding options at the top of the chunk using `#|`
+
+- Do we want to see the code or not? set with `echo: true` or `echo: false`
+- Do we want to see the output for the code or not? set with `output: true` or `output: false`
+
+```` markdown
+```{{r}}
+#| echo: false
+#| output: false 
+library(tidyverse)
+data <- read_csv("country_data.csv")
+data
+```
+````
+
+Render the document again to see what happens now. 
+
+## Making a Plot 
+
+Now we want to make our plot, we can do that in a new code chunk below the old one. 
+
+Create a new code chunk, and copy and paste the plot you made before to it:
+
+```` markdown
+```{{r}}
+ggplot(data, aes( .... )) + ...
+```
+````
+
+You can again, either hide the code using `#| echo: false` but don't change the output. 
+
+## Writing Content Description 
+
+
+If you want to break up your writeup you can use headers:
+
+``` markdown 
+# Biggest Header
+## Second Biggest
+### Third Biggest
+```
+
+## Accessing Variables Outside of Code
+
+You can also access variables from code in your write-up. So lets say you calculate the mean in a code chunk:
+
+```` markdown 
+```{{r}}
+mean_gdp <- mean(df$mad_gdppc, na.rm=T)
+```
+````
+
+In your writeup you can access that by calling ```` markdown `r  knitr::inline_expr('mean_gdp') ````:
+
+```` markdown
+```{{r}}
+mean_gdp <- mean(df$mad_gdppc, na.rm=T)
+```
+
+The average GDP in a country is `r  knitr::inline_expr('mean_gdp')` while the maximum is...
+
+````
+
+## Check 
+
+Above the plot, I want you to write a description of the data. You can get that [info here](https://kevinreuning.com/presentations/workshops/r_bootcamp/country_data.html). Make it clear what each variable represents. 
+
+Part of making it clear is incorporating what the mean of your variables are. Calculate the mean of your two interval variables in the R block where you read in the data, and then add that info to your description. 
+
+
+## Other Formats
+
+You can make a lot of things in Quarto:
+
+- `format: docx` will produce a docx file
+- `format: pptx` will produce a powerpoint with each section as a slide
+- `format: pdf` will produce a pdf document.
+- `format: revealjs` will produce an html presentation like this
+
+Some of these will require installation of additional packages. 
+
+
+# Summarizing this Week 
+
+## What have we learned? 
+
+- Basics of R, creating variables, manipulating them. 
+- Reading in data, modifying variables, calculating statistics on them.
+- Making tables using huxtable (you can embed them in a Quarto doc)
+- Making plots using ggplot 
+
+## Where to go 
+
+In front of you you likely have a bunch of different R Scripts open right now. 
+
+- Go to your code, look back on it and add comments explaining what it does 
+- Save the R Script somewhere (or email it to yourself)
+
+## Learning More 
+
+There is a lot of information online but the best way to learn is to find a project and work through it. 
+
+- Identify a class project or something else that needs data. 
+- Figure out what exactly you want to make. 
+- Work backwards from there. What data do you need? How do you need to modify it? What things do you need to calculate? 
+
+## Troubleshooting 
+
+What do you do if you run into problems? 
+
+- Check all the variables in the function by themselves.
+    - Do they exist? 
+    - Do they have all the right columns/info? 
+- Check that all your parentheses and quotation marks, do they end? 
+- Check that there are commas where there should be.
+- Start running through the code piece by piece. 
+- Look at the manual and make sure your assumptions about the function are right. 
+- Google the error, read Stack Exchange/Stack Overflow

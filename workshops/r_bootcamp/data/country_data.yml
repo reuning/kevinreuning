@@ -1,0 +1,273 @@
+- variable: Country Name
+  name: cname
+  type: String 
+  description: |
+    The name of the country based in the ISO standard.
+
+- variable: Country Code
+  name: ccode
+  type: Interval 
+  description: |
+    Country code from the Correlates of War.
+
+- variable: Corruption Perceptions Index 
+  name: ti_cpi
+  description: |
+    Scale of 0-100 where a 0 equals the highest level of perceived corruption and 100 equals the lowest level of perceived corruption.
+  type: Interval
+  categories: [governance]
+  source: Transparency International
+
+- variable: Academic freedom index
+  name: vdem_academ
+  description: |
+    To what extent is academic freedom respected? . The Academic Freedom Index is designed to provide an aggregated measure that captures the de facto realization of academic freedom, including the degree to which higher-education institutions are autonomous. Higher values indicate higher levels of academic freedom
+  type: Interval
+  categories: [civil rights]
+  source: Varieties of Democracy (V-Dem)
+
+- variable: Electoral democracy index
+  name: vdem_polyarchy
+  description: |
+    The electoral principle of democracy seeks to embody the core value of making rulers responsive to citizens, achieved through electoral competition for the electorate's approval under circumstances when suffrage is extensive; political and civil society organizations can operate freely; elections are clean and not marred by fraud or systematic irregularities; and elections affect the composition of the chief executive of the country. Higher values indicate higher levels of democracy.
+  type: Interval
+  categories: [civil rights, governance]
+  source: Varieties of Democracy (V-Dem)
+
+
+- variable: Right to Strike in Constitution
+  name: ccp_strike
+  type: Categorical
+  description: |
+    Does the constitution provide for a right to strike?
+    1. Yes
+    2. Yes, but with limitations
+    3. No
+    96. Other
+  type: Categorical
+  categories: [civil rights, economy, governance]
+  source: Comparative Constitutions Project
+
+- variable: Legislative Initiative Allowed
+  name: ccp_initiat
+  description: |
+    Does the constitution provide for the ability of individuals to propose legislative initiatives?
+    1. Yes
+    2. No
+    96. Other
+  type: Categorical
+  categories: [governance]
+  source: Comparative Constitutions Project
+
+- variable: Reference in Constitution to Capitalism
+  name: ccp_market
+  description: |
+    Does the constitution refer to the free market, capitalism, or an analogous term?
+    1. Yes
+    2. No
+    96. Other
+  type: Categorical
+  categories: [governance, economy]
+  source: Comparative Constitutions Project
+
+- variable: Fertility rate, total (births per woman)
+  name: wdi_fertility
+  description: |
+    Total fertility rate represents the number of children that would be born to a woman if she were to live to the end of her childbearing years and bear children in accordance with age-specific fertility rates of the specified year.
+  type: Interval
+  categories: [health, gender, development] 
+  source: The World Bank Group
+
+- variable: Armed forces personnel (% of total labor force)
+  name: wdi_afp
+  description: |
+    Armed forces personnel are active duty military personnel, including paramilitary forces if the training, organization, equipment, and control suggest they may be used to support or replace regular military forces. Labor force comprises all people who meet the International Labour Organization's definition of the economically active population.
+  type: Interval
+  categories: [economy, defense]
+  source: The World Bank Group
+
+- variable: Government expenditure on education, total (% of GDP)
+  name: wdi_expedu
+  description: |
+    General government expenditure on education (current, capital, and transfers) is expressed as a percentage of GDP. It includes expenditure funded by transfers from international sources to government. General government usually refers to local, regional and central governments.
+  type: Interval
+  categories: [economy, education]
+  source: The World Bank Group
+
+- variable: Electricity production from coal sources (% of total)
+  name: wdi_elprodcoal
+  description: |
+    Sources of electricity refer to the inputs used to generate electricity. Coal refers to all coal and brown coal, both primary (including hard coal and lignite-brown coal) and derived fuels (including patent fuel, coke oven coke, gas coke, coke oven gas, and blast furnace gas). Peat is also included in this category.
+  type: Interval
+  categories: [economy, energy]
+  source: The World Bank Group
+
+- variable: Prevalence of severe food insecurity in the population (%)
+  name: wdi_foodins
+  description: |
+    The percentage of people in the population who live in households classified as severely food insecure. A household is classified as severely food insecure when at least one adult in the household has reported to have been exposed, at times during the year, to several of the most severe experiences described in the FIES questions, such as to have been forced to reduce the quantity of the food, to have skipped meals, having gone hungry, or having to go for a whole day without eating because of a lack of money or other resources.
+  type: Interval
+  categories: [economy, health, development]
+  source: The World Bank Group
+
+- variable: Intentional homicides (per 100,000 people)
+  name: wdi_homicides
+  description: |
+    Intentional homicides are estimates of unlawful homicides purposely inflicted as a result of domestic disputes, interpersonal violence, violent conflicts over land resources, intergang violence over turf or control, and predatory violence and killing by armed groups. Intentional homicide does not include all intentional killing; the difference is usually in the organization of the killing. Individuals or small groups usually commit homicide, whereas killing in armed conflict is usually committed by fairly cohesive groups of up to several hundred members and is thus usually excluded.
+  type: Interval
+  categories: [crime]
+  source: The World Bank Group
+
+- variable: Labor force participation rate, total (% of total pop. ages 15-64) (ILO)
+  name: wdi_lfpr
+  description: |
+    Labor force participation rate, total (% of total population ages 15-64. (modeled ILO estimate). Labor force participation rate is the proportion of the population ages 15-64 that is economically active: all people who supply labor for the production of goods and services during a specified period.
+  type: Interval
+  categories: [economy]
+  source: The World Bank Group
+
+- variable: Average Schooling Years
+  name: bl_asymf
+  description: |
+    Average schooling years, females and males between 15 and 64 years old.
+  type: Interval
+  categories: [education, economy]
+  source: Barro and Lee 
+
+- variable: Internet users. % pop.
+  name: wef_iu
+  description: |
+    Percentage of individuals using the Internet. Original sources: International Telecommunications Union (ITU)
+  type: Interval
+  categories: [economy, development]
+  source: World Economic Forum
+
+- variable: Scientific publications
+  name: wef_sp
+  description: |
+    Score on an index measuring the number of publications and their citations, expressed at the country level. Original sources: SCImago.
+  type: Interval
+  categories: [education, economy]
+  source: World Economic Forum
+
+- variable: Colonial Origin
+  name: ht_colonial
+  description: |
+    his is a tenfold classification of the former colonial ruler of the country. Following Bernard et al. (2004., we have excluded the British settler colonies (the US, Canada, Australia, Israel and New Zealand), and exclusively focused on Western overseas colonialism. This implies that only Western colonizers (e.g. excluding Japanese colonialism), and only countries located in the non-Western hemisphere overseas (e.g. excluding Ireland & Malta), have been coded. Each country that has been colonized since 1700 is coded. In cases of several colonial powers, the last one is counted, if it lasted for 10 years or longer. The categories are the following:
+    0. Never colonized by a Western overseas colonial power
+    1. Dutch
+    2. Spanish
+    3. Italian
+    4. US
+    5. British
+    6. French
+    7. Portuguese
+    8. Belgian
+    9. British-French
+    10. Australian
+  type: Categorical
+  categories: [history, development]
+  source: Wahman, Teorell and Hadenius
+
+- variable: Legal Origin
+  name: lp_legor
+  description: |
+    Legal origin: Identifies the legal origin of the Company Law or Commercial code of each country. There are five possible origins:
+    1. English Common Law
+    2. French Commercial Code
+    3. Socialist/Communist Laws
+    4. German Commercial Code
+    5. Scandinavian Commercial Code
+  type: Categorical 
+  categories: [history, development, governance]
+  source: La Porta,  Lopez-de-Silanes, Shleifer and Vishny
+
+- variable: Foetal impairment is accepted as grounds for legal abortion
+  name: cai_foetal 
+  description: |
+    Binary variable that codes whether or not foetal impairment is accepted as grounds for a legal abortion. 1 means that it is accepted as grounds for abortion. 0 means that it is illegal, and not accepted as grounds for legal abortion.
+  type: Binary 
+  categories: [health, gender]
+  source: Forman-Rabinovici and Sommer
+
+- variable: Threat to mother's mental health is accepted as grounds for legal abortion
+  name: cai_mental
+  description: |
+    Binary variable that codes whether or not threat to a mother's mental health is accepted as grounds for a legal abortion. 1 means that it is accepted as grounds for abortion. 0 means that it is illegal, and not accepted as grounds for legal abortion.
+  type: Binary 
+  categories: [health, gender]
+  source: Forman-Rabinovici and Sommer
+
+- variable: Threat to mother's physical health is accepted as grounds for legal abortion
+  name: cai_physical
+  description: |
+    Binary variable that codes whether or not threat to a mother's mental health is accepted as grounds for a legal abortion. 1 means that it is accepted as grounds for abortion. 0 means that it is illegal, and not accepted as grounds for legal abortion.
+  type: Binary 
+  categories: [health, gender]
+  source: Forman-Rabinovici and Sommer
+  
+- variable: h_j
+  name: Independent Judiciary	
+  description: |
+    Dummy variable coded 1 if there is an independent judiciary (based on information from Polity's Executive Constraints, p_xconst) and - where available - on ICRG's index of Law & Order.
+  type: Binary
+  categories: [governance, civil rights]
+  source: Witold Henisz
+
+- variable: Does the country have proportional voting
+  name: br_pvote
+  description: |
+    Is the electoral system characterized by including proportional representation? (0: No; 1: Yes)
+  type: Binary
+  categories: [governance, elections]
+  source: Bjornskov and Rode
+
+
+- variable: Typology of political institutions
+  name: br_elect
+  description: |
+    Alternative democracy indicator capturing degree of multi-party competition. (No elections=0, Single-party elections=1, non-democratic multi-party elections=2, democratic elections= 3).
+  type: Binary
+  categories: [governance, elections]
+  source: Bjornskov and Rode
+
+- variable: Participation
+  name: van_part
+  description: |
+    The political participation variable portrays the voting turnout in each election, and is calculated as the percentage of the total population who actually voted in the election. In the case of indirect elections, only votes cast in the final election are taken into account.
+  type: Interval
+  categories: [governance, elections]
+  source: Tatu Vanhanen
+
+- variable: Consecutive years of current regime type
+  name: bmr_demdur
+  description: |
+    Consecutive years of current regime type.
+  type: Interval
+  categories: [governance, history]
+  source: Boix, Miller and Rosato
+
+- variable: Level of Democracy (Freedom House/Polity)
+  name: fh_polity2
+  description: |
+    Scale ranges from 0-10 where 0 is least democratic and 10 most democratic.
+  type: Interval
+  categories: [governance]
+  source: Freedom House
+
+- variable: Real GDP per Capita
+  name: mad_gdppc
+  description: |
+    Real GDP per capita in 2011 US dollars, multiple benchmarks.
+  type: Interval
+  categories: [economy]
+  source: Maddison Historical Statistics
+
+- variable: Top 1% income share
+  name: top_top1_income_share
+  description: |
+    Income share of the top 1% of the population. This refers to the share of pre-tax national income among equal-split adults for the top 1% in each country-year.
+  type: Interval
+  categories: [economy, development]
+  source: World Inequality Lab
+

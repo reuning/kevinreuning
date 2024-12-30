@@ -1,0 +1,796 @@
+---
+title: "Network Influence"
+author: "Kevin Reuning"
+format: 
+    clean-revealjs:
+        width: 1600
+        height: 900
+        slide-number: false
+        callout-icon: true
+execute:
+    echo: true
+    fig-align: "center"
+---
+
+
+## Data for Today
+
+We are going to use two networks today:
+
+- A network of squirrels, the data is [here](data/ground_squirrel_smith_2016b.graphml) with more info [here](https://github.com/bansallab/asnr/tree/master/Networks/Mammalia/groundsquirrel_association_weighted) and [here](https://royalsocietypublishing.org/doi/10.1098/rstb.2017.0249)
+- The network of the Paris metro system. You can download that data [here](data/paris_rail.graphml). 
+
+Both are in the `graphml` format, if you want to load them in R: 
+
+```{.r}
+sq_net <- read_graph("ground_squirrel_smith_2016b.graphml", format="graphml")
+
+```
+
+
+
+
+## Goals for this Session
+
+```{r setup}
+#| echo: false 
+
+library(igraph)
+library(ggraph)
+set_graph_style(plot_margin=margin(10, 10, 10, 10))
+
+```
+
+
+- Go over different concepts of centrality in a network. 
+- Calculate those measures in R. 
+
+# Overview of Centrality
+
+## Measures of Centrality
+
+- Centrality is often viewed as **importance** within a network. 
+- There are a lot of ways to measure this importance. 
+- When you apply a measure of centrality you need to consider how your measure conceives of what it means to be central. 
+
+## Two Broad Categories 
+
+There are two broad ways of considering centrality: 
+
+- Nodes are influential by having a lot of connections (and who those connections are)
+- Nodes are influential by being in a strategic position in a network (e.g. can control flows along the network)
+
+## Variation in Measures
+
+Measures of centrality vary in at least three ways:
+
+- How they conceive of **importance**.
+- How well they work with undirected vs directed networks. 
+- What happens when there are multiple components. 
+
+## Simple vs Complex Networks
+
+Everything is simpler with undirected networks so we are starting there. 
+
+- For directed networks you often get measures of both in and out centrality.
+- For network with weighted edges you have to think about what the weights mean for influence. 
+
+# Measures by a Nodes Connection
+
+## Degree Centrality 
+
+- Degree centrality is the number of edges a node has. 
+- A node with high degree centrality is adjacent to a large number of nodes. 
+- The number of components within a network isn't very important 
+
+## Example 
+\footnotesize 
+```{r}
+#| echo: false
+
+set.seed(4)
+net <- sample_gnp(n=10, p=.25, directed=F)
+V(net)$name <-  LETTERS[1:vcount(net)]
+V(net)$degree <- degree(net, mode="all")
+set.seed(1)
+ggraph(net) + geom_edge_link(color="gray") + 
+    geom_node_label(aes(label=name), size=10) 
+
+```
+
+## Example
+
+```{r}
+#| echo: false
+
+set.seed(1)
+ggraph(net) + geom_edge_link(color="gray") + 
+    geom_node_label(aes(label=degree),  
+    size=10, color="springgreen4")
+```
+
+## Degree Centrality Limitations
+
+```{r}
+#| echo: false
+
+library(Matrix)
+mat1 <- matrix(1, 3, 3)
+set.seed(2)
+mat2 <- sample_gnp(n = 5, p=.5, directed=F)[,]
+
+mat_all <- bdiag(mat1, mat1, mat2)
+diag(mat_all) <- 0
+mat_all[8,5] <- 1
+mat_all[5,8] <- 1
+rownames(mat_all) <- LETTERS[1:nrow(mat_all)]
+colnames(mat_all) <- LETTERS[1:nrow(mat_all)]
+
+net_disconnected <- graph_from_adjacency_matrix(as.matrix(mat_all), mode="undirected")
+V(net_disconnected)$degree <- degree(net_disconnected)
+
+set.seed(1)
+ggraph(net_disconnected, "fr") + geom_edge_link(color="gray") + 
+    geom_node_label(aes(label=name), size=10) 
+```
+
+B and F have the same centrality, does that makes sense? Are both of them as important to the network?
+
+## Eigenvector Centrality
+
+Our intuition is that how important a node is is a function of the extent of relationships _and_ whether the node it has relationships with are important as well. 
+
+What we want to do then is add up how many nodes a node is adjacent to but weight that by how influential each of those nodes are as well. 
+
+This creates a self referential equation where the centrality of a node is a function of the centrality of all of the nodes it touches. How do we solve this? 
+
+. . .
+
+We use things called eigenvectors and and eigenvalues
+
+## Eigenvector Centrality
+
+$$ e_{i} = \lambda \sum_j x_{ij} e_{j} $$
+
+The **eigenvector** centrality ($e_i$) of node _i_ is proportional to the **eigenvector** centrality of the nodes it is adjacent ($e_j$). We use the leading **eigenvalue** ($\lambda$) as the proportionality constraint. 
+
+## Eigenvectors and Eigenvalues
+
+What are these things? 
+
+For most matrices $A$ we can find an eigenvalue $\lambda$ and an eigenvector $v$ such that
+
+$$A \times {v} = \lambda {v}$$ 
+
+In our case we can find the **eigenvectors** and **eigenvalues** of our adjacency matrix. There are multiple **eigenvalues** and **eigenvectors** but we will be using the **eigenvector** associated with the largest  **eigenvalue**
+
+## Eigenvector Example 
+
+```{r}
+#| echo: false
+
+
+V(net)$ev <- eigen_centrality(net)$vector
+ggraph(net) + geom_edge_link(color="gray") + 
+    geom_node_label(aes(label=round(ev, 2)),  
+    size=10, color="springgreen4")
+```
+
+## Eigenvector Limitations 
+
+- Eigenvectors and eigenvalues are only identified up to a proportionality (you can multiply them both by 2 for example and get the same numbers). 
+    - To compare across networks we often normalize it so that they sum to 1 or so that the largest is 1.
+- Only vertices in the largest component have non-zero eigenvectors. 
+
+## Disconnected Example
+
+
+```{r}
+#| echo: false
+
+V(net_disconnected)$ev <- eigen_centrality(net_disconnected)$vector
+
+set.seed(1)
+ggraph(net_disconnected, "fr") + geom_edge_link(color="gray") + 
+    geom_node_label(aes(label=round(ev, 2)),  
+    size=10, color="springgreen4")
+
+```
+
+
+## Directed Network 
+
+For both eigenvector centrality and degree centrality the nature of directed networks changes what we mean by centrality. 
+
+## Degrees and Directed Network 
+
+For degree centrality we can divide everything into in-degree and out-degree. 
+
+Being high in in-degree centrality can be radically different than being high in out-degree centrality. 
+
+. . .
+
+In an advice network ("who do you ask for advice?"), having a high in-degree means people often come to you for advice, having a high out-degree means you ask a lot of people for advice. 
+
+. . .
+
+If it makes sense we can just collapse this into the total (in- and out-degree). 
+
+## Eigenvector Centrality and Directed Network 
+
+With eigenvector centrality we get two measures of centrality. This connects to the fact that we actually have two sets of eigenvectors for a non-symmetric matrix: 
+
+- Right eigenvectors: Focuses on out-degrees
+- Left eigenvectors: Focusses on in-degrees
+
+But even with that, these results can get a bit weird. 
+
+## Eigenvector Centrality - In 
+
+Using the left or "in" measure of eigenvector centrality: 
+
+```{r}
+#| echo: false
+
+
+set.seed(2)
+dir_net <- sample_gnp(10, p=0.15, directed=T)
+
+V(dir_net)$ev <- round(eigen_centrality(dir_net, directed=T, scale=T)$vector, 2)
+#abs(eigen(t(net[,]))$vectors[,1])/max(abs(eigen(t(net[,]))$vectors[,1]))
+
+
+set.seed(1)
+ggraph(dir_net) + 
+    geom_edge_fan(aes(start_cap = label_rect(node1.ev, 
+                                    fontsize=10),
+                     end_cap = label_rect(node2.ev, fontsize=30)), 
+                 arrow = arrow(length = unit(4, 'mm')),color="gray") + 
+    geom_node_label(aes(label=round(ev, 2)),  
+    size=10, color="springgreen4")
+
+```
+
+
+## Eigenvector Centrality - In 
+
+Using the right or "out" measure of eigenvector centrality: 
+
+```{r}
+#| echo: false
+
+V(dir_net)$ev <- round(eigen_centrality(t(dir_net), directed=T, scale=T)$vector, 2)
+
+set.seed(1)
+ggraph(dir_net) + 
+    geom_edge_fan(aes(start_cap = label_rect(node1.ev, 
+                                    fontsize=10),
+                     end_cap = label_rect(node2.ev, fontsize=30)), 
+                 arrow = arrow(length = unit(4, 'mm')),color="gray") + 
+    geom_node_label(aes(label=round(ev, 2)),  
+    size=10, color="springgreen4")
+
+```
+
+## Eigenvector Centrality - Ignoring Direction 
+
+We can also ignore the direction of the edges and pretend it is undirected:
+
+```{r}
+#| echo: false
+
+
+V(dir_net)$ev <- round(eigen_centrality(dir_net, directed=F, scale=T)$vector, 2)
+
+set.seed(1)
+ggraph(dir_net) + 
+    geom_edge_fan(aes(start_cap = label_rect(node1.ev, 
+                                    fontsize=10),
+                     end_cap = label_rect(node2.ev, fontsize=30)), 
+                 arrow = arrow(length = unit(4, 'mm')),color="gray") + 
+    geom_node_label(aes(label=round(ev, 2)),  
+    size=10, color="springgreen4")
+
+```
+
+## Weighted Networks
+
+Finally, for weighted networks the weights can be accommodated easily: 
+
+- For degree we simply _add_ up the weights (this is often referred to as **strength**)
+- For eigenvector centrality the math does not change, the centralities are now concentrated where the weights are the largest as well. 
+
+## Weighted Eigenvector Example
+
+```{r}
+#| layout-ncol: 2
+#| fig-cap:
+#|  - "Without Edge Weights"
+#|  - "Wth Edge Weights"
+#| echo: false
+#| fig-format: "png"
+
+set.seed(4)
+net2 <- sample_gnp(10, p=.35)
+V(net2)$eigen_unweighted <- eigen_centrality(net2)$vector
+layout <- create_layout(net2, layout="stress")
+ggraph(layout) + geom_edge_link(color="gray") + 
+    geom_node_point(aes(color=eigen_unweighted), size=6) + 
+    theme(legend.position="bottom") + 
+    scale_color_viridis_c("Eigen Centrality")
+
+E(net2)$weight <- 1
+E(net2)$weight[incident(net2, v=4)] <- 10
+V(net2)$eigen_weighted <- eigen_centrality(net2)$vector
+layout <- create_layout(net2, layout="manual", x=layout$x, y=layout$y)
+ggraph(layout) + geom_edge_link(color="gray", aes(width=weight)) + 
+    geom_node_point(aes(color=eigen_weighted), size=6) + 
+    scale_color_viridis_c("Eigen Centrality") + 
+    theme(legend.position="bottom") + 
+    scale_edge_width("Weight")
+```
+
+## Calculating in R 
+
+The basic functions: 
+
+- `eigen_centrality()` Calculates eigen centrality, returns an overly complicated object. 
+    - If there is a `weight` attribute on the edges it will calculate weighted centrality. To turn that off set `weight=NA`. 
+    - Defaults to undirected no matter the network, set `directed=TRUE` to get the in measure. Transpose your network with `t(net)` to get the out measure. 
+- `degree()` Calculate the degree, returning a simple vector. 
+    - For directed networks use `mode="out"` or `mode="in"` to get out or in degrees. 
+    - Ignores weights. 
+- `strength()` Calculates the weighted degree
+    - Can use `mode=` for directed networks (see above). 
+
+## Real Example - Squirrels
+
+::::{.columns}
+
+:::{.column width="60%"}
+Lets use data from a Squirrel burrow sharing network, the data is [here](data/ground_squirrel_smith_2016b.graphml) with more info [here](https://github.com/bansallab/asnr/tree/master/Networks/Mammalia/groundsquirrel_association_weighted) and [here](https://royalsocietypublishing.org/doi/10.1098/rstb.2017.0249)
+
+The edges are weighted by the proportion of days they shared a burrow. 
+:::
+
+:::{.column width="40%"}
+
+![](images/squirrels.jpg){fig-align="right"}
+
+:::
+
+::::
+
+## Calculating Centrality of Squirrels
+
+We can calculate centrality and then assign the vectors as vertex attributes
+
+```{r}
+#| echo: false
+
+sq_net <- read_graph("data/ground_squirrel_smith_2016b.graphml", 
+    format="graphml")
+
+V(sq_net)$degree <- degree(sq_net) # Degree, unweighted
+# Eigen centrality, turning weights off (note the $vector at the end)
+V(sq_net)$eigen_unweighted <- eigen_centrality(sq_net, weight=NA)$vector
+# Eigen centrality with weights, the default
+V(sq_net)$eigen_weighted <- eigen_centrality(sq_net)$vector
+V(sq_net)$strength <- strength(sq_net) # Degree, weighted
+
+```
+
+
+## Real Example - Visualizing Network
+
+```{r}
+#| echo: false
+#| fig-format: "png"
+#| layout-ncol: 2
+#| fig-cap:
+#|  - "Unweighted"
+#|  - "Weighted"
+
+
+library(ggraph)
+layout <- create_layout(sq_net, "fr")
+ggraph(layout) + geom_edge_link(color="gray") + 
+    geom_node_point(aes(color=eigen_unweighted), size=6) + 
+    theme(legend.position="bottom") + 
+    scale_color_viridis_c("Eigen Centrality") 
+
+ggraph(layout) + 
+    geom_edge_link(color="gray", aes(width=weight)) + 
+    geom_node_point(aes(color=eigen_weighted), size=6) + 
+    theme(legend.position="bottom") +
+    scale_color_viridis_c("Eigen Centrality") 
+```
+
+## Real Example: Are Male or Female Squirrels more central? 
+
+We can plot the results against another vertex attribute. The easiest way is to extract the data from our network using the `as_data_frame(network, what="vertices")`
+
+```{.r}
+vertex_data <- as_data_frame(sq_net, what="vertices")
+
+boxplot(degree~sex, data=vertex_data)
+boxplot(strength~sex, data=vertex_data)
+boxplot(eigen_unweighted~sex, data=vertex_data)
+boxplot(eigen_weighted~sex, data=vertex_data)
+
+```
+
+
+## Real Example: Are Male or Female Squirrels more central? 
+
+We can plot the results against another vertex attribute. The easiest way is to extract the data from our network using the `as_data_frame(network, what="vertices")`
+
+```{r}
+#| layout-ncol: 2
+#| layout-nrow: 2
+#| echo: false
+vertex_data <- as_data_frame(sq_net, what="vertices")
+
+boxplot(degree~sex, data=vertex_data)
+boxplot(strength~sex, data=vertex_data)
+boxplot(eigen_unweighted~sex, data=vertex_data)
+boxplot(eigen_weighted~sex, data=vertex_data)
+
+```
+
+
+
+# Measures of Structure
+
+
+You can also be influential in a network if you can reach everyone easily. 
+
+Do you need to have a lot of connections? Not necessarily 
+
+## Distances
+
+- If two nodes are in the same component then there exists at least one **path** between them. 
+- The **path** is a set of edges from one node to another that never repeats a node or edge. 
+- The number of **edges** on the shortest path is called the **geodesic distance** between those two nodes. 
+- For directed networks the paths are assumed to follow the direction of the edges (but we can drop this if we want to).
+
+## Closeness
+
+Closeness is measured by looking at how far a node is from all other nodes. It We start by summing all the distances between the node of interest and all other nodes:  
+
+$$ clo_i = \frac{n-1}{\sum_{j} d_{ij}} $$
+
+The closeness of node i ($clo_i$) is the number of nodes ($n$) minus 1 divided by the sum of the distance between i and every other nodes. 
+
+. . .
+
+What is the problem here? 
+
+## Closeness Alternative - Harmonic Centrality
+
+One alternative is to flip this equation around slightly: 
+
+$$ clo_i = \frac{\sum_{j} \frac{1}{d_{ij}}}{n-1} $$ 
+
+In this case, a 1 means that a node is directly connected to every node, a 0 means they are totally isolated. 
+
+This is referred to as the Harmonic Centrality
+
+## Closeness Example 
+
+```{r}
+#| echo: false
+
+
+V(net)$clo <- closeness(net, normalized=T) 
+
+ggraph(net) + geom_edge_link(color="gray") + 
+    geom_node_label(aes(label=round(clo, 2)),  
+    size=10, color="springgreen4")
+
+```
+
+## Harmonic Mean Example
+
+```{r}
+#| echo: false
+
+
+V(net)$hm <- harmonic_centrality(net, normalized=T)
+
+ggraph(net) + geom_edge_link(color="gray") + 
+    geom_node_label(aes(label=round(hm, 2)),  
+    size=10, color="springgreen4")
+
+```
+
+
+
+## Closeness Example -  Disconnected
+
+```{r}
+#| echo: false
+
+
+V(net_disconnected)$clo <- closeness(net_disconnected, normalized=T) 
+
+
+set.seed(1)
+ggraph(net_disconnected, "fr") + geom_edge_link(color="gray") + 
+    geom_node_label(aes(label=round(clo, 2)),  
+    size=10, color="springgreen4")
+
+```
+
+Note: The igraph implementation _only_ considers reachable nodes. 
+
+## Harmonic Mean - Disconnected 
+
+```{r}
+#| echo: false
+
+
+V(net_disconnected)$hm <- harmonic_centrality(net_disconnected, normalized=T)
+set.seed(1)
+ggraph(net_disconnected, "fr") + geom_edge_link(color="gray") + 
+    geom_node_label(aes(label=round(hm, 2)),  
+    size=10, color="springgreen4")
+
+```
+
+## Betweenness
+
+Betweenness is also about the the idea of geodesic distances. 
+
+If a node (j) is on the only geodesic between two other nodes (i) and k) then it is likely that any thing flowing between i and k will pass by k. 
+
+But it is possible for multiple geodesic paths to exist between two nodes.
+
+## Betweenness
+
+This gives us the formula:
+
+$$ b_j = \sum \frac{g_{ijk}}{g_{ik}} $$
+
+Where $g_{ijk}$ is the number of geodesic paths between i and k that includes j, while $g_{ik}$ is the total number of geodesic paths between i and k.  
+
+The betweenness score of a node then is the sum of the proportion of geodesics that that node is on between all dyads in a network. 
+
+## Betweenness Example
+
+```{r}
+#| echo: false
+
+
+V(net)$between <- betweenness(net, normalized=T)
+
+set.seed(1)
+ggraph(net) + geom_edge_link(color="gray") + 
+    geom_node_label(aes(label=round(between, 2)),  
+    size=10, color="springgreen4")
+
+```
+
+
+## Betweenness Example Disconnected
+
+```{r}
+#| echo: false
+
+
+V(net_disconnected)$between <- betweenness(net_disconnected, normalized=T)
+
+set.seed(1)
+ggraph(net_disconnected, "fr") + geom_edge_link(color="gray") + 
+    geom_node_label(aes(label=round(between, 2)),  
+    size=10, color="springgreen4")
+
+```
+
+## Real Example
+
+```{r}
+#| echo: false
+#| fig-format: png
+
+venice_net <- read_graph("data/bus_network.graphml", format="graphml")
+
+V(venice_net)$hc <- harmonic_centrality(venice_net)
+V(venice_net)$bw <- betweenness(venice_net, normalized=T)
+
+lo <- create_layout(venice_net, "manual", 
+x=V(venice_net)$lon, y=V(venice_net)$lat)
+ggraph(lo) + geom_edge_fan(color="gray") + 
+    geom_node_point(color="orangered3")  
+
+```
+
+Anyone know what this is? 
+
+## Which Station is Closest? 
+
+```{r}
+#| echo: false
+#| fig-format: png
+
+ggraph(lo) + geom_edge_link(color="gray") + 
+    geom_node_point(aes(color=hc), alpha=.6)  + 
+    scale_color_viridis_c("Harmonic Centrality") 
+
+```
+
+
+
+## Which Station is Between Everything? 
+
+```{r}
+#| echo: false
+#| fig-format: png
+ggraph(lo) + 
+    geom_edge_link(color="gray") + 
+    geom_node_point(aes(color=bw), alpha=.6) + 
+    scale_color_viridis_c("Betweenness Centrality") 
+```
+
+
+## Directed 
+
+When dealing with directed networks there is not much to be done to change the measures. 
+
+- For ***harmonic** and **closeness** we use the directed distance and either calculate the distance to or from a vertex. 
+- For **betweenness** we don't have to change anything. 
+
+## Directed Harmonic Example
+
+```{r}
+#| layout-ncol: 2
+#| fig-cap:
+#|  - "Outward"
+#|  - "Inward"
+#| echo: false
+
+
+V(dir_net)$hm_out <- harmonic_centrality(dir_net, normalized=T, mode="out")
+V(dir_net)$hm_in <- harmonic_centrality(dir_net, normalized=T, mode="in")
+
+ggraph(dir_net) + 
+    geom_edge_fan(aes(start_cap = label_rect(node1.ev, 
+                                    fontsize=10),
+                     end_cap = label_rect(node2.ev, fontsize=30)), 
+                 arrow = arrow(length = unit(4, 'mm')),color="gray") +
+    geom_node_label(aes(label=round(hm_out, 2)),  
+    size=10, color="springgreen4")
+
+ggraph(dir_net) + 
+    geom_edge_fan(aes(start_cap = label_rect(node1.ev, 
+                                    fontsize=10),
+                     end_cap = label_rect(node2.ev, fontsize=30)), 
+                 arrow = arrow(length = unit(4, 'mm')),color="gray") +
+    geom_node_label(aes(label=round(hm_in, 2)),  
+    size=10, color="springgreen4")
+
+
+```
+
+## Weighted 
+
+Weighted networks are also relatively easy to accommodate by using the weights in the distance calculation.
+
+There are some ways to do this: 
+
+- Add the weights along the path as they are (works well if weights represent something like time from node A to B)
+- Add the inverse of the weights along the path (works well if larger weights mean a closer connection)
+
+## Doing this in R
+
+Lets work with a network of the Paris rail system available [here](data/paris_rail.graphml). 
+
+```{r}
+#| echo: true 
+#| 
+paris_net <- read_graph("data/paris_rail.graphml", 
+    format="graphml")
+paris_net
+```
+
+## Functions 
+
+- `distances()` Calculate the distance from any vertex to any other vertex. If you don't set any options it defaults to creating a distance matrix. 
+    - `v=` and `to=` will allow you to select just some vertices. 
+    - `mode=` Setting as `"all"` calculates undirected distances, setting `"out"` will calculate distances from the row to the column.
+    - `weight=` How to deal with weights if they exist they are used unless set to `NA`
+- `harmonic_centrality()` Calculate the harmonic centrality. 
+    - `normalized=` Whether to normalize the measure (defaults to `FALSE`, I set to `TRUE`).
+    - `mode=` Similar to above. 
+    - `weights= Similar to above. 
+- `betweenness()` Calculates the betweenness centrality. 
+    - `directed=` Whether to treat this as directed or not, defaults to `TRUE`. 
+    - `weights=` Same as above. 
+    - `normalized=` Same as above
+
+
+## Examples - Basic Distance
+
+Lets see how many stops it takes to get from `Saint-Michel Notre-Dame` to `Laplace` stations: 
+
+```{r}
+from <- V(paris_net)[V(paris_net)$name=="Saint-Michel Notre-Dame"]
+to <- V(paris_net)[V(paris_net)$name=="Laplace"]
+distances(paris_net, v=from, to=to, mode="out") 
+distances(paris_net, v=from, to=to, mode="in")
+
+```
+
+## Examples - Weighted Distance
+
+But what about the time? We can weight by how long it takes: `E(paris_net)$duration_avg`
+
+```{r}
+distances(paris_net, v=from, to=to, mode="out", 
+    weight=E(paris_net)$duration_avg) 
+distances(paris_net, v=from, to=to, mode="in",  
+    weight=E(paris_net)$duration_avg) 
+
+```
+
+
+## Examples - Weighted Distance
+
+But what if we want to consider, how many trains are moving between these nodes. If we consider the number of trains we wouldn't want to just add this up.Why? 
+
+Instead lets take the inverse
+
+```{r}
+distances(paris_net, v=from, to=to, mode="out", 
+    weight=1/E(paris_net)$n_vehicles) 
+distances(paris_net, v=from, to=to, mode="in", 
+    weight=1/E(paris_net)$n_vehicles) 
+
+```
+
+## Examples - Harmonic Centrality and Betweenness
+
+Lets compare how central stations are from other stations with how often they are on the geodesic: 
+
+```{r}
+harmonic <- harmonic_centrality(paris_net, mode="out", normalized=T)
+betweenness <- betweenness(paris_net, directed=T, normalized=T)
+plot(x=harmonic, y=betweenness)
+```
+
+## Examples - Harmonic Centrality and Betweenness - Weighting
+
+Lets compare how central stations are from other stations with how often they are on the geodesic: 
+
+```{r}
+E(paris_net)$weight <- E(paris_net)$duration_avg
+harmonic <- harmonic_centrality(paris_net, mode="out", normalized=T)
+betweenness <- betweenness(paris_net, directed=T, normalized=T)
+plot(x=harmonic, y=betweenness)
+```
+
+## Examples - Finding the Most Central Station
+
+If we save it back to our network and then export it we can use some [dplyr]() tricks to find the 5 with the highest betweenness. 
+
+Note: `as_data_frame()` uses the `V(net)$name` as rownames which freaks out when you have duplicates, we can move that attribute. 
+
+```{r}
+V(paris_net)$harmonic <- harmonic 
+V(paris_net)$between <- betweenness 
+V(paris_net)$station_name <- V(paris_net)$name
+paris_net <- delete_vertex_attr(paris_net, "name")
+as_data_frame(paris_net, what="vertices") |> 
+    dplyr::slice_max(between, n=5)
+```
+
+
+# Using These Measures 
+
+## Regression Analysis 
+
+Measures of centrality are commonly used as DV or IV in regression analysis, but this can be _tricky_. 
+
+- Measure of one nodes centrality is _dependent_ on the centrality of other nodes. 
+    - If Node A and B have an edge, and I remove that edge both their degrees change. 
+- One approach to this is with Quadratic Assignment Procedure (QAP).

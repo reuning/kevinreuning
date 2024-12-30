@@ -1,0 +1,525 @@
+---
+title: "Introduction to R: Basics"
+author: "Kevin Reuning"
+format: 
+    clean-revealjs:
+        width: 1600
+        height: 900
+        slide-number: false
+        callout-icon: false
+        execute:
+            echo: true
+---
+
+# Who am I
+
+:::: {.columns}
+
+::: {.column width="75%"}
+- I'm Kevin Reuning (ROY-ning). 
+- I'm an Associate Professor in Political Science. 
+- Prior to grad school I had very little experience in coding. 
+:::
+
+::: {.column width="25%"}
+![](images/profile.jpg){width="250" fig-align="right"}
+:::
+
+::::
+
+# Goals For this Bootcamp 
+
+- Not be afraid of R/Rstudio
+- Able to load data in and calculate useful statistics with it. 
+- Make a variety of beautiful plots. 
+
+## Where We Are Going
+
+```{r}
+#| echo: true
+#| fig-align: center
+#| output-location: slide
+library(tidyverse)
+setwd("images")
+df <- read_csv("country_data.csv")
+df %>% mutate(type = cut(fh_polity2,  breaks=c(0, 3, 7, 10), 
+                        labels=c("Autocracy", "Anocracy", "Democracy"))) %>% 
+    drop_na(type) %>%  ggplot(aes(y=wdi_afp, x=mad_gdppc)) + 
+    geom_smooth(method="lm", color='black') + 
+    geom_point(color='orangered3') + facet_wrap(~type) + 
+    scale_x_log10(labels=scales::label_dollar()) +
+    theme_minimal() + theme(strip.text=element_text(size=20)) + 
+    labs(y="Percent of Labor\nForce in Military", 
+    x="GDP per Capita\n(Log scale)") 
+```
+
+# Goals for Today
+
+- Start using R and RStudio, realize you cannot break it. 
+- How to use R as a calculator. 
+- Understand the basics of variables and functions in R. 
+- Load data into R and calculate the average of different variables. 
+
+# R and RStudio
+
+- R is a statistical language used to do analysis.
+- R is free.
+- R makes it easy to create reproducible analysis.
+- RStudio is an interface that sits on top of R and makes life easier.
+
+
+## Following along
+
+You need to learn by doing. If you haven't opened RStudio yet, do so now. You should have something like:
+
+![](images/Day_1_Rstudio_Open.png){fig-align="center"}
+
+## Rscripts
+
+- R Scripts allow you to save and re-run everything you did to your data. This is *incredibly helpful*.
+- To start a new R Script: File $\rightarrow$ New File $\rightarrow$ R Script.
+- When you are done you can save the R Script.
+
+## Rscripts in RStudio 
+You should now have 4 panes. 
+
+![](images/Day_1_Rstudio_Script.png){fig-align="center"}
+
+
+## Running things in R/RStudio
+
+To run parts of your script in R you have to two do things: 1) indicate what you want to run, and 2) tell RStudio to run it. 
+
+. . .
+
+- Indicating: In the Script part of the Window you will highlight large blocks of code or leave your cursor on the specific line you want to run. 
+- Running: Click the button that says "Run" to the top right of the script window. Or hit Ctrl + Enter (Windows) or Command + Return (Mac) 
+
+
+## Notes about Slides
+
+Throughout this I will show you code and the output in R (Note: You can leave comments to yourself using "#" and R won't run that line).
+
+```{R}
+#| output-location: fragment
+## The code is here
+1
+```
+
+. . .
+
+The output will be immediately below it. This should be similar to how you'll have code in the RScript pane and the results in the pane below. 
+
+
+# R as a calculator
+
+R can be used to add, subtract, multiply\... Type something similar in the RScript pane, highlight it and then click "Run" 
+
+```{R}
+#| output-location: fragment
+1 + 2
+```
+
+```{R}
+#| output-location: fragment
+3 - 4
+```
+
+```{R}
+#| output-location: fragment
+5 * 6
+```
+
+```{R}
+#| output-location: fragment
+7/3
+```
+
+## R as a calculator
+
+You can also exponentiate things and even access special numbers such as $\pi$
+
+```{R}
+#| output-location: fragment
+5^2
+```
+```{R}
+#| output-location: fragment
+pi
+```
+```{R}
+#| output-location: fragment
+2*pi
+```
+
+## General Advice
+
+- The hardest part of learning to code is that there are lot of rules but also a lot of flexibility. Sometimes you have to be very precise and sometimes you don't.
+    - You'll learn these rules as you try different things. Don't be afraid to try to break R.
+- You can (and should) save scripts so you can re-run and change things. Every R script should be a self contained world.
+
+## Spaces
+
+Spaces (or not) between things often don't matter
+```{R}
+#| error: true 
+3 * 2 
+3*2 
+3          *      2
+```
+
+## Check
+At this point you should have RStudio open, and be able to type things in the RScript pane and run it in the console pane below. Your screen will look something like this. 
+
+![](images/Day_1_Rstudio_Calculator.png){fig-align="center"}
+
+
+# Variables
+In R you can store information in order to retrieve it later. These are called **variables**. 
+
+You use an arrow `<-` (less than and dash) to save a value as a variable. 
+
+```{R}
+a_variable <- 1 # Running this alone will return nothing
+a_variable # By calling the vector alone it returns the result
+```
+
+## Variable Names 
+
+You can name a variable almost anything with numbers, character
+```{R}
+therearenoreallimitsonhowlongavariablenameis <- 1
+Variable_1 <- 4 
+```  
+
+. . .
+
+There are some limits, they cannot start with numbers and cannot use some symbols 
+
+```{r}
+#| error: true
+#| cache: false
+
+1_variable <- 2 # variables cannot start with a number though 
+```
+
+## Rstudio and Variables
+
+One of the benefits of RStudio is that it will show the stored variables in the top right pane. 
+
+![](images/Day_1_Rstudio_Variables.png){fig-align="center"}
+
+Here I've saved the number **341.24** to the variable **bank_account_balance**
+
+## Overwriting Variables
+
+There is nothing stopping you from saving on top of the variable with a new value.
+
+```{R}
+bank_account_balance <- 341.24
+bank_account_balance <- 341.24 + 100 
+bank_account_balance
+```
+
+. . .
+
+You can do math to a variable and save it back to itself
+```{R}
+bank_account_balance <- bank_account_balance - 1000
+bank_account_balance
+```
+
+::: {.callout-warning}
+Modifying and then saving a variable as itself can lead to mistakes so be careful. 
+:::
+
+# Types of Variables 
+
+There are two base types of variables you can use:
+
+- Numeric/Doubles: These are just numbers. You don't include a commas just numbers. 
+- Strings: This is anything as long as it is surrounded by `" "` (quotation marks).
+- Factors: This is a combination of the two and we'll discuss it more later. 
+
+. . . 
+
+## String Examples
+
+```{R}
+hello <- "I'm learning how to do R"
+hello 
+```
+
+. . . 
+
+Anything with quotes around it will be treated as a string. 
+```{R}
+a_number <- "1234"
+a_number 
+```
+
+
+```{R}
+#| output-location: fragment
+#| error: true
+a_number * 12
+```
+
+## Vectors
+
+You can also store a series of numbers or characters. This is called a **vector**
+
+- To store a vector you surround everything with `c( )` and put commas between each item in the vector.
+- Everything in a vector has to be the same type (all numbers or all strings)
+
+
+## Vectors Examples
+```{R}
+ages <- c(34,23,41,4,6)
+ages
+```
+
+```{R}
+names <- c("Kevin", "Claire", "Mike", "Dominick", "Leona")
+names
+```
+
+```{R}
+#| output-location: fragment
+names_ages <- c("Kevin", 34, "Claire", 23)
+names_ages # What happens here? 
+```
+
+. . . 
+
+::: {.callout-warning}
+
+If any item in a vector is a string then R will make everything a string. 
+
+:::
+
+## Vector Math
+
+You can do math on vectors
+
+```{R}
+ages <- c(34,23,41,4,6)
+ages + 5
+```
+
+```{R}
+assets <- c(534, 1694)
+debts <- c(100, 50)
+assets - debts
+```
+
+# Check
+
+Using R as a calculator, calculate the volume of a sphere with a radius
+of 2 and store that value as the variable `vol`
+
+- You can do this all in a single line.
+- The formula is $\frac{4}{3} \pi \cdot \text{r}^3$
+- Then use a vector to calculate the volume of 3 different spheres with radii 3, 6, and 8. 
+
+## How I did it 
+```{R}
+vol <- pi * (2^3) * (4/3)
+vol 
+```
+
+```{R}
+rad <- c(3, 6, 8)
+vol <- pi * (rad^3) * (4/3)
+vol 
+```
+
+
+
+# Functions
+
+Functions in R take the form of `function(X, Y, Z)` where `function` is the function, and `X, Y, X` are a bunch of arguments that give the function an input and/or tell it what specifically to do.
+
+. . . 
+
+```{R}
+precinct_voters <- c(123,44,32,67)
+sum(precinct_voters)
+```
+
+`sum()` is a pretty simple function, it takes a single vector and adds together all of its components.
+
+::: {.callout-caution}
+
+Never have a space between the function name, and the parentheses.
+
+::: 
+
+## Additional Arguments and Missing Data
+
+`sum()` has an additional argument that you can use to tell R what to do with missing values. First, how does R no a value is missing? These are recorded as `NA`. 
+
+```{R}
+precinct_voters <- c(123,44,32,67, NA) # missing the data for the last precinct 
+precinct_voters * 1.2 # 20% population growth 
+```
+
+. . . 
+
+What if we sum together this new vector? 
+```{R}
+sum(precinct_voters)
+```
+
+---
+
+`sum()` has a second argument `na.rm` that tells it what to do with missing values. If we want to ignore them we need to set this argument to `TRUE`:
+
+```{R}
+sum(precinct_voters, na.rm=TRUE)
+```
+
+`na.rm` is a logical argument. It can either be `TRUE` or `FALSE` and so acts as switch. If `TRUE` then missing values are ignored, if `FALSE` (the default) they are not ignore and so a missing value is returned. 
+
+
+## Accessing the Manual 
+
+R has a manual for each function. These are a good place to look if you don't know what arguments a function has, but they can take practice to read. 
+
+You can access the manual by typing `?` followed by the function name in the console: `?sum` 
+
+The manual itself will appear on the bottom right pane. 
+
+---
+
+![](images/Day_1_Rstudio_Help.png){fig-align="center"}
+
+## Reading the Manual 
+
+The manual can be hard to read at first. A few tips:
+
+- The **Description** is often very general (to a point of sometimes not being useful). 
+- The **Usage** shows all the arguments and their defaults (if they have any). There is more info about the arguments in the **Arguments** section
+- At the very bottom there is usually an **Examples** section. You can often copy these into the script pane, run them, and see what happens. 
+
+## Some Other Functions:
+
+- `mean()`
+- `median()`
+- `sd()`
+- `range()`
+
+Take a moment now, and look at the manual of one of these functions. 
+
+# Libraries
+
+- R is powerful/useful because anyone can extend it (add more functions).
+- Bundles of functions are called libraries/packages.
+- You can install a library with `install.package()` and then tell R you want to use it with `library`.
+
+## Tidyverse
+
+- A lot of data science work is done using the Tidyverse suite of packages.
+- We can install the entire suite using: `install.package()`
+- We are going to install a few other packages we will use during the bootcamp now as well.
+
+Run: 
+```{.R}
+install.packages(c("tidyverse", "huxtable", "flextable", "officer"))
+```
+
+There might be a popup asking about installing things from "Source" you can hit no on it. 
+
+## Using a Package
+
+- To use a package you use the function `library()`. 
+- It is a norm to load all the packages you use in a script at the top of a script. 
+
+## Loading Data
+- `readr` is a library used to load datasets.
+- We are going to start with loading it using RStudio's interface.
+
+
+. . .
+
+[Download this data](images/disability_comp.csv) and we are going to open it in R. It has data on the number veterans in each county receiving disability benefits. 
+
+## Importing Data with RStudio
+
+- In the bottom right you can look through files, it shows the **working directory**. 
+- You can change the **working directory** by going to Session $\rightarrow$ Set Working Directory $\rightarrow$ Choose Directory...
+- Find 'disability_comp.csv', click on it and select 'Import Dataset...' 
+- The first time you do this there might again be a popup asking you to install something, click "Yes" on this one. 
+
+---
+
+![](images/Day_1_Import.png){fig-align="center"}
+
+## Importing Data with just R
+
+
+We can do the same thing but just using R: 
+```{R}
+library(readr) # load readr package
+setwd("images") # Set working directory 
+df <- read_csv("disability_comp.csv")
+```
+
+::: {.callout-note}
+Mac computers file paths start with `~/` and Windows start with `C:/`. 
+
+If you write `setwd("C:/") ` you can then hit tab and walk through the folders.
+:::
+
+
+
+## Looking at your data
+
+Once you have the data loaded start by just running the data by itself. It will show you the first 10 rows of data. 
+
+```{R}
+df
+```
+
+## Accessing individual columns 
+
+To access a specific column of data you'll use the `$`: `data$column`. 
+
+```{R}
+df$Total
+```
+
+. . .
+
+You can put this directly in a function like: 
+
+```{R}
+mean(df$Total)
+```
+
+# Check
+
+Pick two numeric variables and calculate the mean, median and standard deviation for them. 
+
+The functions you'll need are: `mean()`, `median()` and `sd()`.
+
+::: {.callout-tip}
+There is missing data so you'll have to use the `na.rm=TRUE` argument. 
+:::
+
+# How I did it
+
+Total number of recipients: 
+```{R}
+mean(df$Total, na.rm=TRUE)
+median(df$Total, na.rm=TRUE)
+sd(df$Total, na.rm=TRUE)
+```
+
+Total number of male recipients:
+```{R}
+mean(df$Male, na.rm=TRUE)
+median(df$Male, na.rm=TRUE)
+sd(df$Male, na.rm=TRUE)
+```
+

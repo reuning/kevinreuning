@@ -1,0 +1,476 @@
+---
+title: "Introduction to R: Data Manipulation and Summary"
+author: "Kevin Reuning"
+format: 
+    clean-revealjs:
+        width: 1600
+        height: 900
+        slide-number: false
+        callout-icon: false
+        execute:
+            echo: true
+revealjs-plugins:
+  - codefocus
+---
+
+## Goals for Today
+
+<!--
+Add links to the variables website when they are later.
+
+---> 
+
+- Manipulate data (filter specific rows, select columns).
+- pipes
+- Summarizing data
+
+# Data for today 
+
+Today we are going to use a subset of country data from [The Quality of Governance Institute](https://www.gu.se/en/quality-government/qog-data).
+
+- Download the [data we'll be using here](images/country_data.csv)
+- You can open it with `read_csv()` and if you need more help check out the [first day of slides.](https://kevinreuning.com/presentations/workshops/r_bootcamp/day_1.html)
+- There is a description of all the [variables I've included here.](https://kevinreuning.com/presentations/workshops/r_bootcamp/country_data.html) 
+- We need the following packages installed: `install.packages(c("tidyverse", "huxtable", "flextable", "officer"))`
+
+
+
+```{r}
+library(readr)
+setwd("images")
+df <- read_csv("country_data.csv")
+```
+
+
+
+## Variables
+
+There is a description of all the [variables I've included here.](https://kevinreuning.com/presentations/workshops/r_bootcamp/country_data.html) 
+
+For now though we are going to use a few of them: 
+
+- `bl_asymf` average schooling years, females and males between 15 and 64 years old. 
+- `wdi_expedu` general government expenditure on education (current, capital, and transfers) is expressed as a percentage of GDP
+
+# Filtering Data 
+
+Often you want to select just specific rows of data that meet certain requirements. 
+
+
+## Logical Checks 
+
+We need to include some more operators to do this:
+
+- `<` less than and `>` greater than
+- `<=` less than or equal to and `>=` greater than or equal to 
+- `==` equal to and `!=` not equal to
+
+. . .
+
+```{r}
+43 < 4
+(4*pi)^2 > 5
+```
+
+## Logical Values 
+
+- The output from these checks is another form of variable called a **logical**. 
+- We can have vectors of logical values
+
+```{r}
+names <- c("Kevin", "Anne", "Sophie")
+names == "Kevin"
+```
+
+## Logical Checks with Data 
+
+We can do the same thing but using a variable from our dataset: 
+
+```{r}
+## Returns true if bl_asymf (average schooling) is more than 10.
+df$bl_asymf > 10 
+```
+
+## Filtering Data 
+
+We can use logical checks to filter our data. 
+
+- The `filter()` function is part of the **plyr** package in the **tidyverse**. 
+- The first argument will be the data you want to filter. 
+- The second argument will be the logical check.  
+
+::: {.callout-note}
+Within the `filter()` call you do not need to use `data$` before the variable name, it already knows you are using the data you put in the first argument.
+:::
+
+## Filtering Data - Example 
+
+```{r}
+library(tidyverse)
+
+# df <- read_csv("country_data.csv") ## remember I did this already
+filter(df, bl_asymf>10)
+```
+
+. . . 
+
+If we want we can save the new data as well: 
+
+```{.R}
+sub_df <- filter(df, bl_asymf>10)
+```
+
+
+# Checking Multiple Things 
+
+What about if we want to check if our rows meet multiple condition? Then we need **logical operators**. 
+
+## Logical Operators
+- We can reverse a logical value with `!` (e.g. `!TRUE == FALSE`) 
+- We have **and** and **or** operators to check multiple logical values. 
+    - **and** is `&`
+    - **or** is `|` (shift + backslash)
+- `&` returns `TRUE` if both values are `TRUE`
+- `|` returns `TRUE` if at least one value is `TRUE`
+
+. . .
+
+```{.R}
+TRUE & TRUE 
+TRUE | FALSE 
+TRUE | TRUE 
+```
+All would return `TRUE`
+
+## Combining Logical Check
+
+We can then combine logical checks together.
+
+```{r}
+val <- pi^(2/3)
+(val < 1) | (val > 4) # Is it less than 0 or greater than 4?
+```
+
+## Multiple Checks in Filtering 
+
+Lets collect countries with more than 10 years of average education but spend less than 5% of their GDP on education
+```{r}
+sub_df <- filter(df, bl_asymf > 10 & wdi_expedu < 5)
+sub_df$cname
+```
+
+## Check 
+
+Create two new datasets.
+
+1. Only countries that spent more than 10% of their GDP on education
+2. Countries that have an average education between 5 and 8 years
+
+## How I did it
+
+```{r}
+sub_df1 <- filter(df, wdi_expedu > 10)
+sub_df1$cname
+```
+
+```{r}
+sub_df2 <- filter(df, bl_asymf > 5 & bl_asymf < 8)
+sub_df2$cname
+```
+
+# Pipes %>% 
+
+Tidyverse syntax makes use of pipes to chain multiple functions together. 
+
+- You use the pipe operator (`%>%`) in between each step. 
+- This operator is like saying "take the output from the previous function and put it in the next function"
+
+. . . 
+
+For example (in pseudo-code): 
+
+`Output <- Step 1(Input) %>% Step 2() %>% Step 3()`
+
+**Translation**: Take the Input, apply Step 1 to it, then take the output of Step 1 and apply Step 2 to it, then take the output of Step 2 and apply Step 3 to it, and finally store the output of Step 3 as Output. 
+
+## Example 
+
+```{r}
+filter(df, bl_asymf > 10 & wdi_expedu < 5) %>% pull(cname)
+```
+
+What does the `pull()` function do? It _pulls_ out a column from your data. 
+
+
+## How else could we have done this? 
+
+```{r}
+pull(filter(df, bl_asymf > 10 & wdi_expedu < 5), cname)
+filter(df, bl_asymf > 10 & wdi_expedu < 5)$cname
+sub_df <- filter(df, bl_asymf > 10 & wdi_expedu < 5)
+sub_df$cname
+```
+
+## A Note of Caution 
+
+- The `%>%` has been around for a while in the tidyverse. 
+- R added its own version of this to base R BUT they use `|>` instead. 
+- In most cases `%>%` is the same as `|>` 
+
+Yes this is all kind of silly and strange. 
+
+# Summarizing Data 
+
+One of the most useful tidyverse functions is `summarize()`.
+
+- `summarize()` transforms data by applying a function(s) to columns in the data. 
+- The first argument will be the data, the rest of the arguments will be functions you want to apply to it. 
+- The output will be a smaller data frame where the columns are the output from each function it applied. 
+
+## Simple Examples
+
+What if we want to figure out the average average education for all countries in our data? 
+
+```{r}
+#| output-location: fragment
+summarize(df, mean(bl_asymf, na.rm=TRUE))
+```
+
+. . .
+
+What if we want to calculate other statistics? 
+
+. . .
+
+```{r}
+summarize(df, mean(bl_asymf, na.rm=TRUE), 
+            sd(bl_asymf, na.rm=TRUE), 
+            median(bl_asymf, na.rm=TRUE))
+```
+
+## Caution - Multiple Return Values
+
+You generally want to use functions that only return 1 value. Why? 
+
+. . . 
+
+```{r}
+summarize(df, mean(bl_asymf, na.rm=TRUE), 
+            sd(bl_asymf, na.rm=TRUE), 
+            median(bl_asymf, na.rm=TRUE), 
+            range(bl_asymf, na.rm=TRUE))
+```
+
+## Filtering and Summarizing 
+
+What if we want to figure out the average education for countries that spend less than 5% of their GDP on education? 
+
+```{r}
+#| output-location: fragment
+df %>% filter(wdi_expedu < 5) %>% summarize(mean(bl_asymf, na.rm=T))
+```
+
+. . .
+
+We can improve the output by changing the column name: `summarize(col_name = mean(variable))`
+
+```{r}
+df %>% filter(wdi_expedu < 5) %>% 
+    summarize("Mean"=mean(bl_asymf, na.rm=T))
+```
+
+::: callout-note
+You can use multiple lines with pipes, it is common to put the pipe at the end of each line and indent the next line. 
+:::
+ 
+## Number of Observations 
+
+There is also a function specifically for the number of observations: `n()`
+
+```{r}
+df %>% filter(wdi_expedu < 5) %>% summarize(n())
+```
+
+## Check 
+
+Find the mean and median average education and education expenditure for countries with a GDP per capita (`mad_gdppc`) of more than 10,000.
+
+## My Solutions 
+
+```{r}
+df %>% filter(mad_gdppc > 10000) %>% 
+    summarize(mean_exp=mean(wdi_expedu, na.rm=TRUE), 
+        median_exp=median(wdi_expedu, na.rm=TRUE), 
+        mean_ed=mean(bl_asymf, na.rm=TRUE), 
+        median_ed=median(bl_asymf, na.rm=TRUE))
+```
+
+. . .
+
+
+
+# Grouping
+
+Often we want to provide summaries of groups within the data. For example: how does the GDP vary by election type? `br_pvote` is an indicator for having proportional representation. 
+
+Here we'll use the `group_by()` function to create groups of our data. 
+
+## `group_by()` alone
+
+`group_by()` expects variable(s) that you want to use to group your dataset: 
+
+```{r}
+df %>% group_by(br_pvote) 
+```
+
+Only change is the addition of **# Groups:   br_pvote [3]** (grouping variable, and number of groups). 
+
+## Group and Summarize
+
+Lets chain together `group_by()` and `summarize()`
+
+```{r}
+df %>% group_by(br_pvote) %>% 
+    summarize(mean=mean(mad_gdppc, na.rm=T), n = n())
+```
+
+. . . 
+
+What is ugly about this? 
+
+## Adding in Filtering 
+
+`is.na()` checks if something is missing or not. 
+
+```{r}
+df %>% filter(!is.na(br_pvote)) %>% 
+    group_by(br_pvote) %>% 
+    summarize(mean=mean(mad_gdppc, na.rm=T), n = n())
+```
+
+::: callout-tip
+The `drop_na( )` tidyverse function can replace `filter(!is.na( ))`
+:::
+
+## Check 
+
+There are several variables that can be used to group countries. Pick one of them, pick an interval variable that you think might vary by the group, and then calculate the number of observations, mean, and median for each group. 
+
+## My Solution 
+
+- Grouping variable: `br_pvote`
+- Interval variable: `van_part`
+- Expectation: Countries with proportional representation (1) will have higher participation
+
+```{.R}
+df %>% 
+    drop_na(br_pvote) %>% 
+    group_by(br_pvote) %>%
+    summarize(n=n(), mean=mean(van_part, na.rm=T),
+            median=median(van_part, na.rm=T))
+```
+::: {.fragment .current-only data-code-focus="1"}
+Data that I am using
+:::
+
+::: {.fragment .current-only data-code-focus="2"}
+Filtering out observations that are missing a value for `br_pvote`
+:::
+
+::: {.fragment .current-only data-code-focus="3"}
+Grouping the data frame by `br_pvote`
+:::
+
+::: {.fragment data-code-focus="4-5"}
+Summarizing (number of observations, mean of `van_part`, median of `van_part`)
+:::
+
+
+# Saving Results 
+
+There are two ways to save our summary results. Both can be helpful depending on what you are doing:
+
+- `write_csv()`: Writes to a CSV file. 
+- Creating an exportable table. 
+
+## Huxtable 
+
+We are going to use: [huxtable](https://hughjonesd.github.io/huxtable/index.html) 
+
+The huxtable package is a _a lot_ so we are not going to get to it all but iet lets you do a lot of things:
+
+- Convert dataframe into a table. 
+- Format tables (borders, colors, alignment)
+- Export that table in a lot of formats (html, docx, excel, latex...)
+
+## Get a Table to Export
+
+```{r}
+tab_out <- df %>% 
+    drop_na(br_pvote) %>% 
+    group_by(br_pvote) %>%
+    summarize(n=n(), mean=mean(van_part, na.rm=T),
+            median=median(van_part, na.rm=T))
+```
+
+## Using Huxtable {auto-animate=true}
+
+The function `hux()` will create a table object that we can then modify. Lets see what happens when we make a table. 
+
+```{r}
+library(huxtable)
+ht <- hux(tab_out)
+ht
+```
+
+## Using Huxtable {auto-animate=true}
+
+We can then modify the style by pipping it into functions like a `theme_basic()` function and `set_align()`
+
+```{r}
+library(huxtable)
+ht <- hux(tab_out) %>% theme_basic() %>%
+    set_align(2:3, 1, "center") # 2:3 is the rows, 1 the columns to modify.
+ht
+```
+
+## Using Huxtable {auto-animate=true}
+
+Finally we can modify values using the `set_contents()` function
+
+```{r}
+library(huxtable)
+ht <- hux(tab_out) %>% theme_basic() %>%
+    set_align(2:3, 1, "center") %>%
+    set_contents(1, 1:4, 
+    c("Prop Voting?", "N", "Mean", "Median")) %>%
+    set_contents(2:3, 1, c("No", "Yes"))
+ht
+```
+
+
+## Saving the Document 
+
+And now we export it with `quick_docx()`
+
+```r
+quick_docx(ht, file="My First Summary Table.docx")
+```
+
+
+## Huxtable Options and Check
+
+There are a lot of options to modify your table [here](https://hughjonesd.github.io/huxtable/huxtable.html). 
+
+I want you to make a table, where at least one cell has non-black text color, one cell is italic, and you have a border on the very bottom of it.
+
+## My Solution 
+
+Using my table from before:
+
+```{r}
+ht %>% set_italic(2:3, 3:4) %>%
+    set_text_color(1, 1:4, "green") %>%
+    set_bottom_border(3, 1:4) 
+```
+

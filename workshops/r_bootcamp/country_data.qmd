@@ -1,0 +1,24 @@
+---
+title: "Country Data"
+format: html
+fontsize: 1em
+author: ""
+listing: 
+    categories: true
+    type: table 
+    id: data-listing
+    contents: data/country_data.yml
+    fields: [variable, name, description, source, type]
+    field-display-names:
+        variable: Variable
+        name: Name
+        source: Source
+        type: Type
+    table-striped: true
+    sort-ui: [source, type, variable]
+---
+
+The below table describes the variables present in the [country data](images/country_data.csv) used in the R Bootcamp. This data is from the [Quality of Governance Institute](https://www.gu.se/en/quality-government/qog-data) Standard dataset. The descriptions below are from their codebook.  
+
+::: {#data-listing}
+:::

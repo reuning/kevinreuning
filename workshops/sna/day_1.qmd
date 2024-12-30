@@ -1,0 +1,488 @@
+---
+title: "Introduction to SNA: Concepts and Data"
+author: "Kevin Reuning"
+format: 
+    clean-revealjs:
+        width: 1600
+        height: 900
+        slide-number: false
+        callout-icon: false
+        execute:
+            echo: true
+revealjs-plugins:
+  - codefocus
+---
+
+# Who am I
+
+
+<!--
+
+Provide all data early on.
+
+--> 
+
+:::: {.columns}
+
+::: {.column width="75%"}
+- I'm Kevin Reuning (ROY-ning). 
+- I'm an Assistant Professor in Political Science. 
+- Prior to grad school I had very little experience in coding. 
+:::
+
+::: {.column width="25%"}
+![](images/profile.jpg){width="250" fig-align="right"}
+:::
+
+::::
+
+# Goals For this Bootcamp 
+
+- Understand basic SNA terminology
+- Load a variety of SNA formats into R.
+- Calculate some basic network and nodal statistics. 
+- Make network visualizations. 
+- Know where to look for more. 
+
+## Where We Are Going {.nostretch}
+
+![](images/sppq.png){width="80%" fig-align="center"}
+
+
+# Goals for Today
+
+- Go over some basic language of social network analysis. 
+- Load some SNA data into R.
+- Start manipulating that 
+
+# Social Network Concepts
+
+## Nodes/Vertices and Edges
+
+SNA focuses on the relationships between different entities: 
+
+- **Nodes** or **Vertices**: The entities that make-up your network.
+    - Ex: individuals, animals, organizations, counties, ...
+- **Edges:** The relationships that make-up your network. 
+    - Ex: Friendship, proximity, exchange of goods, ...
+
+## Edges - Variation and Types
+
+Edges comes in many flavors and can be divided between states and events. 
+
+- States: The relationship is **on-going** (not forever necessarily but it exists overtime)
+  - Types: Similarities, Roles, Cognition 
+- Events: The relationship is captured by some discrete moment in time.
+  - Types: Interactions and Flows. 
+
+## How Events relate to States
+
+Often we use events to identify a state: 
+
+- Two students that are often seen together are likely to be friends. 
+- Two students that text often are likely to be friends.  
+
+. . .
+
+We also can think that events lead to a state: 
+
+- Interacting with someone might lead to a friendship. 
+
+## Edge Differences and Attributes
+
+- Edges can be directed or undirected:
+    - Directed: Point from node A to node B.
+    - Undirected: Are between node A and node B.
+
+. . . 
+
+- Edges can also be weighted. Examples:
+    - The amount of trade flowing from country A to country B.
+    - How long two individuals have known each other. 
+    - The valence of a feelings towards another node (negative to positive)
+
+
+## Adjacency Matrix 
+
+Networks can be written out as adjacency matrix: 
+
+:::: {.columns}
+::: {.column width="40%"}
+$$
+\mathbf{A} = \left[\begin{array}
+{rrr}
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 0 \\
+1 & 1 & 0 & 1 \\
+1 & 0 & 1 & 0 \\
+\end{array}\right]
+$$
+:::
+
+::: {.column width="60%"}
+```{r}
+#| echo: false 
+library(igraph)
+library(ggraph)
+theme_set(theme_graph())
+mat <- matrix(c(0,0,1,0,
+                0,0,0,0,
+                1,1,0,1,
+                1,0,1,0), ncol=4, byrow=T)
+colnames(mat) <- letters[1:4]
+net <- graph_from_adjacency_matrix(mat)
+
+set.seed(1)
+ggraph(net) + 
+    geom_edge_fan(color="springgreen4", 
+    arrow=arrow(length=unit(.75, "cm"), type="closed"), 
+    end_cap=circle(.5, "cm")) +
+    geom_node_point(size=10) + 
+    geom_node_text(aes(label=name), 
+        repel=T, 
+        nudge_y=.1, size=8)
+
+```
+
+:::
+
+::::
+
+Adjacency matrices are written in row-to-column format. Undirected networks will always have a symmetric matrix
+
+## Edge Lists
+
+The other common way to make write out a network is through an edge list format: 
+
+:::: {.columns}
+::: {.column width="40%"}
+```{r}
+#| echo: false 
+library(gt)
+df <- as_data_frame(net, what="edges") 
+gt(df) |> 
+    tab_options(
+        table.font.size=px(36)
+    )
+
+```
+
+:::
+
+::: {.column width="60%"}
+```{r}
+#| echo: false 
+
+set.seed(1)
+ggraph(net) + 
+    geom_edge_fan(color="springgreen4", 
+    arrow=arrow(length=unit(.75, "cm"), type="closed"), 
+    end_cap=circle(.5, "cm")) +
+    geom_node_point(size=10) + 
+    geom_node_text(aes(label=name), 
+        repel=T, 
+        nudge_y=.1, size=8)
+
+```
+
+:::
+
+::::
+
+# R and SNA
+
+There are two major sets of R libraries used for networking: 
+
+
+- [igraph](https://igraph.org/): A lot of more basic analysis options, also has python and and C versions as well. Overall easier to manipulate your network objects.
+- [statnet](https://statnet.org/): Has access to more advanced analysis, but a lot of it is divided up into additional libraries. 
+
+## Following along
+
+You need to learn by doing. If you haven't opened RStudio yet, do so now.
+
+## Network Data Formats
+
+There are a variety of ways that networks are saved/shared:
+
+- As a csv: 
+    - Adjacency matrix or an edge list
+    - Sometimes _additional_ data is provided in a secondary csv
+- [Graphml](http://graphml.graphdrawing.org/): Relatively common open format that is easily editable.
+- [GML](https://en.wikipedia.org/wiki/Graph_Modelling_Language): Common open format that is less easy to edit (in my opinion)
+- [Pajek](https://en.wikipedia.org/wiki/Graph_Modelling_Language): Weird old format that is not well documented but still appears
+
+## igraph Object 
+
+In each case we need to load in data and turn it into an igraph object. 
+
+As an igraph object we can easily apply a lot of network methods do it, plot it, etc. 
+
+
+## Loading Network from an Adjacency Matrix
+
+Start with a network of cocaine smugglers. Download the csv [here](data/COCAINE_JAKE.csv), more info [here](https://sites.google.com/site/ucinetsoftware/datasets/covert-networks/cocaine-smuggling?authuser=0)
+
+
+Need to do the following: 
+
+1. Load the csv into R, treating the row names appropriately `read.csv()`
+    - Set `row.names=1` so that the first column is read in as row names.
+2. Convert it to a matrix `as.matrix()`
+3. Convert it to an igraph object `graph_from_adjacency_matrix()`
+
+
+```{r}
+library(igraph)
+mat <- read.csv("data/COCAINE_JAKE.csv", row.names=1)
+mat <- as.matrix(mat)
+net <- graph_from_adjacency_matrix(mat, mode="directed", 
+                                   weighted=T)
+```
+
+## `graph_from_adjacency_matrix()`
+
+There are some options we can set: 
+
+- `mode=` 
+    - `"directed"` directed network
+    - `"undirected"` undirected, using upper triangle to make
+- `weighted=` 
+    - `NULL` (default) the numbers in matrix give the _number_ of edges between.
+    - `TRUE` creates edge weights. 
+    - `NA` creates edges if they are greater than 0, ignore the rest.
+- `diag=` where to include the diagonal, set to `FALSE` to ignore diagonals.
+- `add.colnames=`
+    - `NULL` (default) use column names as the vertex names. 
+    - `NA` ignore the column names.
+
+
+## igraph Object
+
+Calling the igraph object by itself provides some details about the network, including some example edges: 
+
+```{r}
+net 
+
+```
+
+## Basic Functions
+
+```{r}
+vcount(net) # Number of vertices/nodes
+ecount(net) # Number of edges 
+```
+
+## Basic Plot
+
+We will make better plots later, but this gives us a quick idea of what our network looks like
+
+
+```{r}
+plot(net)
+```
+
+# Network Components
+
+## Dividing Up a Network
+
+- We can group vertices by who they can reach:
+   - A **component** is the maximal (largest) group of vertices where every vertex within it can reach every other vertex.
+   - Every network can be broken into 1 or more component(s).
+- A vertex that cannot reach any other vertices is an **isolate**
+
+
+
+## Some Components
+
+
+```{r network_comp}
+#| echo: false 
+set.seed(1)
+n <- 20
+net_sample <- sample_gnp(n=n, p=.08, directed=F)
+
+comp <- components(net_sample)
+V(net_sample)$component <- letters[comp$membership]
+ggraph(net_sample, "fr")  + 
+    geom_edge_fan(color="black") +
+    geom_node_point(size=10, aes(color=component)) 
+
+```
+
+:::{.center}
+This network has `r comp$no` components, the largest has `r max(comp$csize)` vertices in it. 
+:::
+
+## Components with Directed Graphs
+
+When a network is directed, then we need to think about direction.
+
+- **Weak Component:** Is a component if we disregard direction of edges.
+- **Strong Component:** Is a component if we follow direction of edges
+
+## Strong/Weak Components:
+
+```{r network_comp_dir}
+#| fig-subcap: 
+#|     - "Broken into Weak Components"
+#|     - "Broken into Strong Components"
+#| layout-ncol: 2
+#| echo: false
+
+set.seed(1)
+n <- 15
+net_sample <- sample_gnp(n=n, p=.08, directed=T)
+
+comp <- components(net_sample,  mode="weak")
+V(net_sample)$component <- letters[comp$membership]
+set.seed(1)
+ggraph(net_sample, "fr")  + 
+    geom_edge_fan(color="black", 
+    arrow=arrow(length=unit(.5, "cm"), type="closed"), 
+    end_cap=circle(.5, "cm")) +
+    geom_node_point(size=10, aes(color=component)) 
+
+comp <- components(net_sample,  mode="strong")
+V(net_sample)$component <- letters[comp$membership]
+set.seed(1)
+ggraph(net_sample, "fr")  + 
+    geom_edge_fan(color="black", 
+    arrow=arrow(length=unit(.5, "cm"), type="closed"), 
+    end_cap=circle(.5, "cm")) + 
+    geom_node_point(size=10, aes(color=component)) 
+```
+
+
+## Calculating Components
+
+```{r}
+comps <- components(net, mode="strong")
+comps$no ## Number of components
+comps$csize ## Size of each component
+comps$membership ## Membership for each node
+```
+
+# Loading Network from an Edge List
+
+## Process 
+
+Now we are going to use a network of political donors in Ohio. Download the edgelist data [here](data/edge_OH.csv) and the nodal data [here](data/meta_OH.csv). More info is [here](https://kevinreuning.com/resources/network_create/). 
+
+Need to do the following: 
+
+1. Load the edge list and nodal data into R as two different objects `read.csv()`
+2. Combine them into an igraph object `graph_from_data_frame()`
+
+```{r}
+edge_df <- read.csv("data/edge_OH.csv")
+node_df <- read.csv("data/meta_OH.csv")
+net <- graph_from_data_frame(edge_df, vertices=node_df, directed=F)
+
+```
+
+## `graph_from_data_frame`
+
+There are some options we can set: 
+
+- `directed=`
+    - Directed or not? `TRUE` or `FALSE`
+- `vertices=`
+    - Adding data to the vertices. The first column needs to match the identifiers used in the ede list. 
+
+::: {.callout-warning}
+You can only directly include isolates in edge lists if you have a vertex data frame.
+:::
+
+## igraph Object for Ohio Network 
+
+```{r}
+net
+```
+
+# Vertex and Edge Attributes
+
+## Accessing Them
+
+You can access vertex and edges in your Igraph object using `V()` or `E()`. This is useful to access attributes using `$variable`
+
+```{.r}
+V(net)$variable_1 ## Accesses the `variable_1` vertex attribute
+E(net)$variable_1 ## Accesses the `variable_1` edge attribute
+```
+
+## Example 
+
+There is a `Total` vertex attribute which is the total amount donated: 
+
+```{r}
+V(net)$Total[1:10] ## Access the first 10 
+```
+
+## Deleting Vertices 
+
+This can be helpful in deleting vertices with the `delete_vertices()` function. Lets remove all vertices where they donated less than $2,000: 
+
+```{r}
+verts_delete <- V(net)[V(net)$Total < 2000]
+sub_net <- delete_vertices(net, verts_delete)
+vcount(sub_net)
+```
+
+## Deleting Edges 
+
+We can do the same thing with edges, lets keep just the edges that are marked `"Strong"` in the `edge` edge attribute:
+
+```{r}
+components(net)$no ## Everything in 1 component
+edges_delete <- E(net)[ E(net)$edge!= "Strong"]
+trimmed_net <- delete_edges(net, edges_delete)
+components(trimmed_net)$no ## New network is more split apart
+```
+
+## Adding Attributes
+
+We can also add an attribute to the network. Here we add vertex attribute that indicates what component everyone is in:
+
+```{r}
+comps <- components(trimmed_net)
+V(trimmed_net)$Comp <- LETTERS[comps$membership]
+V(trimmed_net)$Comp[1:10]
+```
+
+`comps$membership` returns a numeric indicator of membership in a component. I use `LETTERS[]` to convert that into a letter instead of a number. 
+
+# Other Formats 
+
+## Loading Network Formatted Data
+
+The `read_graph()` function can load in a variety of native network formats. You should set `format=` when you call it: 
+
+For example using this [ground squirrel data](data/ground_squirrel_smith_2016a.graphml)
+
+```{r}
+net <- read_graph("data/ground_squirrel_smith_2016a.graphml", 
+    format="graphml")
+net
+```
+
+# Putting it Together
+
+## Test your Knowledge
+
+The next slide has a bunch of datasets for networks. I want you to do the following:
+
+- Find a network you think is interesting, download it. 
+- Open the network in R
+- Calculate the number of vertices, edges, and the number of components. 
+- Create a vertex attribute for component membership. 
+
+## Databases of Data
+
+- Netzschleuder: <https://networks.skewed.de/> 
+    - Click the "CSV" option to download them, the other formats use a strange file compression. 
+    - This has some _very_ large networks
+- Animal Social Network Repository: <https://bansallab.github.io/asnr/data.html> 
+    - Hosted on github, once you find the network, click on the "graphml" to show the data, and then there is a download button the right side with a downward arrow. 
+- UCINET Data: <https://sites.google.com/site/ucinetsoftware/datasets> 
+    - Has canonical datasets, poorly maintained. 

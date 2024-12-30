@@ -1,0 +1,622 @@
+---
+title: "Network Visualizations"
+author: "Kevin Reuning"
+format: 
+    clean-revealjs:
+        width: 1600
+        height: 900
+        slide-number: false
+        callout-icon: true
+execute:
+  echo: true
+fig-align: "center"
+---
+
+
+## Data for Today
+
+We are going to use two networks today:
+
+- A network of workers involved in a strike: [strike.paj](data/strike.paj) [You can find more info here](https://sites.google.com/site/ucinetsoftware/datasets/informal-communication-within-a-sawmill-on-strike)
+- Network of Ohio interest groups. The edge data is [here](data/edge_OH.csv), the nodal data is [here](data/meta_OH.csv). 
+- Network of high school relationships. The edge data is [here](data/spanish_hs_edges.csv), the nodal data is [here](data/spanish_hs_nodes.csv). 
+
+The worker data is in the a "pajek" format: 
+```{.r}
+net <- read_graph("strike.paj", format="pajek")
+
+```
+
+The other two can be loaded by combining the edge and nodes:
+```{.r}
+oh_edges <- read.csv("data/edge_OH.csv")
+oh_nodes <- read.csv("data/meta_OH.csv")
+oh_net <- graph_from_data_frame(oh_edges, vertices=oh_nodes, directed=F)
+```
+
+
+
+
+## Goals for this Session
+
+```{r setup}
+#| echo: false 
+
+library(igraph)
+library(ggraph)
+set_graph_style(plot_margin=margin(10, 10, 10, 10))
+
+```
+
+
+- Make (useful) network visualizations. 
+- Talk about different network layout algorithms. 
+
+
+## Visualizing Networks 
+
+Now we are going to move onto visualizing networks. 
+
+Visualizations _can_ be useful with network data, but they are also hard to do: 
+
+- We have complicated data. 
+- We often want to show multiple "types" of information. 
+
+## Package 
+
+We are going to use the ``ggraph`` package. 
+
+Benefits: 
+
+- It uses a ggplot2 style interface. 
+- It allows a lot of fine-tuning of plots.
+- Has a fair amount of useful online documentation on [layouts](https://ggraph.data-imaginist.com/articles/Layouts.html), [nodes](https://ggraph.data-imaginist.com/articles/Nodes.html), and [edges](https://ggraph.data-imaginist.com/articles/Edges.html)
+
+Cons: 
+
+- It is a bit overly complicated at times.
+
+## New Data 
+
+We are going to start with a small canned dataset you can download from the internet: [strike.paj](https://sites.google.com/site/ucinetsoftware/datasets/informal-communication-within-a-sawmill-on-strike)
+
+It is a communication network between workers at a sawmill. It also is a unique data format: "pajek" which thankfully igraph has a function for
+
+\footnotesize
+```{r}
+#| echo: true
+library(igraph)
+net <- read_graph("data/strike.paj", format="pajek")
+ecount(net)
+vcount(net)
+```
+
+## Basics of Plot
+
+Just like ggplot2 all visualizations will start with a call to `ggraph()` 
+
+\footnotesize
+```{r}
+#| echo: true
+library(ggraph)
+ggraph(net)
+
+```
+
+## Adding Nodes and Edges
+
+To add nodes and edges to this plot we will use `geom_node_point()` and `geom_edge_link()` 
+
+- `geom_node_point`: Adds our nodes as circles
+- `geom_edge_link`: Adds edges as straight lines (no arrows) 
+
+\footnotesize
+```{r}
+#| echo: true
+ggraph(net) + geom_node_point(size=6) +
+    geom_edge_link()
+
+```
+
+## Color, Scale, etc
+
+We can change the visuals of edges and nodes by assigning:
+
+- `color=` Color of edge or node
+- `size=` Size of the nodes (defaults to 1)
+- `width=` The width of the edges (defaults to .5 (I think))
+- `alpha=` The amount of transparency for nodes or edges. 
+
+
+\footnotesize 
+```{r}
+#| echo: true 
+#| output-location: column
+ggraph(graph=net) + 
+  geom_edge_link(color="gray") +    
+  geom_node_point(color="skyblue3", size=5)
+```
+
+## Ordering
+The order of what you add on matters with later things being added on top of earlier things. 
+
+```{r}
+#| echo: true 
+p1 <- ggraph(graph=net) + 
+  geom_edge_link(width=2) +    
+  geom_node_point(color="skyblue3", size=8)
+p2 <- ggraph(graph=net) + 
+  geom_node_point(color="skyblue3", size=8) + 
+  geom_edge_link(width=2) 
+
+cowplot::plot_grid(p1, p2)
+
+```
+
+## Themes
+
+You can add on themes to your visualizations as well, `theme_graph()` (designed for networks) or `theme_void()` can work well
+
+```{r}
+p1 + theme_minimal()
+
+```
+
+## Labeling Nodes
+
+We can use `geom_node_text()` or `geom_node_label()` to label our nodes. 
+
+```{r}
+#| echo: true
+#| out-height: 40%
+ggraph(graph=net,) + 
+  geom_edge_link() +  
+  geom_node_label(aes(label=name)) 
+```
+
+
+## Labeling Nodes
+
+They also have a `repel=T` argument that will move the labels away from the center of the node. 
+
+```{r}
+#| echo: true
+#| out-height: 40%
+ggraph(graph=net) + 
+  geom_edge_link() +  geom_node_point() +
+  geom_node_text(aes(label=name), repel=T) 
+```
+
+## Labeling Your Plot
+
+Finally you can label your plot with the `labs()` function 
+
+```{r}
+#| echo: true
+#| out-height: 40%
+ggraph(graph=net) + 
+  geom_edge_link() +  geom_node_point() +
+  geom_node_text(aes(label=name), repel=T)  + labs(title="Sawmill Worker Network")
+```
+
+
+# Layouts
+
+## Impact of layouts
+
+Laying out a plot can impact how useful it is by a lot: 
+
+\footnotesize
+```{r}
+#| layout-ncol: 2
+#| echo: false
+ggraph(net, layout="randomly") + geom_node_point(size=6) +
+    geom_edge_link() + labs(title="Random Layout")
+ggraph(net, layout="circle") + geom_node_point(size=6) +
+    geom_edge_link() + labs(title="Circle Layout")
+
+```
+
+## Layouts Two Broad Approaches:
+
+- Dimension Reduction: Use multivariate techniques to scale into two dimensions
+    - MDS, Pivot Scaling, Eigenvector
+- Force-Directed: Simulates a physical process  
+    - Fruchterman and Reingold, Kamada and Kawai, Davidson-Harel, DrL, Large Graph Layout (LGL), Graphopt, GEM, and Stress majorisation
+
+## Force-Directed
+
+In most of these layouts they do something like: 
+
+  - Each node repulses all other nodes. 
+  - Edges pull two nodes together. 
+  - The balance of this is that groups of nodes with lots of connections are close and groups without them are far.
+
+## Fruchterman and Reingold Example
+
+FR views vertexes as "atomic particles or celestial bodies, exerting attractive and repulsive forces from one another". 
+
+How does this algorithm work?
+
+1. Calculate the amount of repulsion between all nodes.
+2. Calculate the amount of attraction between all adjacent nodes.
+3. Move nodes based on the weight of attraction and repulsion, but limit the amount of movement by a **temperature**. 
+4. Reduce the **temperature**, go back to step 1. 
+
+## Fruchterman and Reingold Example
+
+```{r}
+#| layout-ncol: 2
+#| layout-nrow: 2
+#| echo: false
+
+set.seed(1)
+lo <- create_layout(net, layout="igraph", algorithm="fr", 
+    niter=1) 
+ggplot(lo) + geom_node_point(size=6) +
+    geom_edge_link() + labs(title="1 Iteration")
+
+set.seed(1)
+lo <- create_layout(net, layout="igraph", algorithm="fr", 
+    niter=2) 
+ggplot(lo) + geom_node_point(size=6) +
+    geom_edge_link() + labs(title="2 Iterations")
+
+set.seed(1)
+lo <- create_layout(net, layout="igraph", algorithm="fr", 
+    niter=3) 
+ggplot(lo) + geom_node_point(size=6) +
+    geom_edge_link() + labs(title="3 Iterations")
+
+set.seed(1)
+lo <- create_layout(net, layout="igraph", algorithm="fr", 
+    niter=4) 
+ggplot(lo) + geom_node_point(size=6) +
+    geom_edge_link() + labs(title="4 Iterations")
+
+```
+
+
+## Fruchterman and Reingold Example
+
+```{r}
+#| layout-ncol: 2
+#| layout-nrow: 2
+#| echo: false
+
+
+set.seed(1)
+lo <- create_layout(net, layout="igraph", algorithm="fr", 
+    niter=10) 
+ggplot(lo) + geom_node_point(size=6) +
+    geom_edge_link() + labs(title="10 Iteration")
+
+set.seed(1)
+lo <- create_layout(net, layout="igraph", algorithm="fr", 
+    niter=25) 
+ggplot(lo) + geom_node_point(size=6) +
+    geom_edge_link() + labs(title="25 Iterations")
+
+set.seed(1)
+lo <- create_layout(net, layout="igraph", algorithm="fr", 
+    niter=50) 
+ggplot(lo) + geom_node_point(size=6) +
+    geom_edge_link() + labs(title="50 Iterations")
+
+set.seed(1)
+lo <- create_layout(net, layout="igraph", algorithm="fr", 
+    niter=100) 
+ggplot(lo) + geom_node_point(size=6) +
+    geom_edge_link() + labs(title="100 Iterations")
+
+```
+
+## Force-Directed Issues
+
+- They are not guaranteed to get to the **best** layout. The initial starting values can matter a lot. 
+- They can take a lot of time to run if you have large networks. 
+- You can _sometimes_ improve a layout by changing some of the parameters. 
+
+## Force-Directed Examples
+
+```{r}
+#| layout-ncol: 2
+#| layout-nrow: 2
+#| echo: false
+set.seed(1)
+ggraph(graph=net, "fr") + 
+  geom_edge_link() +  geom_node_point(size=6) + ggtitle("FR (fr)")
+
+set.seed(1)
+ggraph(graph=net, "stress") + 
+  geom_edge_link() +  geom_node_point(size=6) + ggtitle("Stress-minimization (stress)")
+
+set.seed(1)
+ggraph(graph=net, "kk") + 
+  geom_edge_link() +  geom_node_point(size=6) + ggtitle("Kamada and Kawai (kk)")
+
+set.seed(1)
+ggraph(graph=net, "graphopt") + 
+  geom_edge_link() +  geom_node_point(size=6) + ggtitle("Graphopt (graphopt)")
+```
+
+## Setting Layouts
+
+To set the layout you set `layout=` to what you want, you can also pass additional arguments as necessary. 
+
+If you want to create the _exact_ same layout every time run `set.seed()` directly prior to making the plot. This sets the "random seed" that is used. 
+
+\footnotesize 
+```{r}
+#| echo: true
+#| out-height: 40%
+set.seed(1)
+ggraph(graph=net, layout="fr", niter=250) + 
+  geom_edge_link() +  geom_node_point(size=6)
+
+```
+
+
+
+
+# Larger Networks
+
+## Issues
+
+Working with larger networks can be difficult for a few reasons: 
+
+- The layouts can be computationally difficult. 
+- It quickly just becomes a 'hairball'.
+
+## Solutions 
+
+There are a few useful things to do: 
+
+- Remove isolates or only visualize the _largest_ component 
+- Remove edges with lower weights 
+- Think about _what_ you are trying to visualize and emphasize that. 
+- Save the layout and reuse it. 
+
+
+:::{.callout-warning}
+If you are not showing the whole network you _must_ make that clear. 
+:::
+
+## Large Network - Ohio Donors
+
+The Ohio data connects groups based on their shared donation patterns. 
+
+
+```{r}
+#| cache: true
+#| echo: true
+#| 
+oh_edges <- read.csv("data/edge_OH.csv")
+oh_nodes <- read.csv("data/meta_OH.csv")
+
+oh_net <- graph_from_data_frame(oh_edges, vertices=oh_nodes, directed=F)
+oh_layout <- create_layout(oh_net, "kk")
+ggraph(oh_layout) + 
+  geom_edge_link(color="gray") +  
+  geom_node_point()
+
+```
+
+## Large Network - Dropping Edges 
+
+We can drop the edges that aren't "strong": 
+
+```{r}
+#| cache: true
+#| echo: true
+#| output-location: column
+#| 
+
+oh_net <- delete_edges(oh_net,
+    E(oh_net)[E(oh_net)$edge!="Strong"])
+ggraph(graph=oh_net, "kk") + 
+  geom_edge_link(color="gray") +  
+  geom_node_point()
+
+```
+
+
+
+## Large Network - Only Main Component
+
+We can use the function `largest_component()` to grab just that part. Also the `|>` is a _pipe_ which passes on the output. 
+
+```{r}
+#| echo: true
+#| cache: true
+
+oh_net |> largest_component() |> 
+  ggraph("kk") + 
+  geom_edge_link(color="gray") +  
+  geom_node_point()
+```
+
+## Why are we plotting this? 
+
+I don't really care about the nodes themselves, what I care about is looking at how polarized this network is. There is a vertex attribute that shows the percentage of donations to Democratic candidates. Can we add that? 
+
+## Adding Vertex Attribute
+
+We can add vertex attributes to visuals on our network by using the `aes()` function inside of `geom_node_point()` and connecting the attribute name to the aesthetic we want to change: 
+
+```
+geom_node_point(aes(color=degree))
+```
+
+Will color the node based on the vertex attribute named `degree`.
+
+
+## Changing the Scales 
+
+We can also change the scales using the `scales_*_*()` functions. 
+
+- `scale_color_gradient(low="green", high="purple", midpoint=.5)` - The color scale will go from green to purple with the midpoint at 0.5
+- `scale_size_continuous(trans="log10")` - Will impose a log transformation. 
+- `scale_fill_brewer(type="qual", palette=3)` Fills things using a specific [colorbrewer](https://colorbrewer2.org/#type=sequential&scheme=BuGn&n=3) palette. 
+- `scale_color_viridis_c()` - [Colorblind friendly colors](https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html).
+
+## Adding Vertex Attribute - Example
+
+```{r}
+#| echo: true
+#| cache: true
+
+oh_net |> largest_component() |> 
+  ggraph("kk") + 
+  geom_edge_link(color="gray") +  
+  geom_node_point(aes(color=PerDem)) + 
+  scale_color_gradient2("% to Dems", low="red", high="blue", 
+  midpoint=50)
+
+```
+
+
+## Adding More Vertex Attribute
+
+```{r}
+#| echo: true
+#| cache: true
+
+oh_net |> largest_component() |> 
+  ggraph("kk") + 
+  geom_edge_link(color="gray") +  
+  geom_node_point(aes(color=PerDem, size=Total)) + 
+  scale_color_gradient2("% to Dems", low="red", high="blue", 
+  midpoint=50) + 
+  scale_size_continuous("Total Donated", trans="log10")
+
+```
+
+## Vertex Attributes
+
+Vertex attributes are included for a variety of reasons. This includes: 
+
+- Demonstrating who is important in a network. 
+- Showing groups in a network. 
+- Presenting other relevant details 
+
+# Directed Networks
+
+
+
+## New Network 
+
+This data is of [Spanish high school students](https://networks.skewed.de/net/spanish_highschools) and includes negative and positive relations. We are going to delete the negative edges.
+
+```{r}
+#| echo: true 
+edges <- read.csv("data/spanish_hs_edges.csv")
+nodes <- read.csv("data/spanish_hs_nodes.csv")
+net <- graph_from_data_frame(edges, vertices=nodes, directed=T)
+neg_edges <- which(E(net)$weight < 0)
+net <- delete_edges(net, neg_edges)
+net
+```
+
+
+
+## Edges - Adding Arrows 
+
+Arrows are _annoying_ to add here, but there is some good help [online](https://ggraph.data-imaginist.com/articles/Edges.html#decorating-edges). We manualy create an arrow (`arrow`) and manually end them before the node (`end_cap`)
+
+```{r}
+#| echo: true 
+ggraph(graph=net, "stress") + 
+  geom_edge_link(color="gray", 
+    arrow = arrow(length = unit(4, 'mm')), 
+    end_cap = circle(3, 'mm')) +    
+  geom_node_point(aes(color=Sexo), size=4) 
+
+```
+
+## Edges - Adding Arrows 
+
+
+```{r}
+#| echo: false 
+ggraph(graph=net, "stress") + 
+  geom_edge_link(color="gray", 
+    arrow = arrow(length = unit(4, 'mm')), 
+    end_cap = circle(3, 'mm')) +    
+  geom_node_point(aes(color=Sexo), size=4) 
+
+```
+
+
+## Edges - Adding Attributes 
+
+Finally we can assign edge attributes to aesthetics
+
+\footnotesize 
+```{r}
+#| echo: true 
+ggraph(graph=net, "stress") + 
+  geom_edge_link(color="gray", aes(width=weight), 
+    arrow = arrow(length = unit(4, 'mm')), 
+    end_cap = circle(3, 'mm')) +    
+  geom_node_point(aes(color=Sexo), size=4) 
+
+```
+
+
+## Edges - Multiple 
+
+The default for ggraph is to show only a single edge when there are two mutual edges. We can change that by using `geom_edge_fan()`
+
+```{.r}
+ggraph(graph=net, "stress") + 
+  geom_edge_fan(aes(color=weight),
+    arrow = arrow(length = unit(4, 'mm')), 
+    end_cap = circle(3, 'mm')) +    
+  geom_node_point(aes(color=Sexo), size=4) 
+
+```
+
+## Edges - Multiple 
+
+\footnotesize 
+```{r}
+#| echo: false 
+ggraph(graph=net, "stress") + 
+  geom_edge_fan(aes(color=weight),
+    arrow = arrow(length = unit(4, 'mm')), 
+    end_cap = circle(3, 'mm')) +    
+  geom_node_point(aes(color=Sexo), size=4) 
+```
+
+
+# Modeling Networks
+
+## Difficulty 
+
+Modeling network is _difficult_ as there are a lot of dependencies
+
+- A calling B a friend might depend on if B calls A a friend. 
+- A calling B a friend might depend on if B calls C a friend. 
+
+## Options 
+
+There are a few methods that have been developed: 
+
+- Exponential Random Graph Models (ERGMs)
+- Stochastic Actor-Oriented Models (SAOMs)
+
+Both attempt to model the complex interdependencies, I'm more familiar with ERGMs. 
+
+## Where to go
+
+- If you want to learn more about ERGMs: [Inferential Network Analysis](https://www.cambridge.org/highereducation/books/inferential-network-analysis/A7797D36A24647AA1F900CE7EF694C7E#overview) by Skyler J. Cranmer, Bruce A. Desmarais, and Jason W. Morgan
+  - They will make heavy use of the `statnet` suite of packages. 
+- If you want more basic network knowledge (emphasis on graph theory): [Networks](https://global.oup.com/academic/product/networks-9780198805090) by Mark Newman 
+- If you want a general intro to networks: [Analyzing Social Networks in R](https://us.sagepub.com/en-us/nam/analyzing-social-networks-using-r/book271675) by Stephen P. Borgatti, Martin G. Everett, Jeffrey C. Johnson, Filip Agneessens
+  - Ignore their package
+
+## Other Things I Don't Know About 
+
+- There are a variety of models to test how things _flow_ in networks (and models to infer networks from flows). 
+- There are a few people who do experiments on networks (it is hard). 

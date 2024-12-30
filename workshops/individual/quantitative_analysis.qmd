@@ -1,0 +1,486 @@
+---
+title: Quantitative Analysis and Labor 
+author: "Kevin Reuning"
+editor:
+  render-on-save: true
+format: 
+    clean-revealjs:
+        width: 1600
+        height: 900
+        slide-number: false
+        callout-icon: false
+        execute:
+            echo: false
+            fig-align: center
+        mermaid-format: png
+        mermaid:
+            theme: neutral
+---
+
+
+## Goals for Today
+
+- Overview of quantitative methods 
+- The use of polling and survey data
+- Where to find polling and survey data
+
+## Who am I? 
+
+- I'm Kevin Reuning (ROY-ning). 
+- I'm an Associate Professor in Political Science. 
+- My research focuses on American politics, especially political parties, social movements, and the media. 
+    - Within this is a focus on how we can better _measure_ political phenomenon. 
+- I'm a proud member of Faculty Alliance of Miami, AAUP-AFT. 
+
+## What I want from you
+
+- Stop me to ask questions.
+- I know you all have very different backgrounds from me (and often from each other). 
+
+
+## Setup 
+
+- Quantitative methods focus on identifying the _relationship_ between two variables
+    - The _cause_ variable is the **independent variable**
+    - The _effect_ variable is the **dependent variable**
+- Putting them together identifies a **hypothesis**
+. . .
+
+::: {.callout-tip title="Example"}
+
+Higher rates of union coverage lead to lower levels of inequality.
+
+:::
+ 
+
+## Types of Relationships  
+
+Two types of relationships:
+
+- Relational: Two variables are _related_ to each other but it is not clear that one causes the other. 
+- Causal: One variable clearly _causes_ the other variable to change
+
+. . .
+
+Most research starts with _relational_ hypotheses before moving to _causal_ hypotheses. 
+
+## Measurement 
+
+```{mermaid}
+%%| fig-width: 10
+%%| fig-align: center
+
+flowchart LR
+  A[Construct] --Operationalization--> B[Variable]
+
+```
+
+- Construct: The underlying concept that you are interested in. 
+- Operationalization: The rules or process that is applied to turn that into a quantitative measure. 
+- Variable: The measure that is used in your analysis. 
+
+## Measurement Example 
+
+- Construct: The extent of economic inequality in a state. 
+- Operationalization options: 
+    - Calculate the percent of wealth owned by the top 1 percent. 
+    - Divide the income of the top 90th percentile by the income of the 50th percentile.
+    - Calculate how much the income distribution differs from a perfectly equal distribution (Gini Coefficient)
+
+## Types of Variables 
+
+Variables are differentiated by their **attributes** (the levels that a variable can take)
+
+- Nominal variables: The attributes have no logical order. 
+    - Ex: Categorizing employees by the factories they work at. 
+- Ordinal variables: The attributes have a logical order, but the differences in the levels are fuzzy. 
+    - Ex: Categorizing employees by the "prestige" of their job. 
+- Interval variables: The attributes have a logical order and the differences are clear. 
+    - Ex: How long an employee has worked in a position. 
+
+## Variable Example 
+
+::: {.callout-tip title="Hypothesis"}
+
+Higher rates of union coverage lead to lower levels of inequality.
+
+:::
+
+- Inequality: Measured by the gini coefficient. 
+    - Interval variable from 0 to 1 where higher levels mean more inequality. 
+- Union coverage: Measured by the percent of employees that are _members_ of a union. 
+    - Interval variable
+
+## Variable Example
+
+```{r}
+#| layout-ncol: 2
+#| fig-cap: 
+#|    - "Histogram of Union Coverage"
+#|    - "Histogram of Gini Coefficient"
+
+library(tidyverse)
+library(ggpubr)
+
+df <- read_csv("data/state_data.csv")
+
+ggplot(df, aes(x=`Percent Members`)) +
+    geom_histogram() + 
+    theme_pubr() + 
+    labs(y="Frequency")
+
+ggplot(df, aes(x=Gini)) +
+    geom_histogram() + 
+    theme_pubr() + 
+    labs(y="Frequency")
+
+```
+
+
+## Testing Relationships 
+
+There are a _lot_ of ways to test for relationships between variables, and the specifics will depend on: 
+
+- What _types_ of variables you are testing. 
+- How you are dealing with (if at all) the need to identify a causal relationship (more later).
+
+## Example 
+
+We can look then at how our inequality and membership relate to each other by plotting them and fitting a line of best fit. 
+
+## Example 
+
+```{r}
+library(ggrepel)
+
+df |> ggplot(aes(x=`Percent Members`, y=Gini)) + 
+    geom_point() + 
+    geom_text_repel(aes(label=`State`)) + 
+    theme_pubr()
+
+```
+
+
+## Example 
+
+```{r}
+
+df |> ggplot(aes(x=`Percent Members`, y=Gini)) + 
+    geom_point() + 
+    geom_smooth(method="lm") + 
+    theme_pubr()
+
+```
+
+## Limits 
+
+This is a pretty limited test of this, it doesn't account for other possible explanations: 
+
+- Political factors
+- Differences in industry
+- Variation overtime 
+
+## Better Example 
+
+![[Bucci (2018)](https://doi.org/10.1177/1532440018760198)](images/bucci.png){fig-align="center"}
+
+## Different Types of Quantitative Research
+
+They often vary in the _units_ that are in your data. 
+
+- Cross-sectional: You compare units at the same time point but across different situations. 
+- Time series: You compare a unit with itself at different time points.
+- Panel: You compare multiple units overtime, 
+
+. . .
+
+There is also a distinction made between observational research, experiments and natural experiments. 
+
+## Experiments
+
+- There is an increasing interest in using experiments in quantitative research
+- Experiments are the 'gold standard' in identifying causal relationships. 
+- The key idea in an experiment is that _researcher_ randomly assigns individuals different levels of the independent variable (the treatment) 
+
+## Natural Experiments 
+
+- Natural experiments are an alternative to traditional experiments
+- Instead of the researcher "treating" your units you look for a case where nature "treated" your units. 
+    - Ex: Looking at the effects of May Day parades by looking at what cities had rain on May 1st. 
+
+
+## Survey Research 
+
+Surveys can be used to capture opinions, behaviors, and experiences of voters. 
+
+- Population: The set of individuals that a survey wants to make _claims_ about (Often "voters" or "all adults")
+- Sampling Frame: The individuals that survey researchers can potentially sample to take their survey. 
+- Sample: The set of individuals who actually _take_ the survey. 
+
+## Sample Size 
+
+There is a known relationship between sample size and amount of error in your sample: 
+
+1) As sample size increases the amount of _error_ in your sample decreased. 
+2) The decrease in error is not linear, larger samples reduce error by smaller amounts. 
+
+## Population 
+
+```{r}
+#| fig-width: 7
+#| fig-height: 5
+
+
+
+set.seed(1)
+n_pop <- 10000
+age <- 18+rbeta(n_pop, 1, 2)*82
+#age[age>100] <- age[age>100] - 50 
+pid <- sample(1:3, n_pop, p=c(.30, .45, .25), replace=TRUE)
+pid <- factor(pid, levels=1:3, labels=c("Republican", "Independent", "Democatic"))
+data <- data.frame(Age=age, Party=pid)
+
+ggplot(data, aes(x=Age, y=Party)) + 
+    geom_jitter(alpha=.1) + 
+    theme_pubr()
+
+true_tb <- data |> group_by(Party) |> 
+    summarize(Percentage=n()/n_pop) 
+
+```
+
+
+## Sampling 10
+
+
+```{r}
+#| fig-width: 7
+#| fig-height: 5
+
+n_sample <- 10
+data <- data |> 
+    mutate(Sampled = ifelse(row_number() %in% sample.int(n_pop, n_sample), "Yes", "No") )
+est_tb_10 <- data |> filter(Sampled=="Yes") |> 
+    group_by(Party) |> 
+    summarize("Estimate"=n()/n_sample) 
+
+
+ggplot(data, aes(x=Age, y=Party, color=Sampled, alpha=Sampled)) + 
+    geom_jitter() + 
+    theme_pubr() + 
+    geom_label(aes(label=scales::percent(Estimate), y=Party), x=95, 
+            inherit.aes=F,
+            data=est_tb_10) + 
+    scale_alpha_manual(values=c("Yes"=1, "No"=0.1)) +
+    scale_color_manual(values=c("Yes"="green", "No"="black")) +
+    guides(alpha="none")
+
+
+
+```
+
+## Sampling 100
+
+
+```{r}
+#| fig-width: 7
+#| fig-height: 5
+
+
+n_sample <- 100
+data <- data |> 
+    mutate(Sampled = ifelse(row_number() %in% sample.int(n_pop, n_sample), "Yes", "No") )
+est_tb_100 <- data |> filter(Sampled=="Yes") |> 
+    group_by(Party) |> 
+    summarize("Estimate"=n()/n_sample) 
+
+
+ggplot(data, aes(x=Age, y=Party, color=Sampled, alpha=Sampled)) + 
+    geom_jitter() + 
+    theme_pubr() + 
+    geom_label(aes(label=scales::percent(Estimate), y=Party), x=95, 
+            inherit.aes=F,
+            data=est_tb_100) + 
+    scale_alpha_manual(values=c("Yes"=1, "No"=0.1)) +
+    scale_color_manual(values=c("Yes"="green", "No"="black")) +
+    guides(alpha="none")
+
+```
+
+
+## Sampling 500
+
+
+```{r}
+#| fig-width: 7
+#| fig-height: 5
+
+n_sample <- 500
+data <- data |> 
+    mutate(Sampled = ifelse(row_number() %in% sample.int(n_pop, n_sample), "Yes", "No") )
+est_tb_500 <- data |> filter(Sampled=="Yes") |> 
+    group_by(Party) |> 
+    summarize("Estimate"=n()/n_sample) 
+
+
+ggplot(data, aes(x=Age, y=Party, color=Sampled, alpha=Sampled)) + 
+    geom_jitter() + 
+    theme_pubr() + 
+    geom_label(aes(label=scales::percent(Estimate), y=Party), x=95, 
+            inherit.aes=F,
+            data=est_tb_500) + 
+    scale_alpha_manual(values=c("Yes"=1, "No"=0.1)) +
+    scale_color_manual(values=c("Yes"="green", "No"="black")) +
+    guides(alpha="none")
+
+```
+
+
+## Sampling 1000
+
+
+```{r}
+#| fig-width: 7
+#| fig-height: 5
+
+
+n_sample <- 1000
+data <- data |> 
+    mutate(Sampled = ifelse(row_number() %in% sample.int(n_pop, n_sample), "Yes", "No") )
+est_tb_1000 <- data |> filter(Sampled=="Yes") |> 
+    group_by(Party) |> 
+    summarize("Estimate"=n()/n_sample) 
+
+
+ggplot(data, aes(x=Age, y=Party, color=Sampled, alpha=Sampled)) + 
+    geom_jitter() + 
+    theme_pubr() + 
+    geom_label(aes(label=scales::percent(Estimate), y=Party), x=95, 
+            inherit.aes=F,
+            data=est_tb_1000) + 
+    scale_alpha_manual(values=c("Yes"=1, "No"=0.1)) +
+    scale_color_manual(values=c("Yes"="green", "No"="black")) +
+    guides(alpha="none")
+
+```
+
+
+## Increasing Samples
+
+```{r}
+#| fig-width: 7
+#| fig-height: 5
+
+
+n_sample <- 10:5000
+full <- NULL
+for(ii in n_sample){
+    data <- data |> 
+        mutate(Sampled = ifelse(row_number() %in% sample.int(n_pop, ii), "Yes", "No") )
+    full <- data |> filter(Sampled=="Yes") |> 
+        group_by(Party) |> 
+        summarize("Estimate"=n()/ii) |>
+        mutate("Sample Size"=ii) |> rbind(full)
+}
+
+ggplot(full, aes(x=`Sample Size`, y=Estimate, color=Party)) + 
+    geom_line() + 
+    theme_pubr() + 
+    scale_y_continuous(labels=scales::label_percent()) + 
+    geom_hline(aes(yintercept=Percentage), data=true_tb, linetype="dashed") + 
+    scale_color_manual(values=c("Democatic"="skyblue3", "Republican"="orangered3", 
+        "Independent"="springgreen3")) + 
+    geom_vline(xintercept=100, linetype="dotted") + 
+    geom_text(x=550, y=.6, label="500", angle=270, inherit.aes=F, 
+            data=tibble(x=1)) + 
+    geom_text(x=150, y=.6, label="100", angle=270, inherit.aes=F, 
+            data=tibble(x=1)) + 
+    geom_vline(xintercept=500, linetype="dotted") +
+    geom_text(x=1050, y=.6, label="1,000", angle=270, inherit.aes=F, 
+            data=tibble(x=1)) + 
+    geom_vline(xintercept=1000, linetype="dotted")
+
+
+```
+
+
+## Response Rate 
+
+- The biggest concern with surveys right now is decreasing response rates. 
+- Response rates for traditional phone surveys are around 5%. 
+- This becomes an issue when the individuals who respond to surveys are systematically different from those who don't once we account for known factors. 
+    - i.e. the white men between the ages of 18 and 35 with college degrees who take the survey are different than the white men between the ages of 18 and 35 with college degrees who did not take the survey. 
+
+
+## Survey Data 
+
+There are a few big surveys that are done regularly: 
+
+- [American National Election Study](https://electionstudies.org/)
+- [Cooperative Election Study](https://cces.gov.harvard.edu/)
+- [The General Social Science Survey](https://gss.norc.org/)
+
+In each of these you can download the data directly and ANES and GSS have tools for you to do analysis online. 
+
+## ANES - Union Membership and Partisanship 
+
+```{r}
+df <- read_csv("data/anes_timeseries_cdf_csv_20220916.csv")
+
+# Union Membership VCF0127b (type 0)
+# PID VCF0301 (type 0)
+# VCF0009z weight
+# VCF0004 year
+
+pal <- colorRampPalette(c("orangered3", "gray","darkblue"))
+
+df |> filter(VCF0127b %in% c(1, 3) & VCF0301 > 0) |>
+    group_by(VCF0004, VCF0301) |>  
+    summarize(n=sum(VCF0009z)) |> 
+    group_by(VCF0004) |>
+    mutate(total=sum(n), 
+        prop=n/total, 
+        Party=factor(VCF0301, 1:7, 
+        labels=c("Strong Dem", "Weak Dem", "Lean Dem", "Indep", "Lean Rep", "Weak Rep", "Strong Rep"))) |>
+    ggplot(aes(x=VCF0004, y=prop, 
+    fill=forcats::fct_rev(Party))) + 
+    geom_col() + 
+    geom_hline(yintercept=.5, linetype="dashed") + 
+    geom_hline(yintercept=c(.25, 0.75), linetype="dotted") + 
+    scale_fill_manual("Party ID", values=pal(7)) + 
+    scale_y_continuous(labels=scales::label_percent()) +
+    labs(y="Percentage", x="") + 
+    theme(legend.position="bottom")
+```
+
+## iPoll 
+
+- Penn State has access to the [Roper iPoll database](https://libraries.psu.edu/databases/psu01070) 
+- Organizations that field surveys provide their data (though not all provide it to the same degree). 
+
+## iPoll Example 
+
+![](images/ipoll_general.png)
+
+## iPoll Example 
+
+If you want to look at differences across subgroups you can check the "crosstabs" option which will limit your search to polls that include crosstabs
+
+![](images/ipoll_crosstabs.png)
+
+## iPoll Example 
+
+Once you get there you can select the "Demographic Crosstabs" to look at responses across different groups. 
+
+![](images/ipoll_explained.png)
+
+## Reading Crosstabs 
+
+The crosstabs here show the responses within each column. 
+
+- Among Democrats 52% said "Some" and the second largest category was "A great deal" with.
+- Among Republicans only 38% said "Some" and the second largest category was "Not too much" with 28%. 
+
+## Thank You
+
+Questions? 

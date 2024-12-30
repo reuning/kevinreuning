@@ -1,0 +1,467 @@
+---
+title: "Introduction to R: Plotting"
+format: 
+    clean-revealjs:
+        width: 1600
+        height: 900
+        slide-number: false
+        callout-icon: false
+        execute:
+            echo: true
+revealjs-plugins:
+  - codefocus
+---
+
+```{R}
+#| include: false 
+library(readr)
+df  <- read_csv("images/country_data.csv")
+```
+
+<!--- 
+When I redo this try to have them create new datasets
+They kept re-writing over things and getting confused. 
+Also do not use pull() as much.
+
+--->
+## Goals for Today
+
+- Understand how to make a variety of basic plots (scatter and bar)
+- Manipulate data (relabeling)
+- Export graphs
+
+# Data for Today 
+
+Today we are going to keep using a subset of country data from [The Quality of Governance Institute](https://www.gu.se/en/quality-government/qog-data).
+
+- Download the [data we'll be using here](images/country_data.csv)
+- You can open it with `read_csv()` and if you need more help check out the [first day of slides.](https://kevinreuning.com/presentations/workshops/r_bootcamp/day_1.html)
+- There is a description of all the [variables I've included here.](https://kevinreuning.com/presentations/workshops/r_bootcamp/country_data.html) 
+- We need the following packages installed: `install.packages(c("tidyverse"))`
+
+
+```{r}
+library(tidyverse)
+setwd("images")
+df <- read_csv("country_data.csv")
+```
+
+
+## From Last Week
+
+We are going to use a better measure of electoral type: `br_elect` which creates 4 categories (No elections=0, Single-party elections=1, non-democratic multi-party elections=2, democratic elections= 3)
+
+
+```{r}
+df %>% filter(!is.na(br_elect)) %>% 
+    group_by(br_elect) %>% 
+    summarize(mean=mean(mad_gdppc, na.rm=T), n = n())
+```
+
+
+
+# Changing variables
+
+## `mutate()`
+
+If we want to change the values of a variable we use `mutate()`
+
+General format: 
+
+``mutate(new_var = f(old_var))`` 
+
+. . . 
+
+What function though? `br_elect` is a small set of numbers where each represent a category. This is a factor.  
+
+## Applying `factor()`
+
+`factor()` creates a factor, with a certain set of numeric levels, and labels and so needs somethings:
+
+- The variable you are change (the first thing).
+- The set of numeric levels in the variable. `levels=c( )`
+- Labels you want to apply to the levels. `labels=c( )` 
+
+## Example of Factor 
+
+```{R}
+library(tidyverse)
+df %>% mutate(br_elect_label = 
+        factor(br_elect, levels=c(0, 1, 2, 3), 
+                labels=c("None", "Single-party", 
+                "Non-dem multi-party", "Democratic"))) %>%
+    pull(br_elect_label)
+```
+
+## Making better labels
+
+
+```{R}
+df %>% filter(!is.na(br_elect)) %>% 
+    mutate(br_elect_label = 
+            factor(br_elect, levels=c(0, 1, 2, 3), 
+                    labels=c("None", "Single-party", 
+                    "Non-dem multi-party", "Democratic"))) %>% 
+    group_by(br_elect_label) %>% 
+    summarize(mean=mean(mad_gdppc, na.rm=T), n = n())
+```
+
+## More Complicated Situations 
+
+Often there are variables we want to _coarsen_ (take from interval and put them into categories), here we can use the `cut()` function to **cut** our variable up into categories. 
+
+There are a variety of ways to `cut()` the most common way is giving it a set of "breaks" where you tell it where you want the bins to be.
+
+```{r}
+set.seed(1) ## Lets me recreate the exact random variables
+vector <- rnorm(100) # creating a bunch of random variables 
+cut_vector <- cut(vector, breaks=c(-4,-1, -0.5, 0, 0.5, 1, 4))
+table(cut_vector)
+```
+
+## Adding Labels
+
+You can also add labels to it, but remember **N** breaks creates **N-1** labels. 
+
+```{r}
+
+set.seed(2)
+vector <- rnorm(100)
+cut_vector <- cut(vector, breaks=c(-4,-1, -0.5, 0, 0.5, 1, 4), 
+    labels=c("Lowest", "Low", "Mid-Low", 
+            "Mid-High", "High", "Highest"))
+table(cut_vector)
+
+```
+
+## Using Cut in Mutate
+
+
+```{r}
+df %>% mutate(
+    corrupt = cut(ti_cpi, breaks=c(0, 33, 66, 100), 
+            labels=c("Low", "Mid", "High"))
+            ) %>%
+    group_by(corrupt) %>% 
+    summarize(mean=mean(mad_gdppc, na.rm=T), n = n())
+
+```
+
+## Check 
+
+There is a variable that captures the fertility rate, mutate it into a variable with 3 categories one that is around replacement rate (between 1.9 and 2.3), one that is below that, and one that is above that (it goes from 0 to almost 7).
+
+Then `group_by()` that new variable and count up how many observations in each bin. 
+
+## My Solution
+
+```{r}
+df %>% mutate(
+    fert_groups = cut(wdi_fertility, breaks=c(0, 1.9, 2.3, 7), 
+            labels=c("Below", "Replacement", "Above"))
+            ) %>%
+    group_by(fert_groups) %>% 
+    summarize(n = n())
+
+```
+
+# **ggplot2** 
+
+
+## **ggplot2** Introduction 
+
+We are going to use another library today: **ggplot2**
+
+> ggplot2 is a system for declaratively creating graphics, based on The Grammar of Graphics. You provide the data, tell ggplot2 how to map variables to aesthetics, what graphical primitives to use, and it takes care of the details. ^[https://ggplot2.tidyverse.org/]
+
+```{R}
+library(tidyverse) # will load ggplot2 as well 
+#library(ggplot2) # to just load ggplot 
+```
+
+## **ggplot2** Basics
+
+Every plot is going to start with a call to `ggplot()` with the arguments that identify the data you want to use and the **aesthetics** you want to use from that data.
+
+We then tell it how to plot use that data by adding on `geom_*()` functions 
+
+## Simple Plot
+
+```{R}
+#| output-location: column
+ggplot(df, 
+    aes(x=mad_gdppc)) +
+    geom_histogram() 
+```
+
+::: {.fragment .current-only data-code-focus="1"}
+Setting the data frame we are accessing 
+:::
+
+::: {.fragment .current-only data-code-focus="2"}
+Identifying that we are going to use `mad_gdppc` as the x variable by using the `aes()` within `ggplot()` 
+:::
+
+
+::: {.fragment .current-only data-code-focus="3"}
+Displaying that data as a histogram by adding `geom_histogram()`
+:::
+
+::: {.fragment .current-only data-code-focus="1-3"}
+Remember things are linked together with `+` 
+:::
+
+
+## Modifying the Style and Labels
+
+We should _always_ provide human readable labels on plots. You add `labs()` to set them. This has arguments for the x axis (`x=`), y axis (`y=`) and the title (`title=`)
+
+. . .
+
+```{r}
+#| output-location: slide
+ggplot(df, 
+    aes(x=mad_gdppc)) +
+    geom_histogram() + 
+    labs(y="Frequency", x="GDP Per Capita", 
+        title="Histogram of GDP per Capita")
+```
+
+## Themes
+
+``ggplot`` has a large number of [themes](https://ggplot2.tidyverse.org/reference/ggtheme.html) that you can use to change the style of your plot. 
+
+```{r}
+#| output-location: column
+ggplot(df, 
+    aes(x=mad_gdppc)) +
+    geom_histogram() + 
+    labs(y="Frequency",
+        x="GDP Per Capita", 
+        title="Histogram of GDP per Capita") +
+    theme_minimal()
+```
+
+## Different Theme
+
+```{r}
+#| output-location: column
+ggplot(df, 
+    aes(x=mad_gdppc)) +
+    geom_histogram() + 
+    labs(y="Frequency", 
+        x="GDP Per Capita", 
+        title="Histogram of GDP per Capita") +
+    theme_dark()
+```
+
+## Adding more Aesthetics 
+
+We can also modify the color and transparency of the bars to specific values by adding them to the `geom_histogram()` call
+
+```{r}
+ggplot(df, 
+    aes(x=mad_gdppc)) +
+    geom_histogram(fill="green", color="gray", 
+            alpha=.5) + 
+    labs(y="Frequency", x="GDP Per Capita", 
+        title="Histogram of GDP per Capita") + 
+    theme_minimal()
+```
+
+## Some Common Aesthetics
+
+- `color=` the color of lines or points.
+- `fill=` the fill in color.
+- `alpha=` how transparent an object is (0 to 1, with 0 as invisible
+- `linewidth=` how thick lines are
+- `linetype=` the types of lines
+
+[More info on this page](https://ggplot2.tidyverse.org/reference/geom_bar.html#aesthetics)
+
+## Check 
+
+Identify a different variable, make a histogram of, correct the labels, and change some of the other aesthetics. 
+
+## My Answer
+
+```{r}
+
+ggplot(df, 
+    aes(x=vdem_academ)) +
+    geom_histogram(fill="gray", color="black") + 
+    labs(y="Frequency", x="Academic Freedom (V-Dem)", 
+        title="Histogram of Academic Freedom") + 
+    theme_minimal()
+```
+
+# Scatter Plots and Scales
+
+## Saving a Plot in R
+
+Before going further it is helpful to know that you can save your plot (`p <- `) and then add more things to it:
+
+```{r}
+p1 <- ggplot(df, aes(x=vdem_academ)) 
+p1 <- p1 + geom_histogram(fill="gray", color="black") 
+p1 <- p1 + labs(y="Frequency", x="Acaddemic Freedom (V-Dem)", 
+title="Histogram of Academic Freedom") 
+p1 + theme_minimal() ## Calling the plot with a theme attached
+``` 
+
+## Modifying a Plot 
+
+We can then try out other things more easily:
+```{r}
+p1 + theme_classic() #Switching to a new theme
+```
+
+## Scatter Plots
+
+`geom_point()` is going to plot points at the `x` and `y` value you that you give it:
+
+```{r}
+ggplot(df, aes(x=vdem_academ, y=mad_gdppc)) + 
+    geom_point()
+```
+
+## Aesthetics 
+
+There are again a bunch of aesthetics, some of the new ones are:
+
+- `shape=` the shape of the point (try some different numbers)
+- `size=` the size of the point 
+
+[More info](https://ggplot2.tidyverse.org/reference/geom_point.html#aesthetics)
+
+## Aesthetics Example
+
+```{r}
+ggplot(df, aes(x=vdem_academ, y=mad_gdppc)) + 
+    geom_point(color="purple", shape=4)
+```
+
+## Aesthetics with Other Variables
+
+We can also set any of these aesthetics to reflect another variable
+```{r}
+ggplot(df, aes(x=vdem_academ, y=mad_gdppc, 
+    color=fh_polity2)) + 
+    geom_point(size=3)
+```
+
+. . .
+
+We have a new label to fix. 
+
+## Scales and Guides
+
+Each aesthetics has associated functions that can be used to modify the `scale` it uses. `scale_color_gradient()` switches the colors to a gradient defined by a `high` color and a `low` color. 
+
+```{r}
+ggplot(df, aes(x=vdem_academ, y=mad_gdppc, 
+    color=fh_polity2)) + 
+    geom_point(size=3) + 
+    scale_color_gradient(low="pink", high="black") 
+```
+
+
+## Scales and Guides Labels
+
+The `scale_*_*()` variables all take a `name` argument as well, that is the first thing it expects so you can just put it in the first. 
+
+```{r}
+ggplot(df, aes(x=vdem_academ, y=mad_gdppc, 
+    color=fh_polity2)) + 
+    geom_point(size=3) + 
+    scale_color_gradient("Democracy", 
+    low="pink", high="black") 
+```
+
+## Other Scales
+
+There are a lot of [scales](https://ggplot2.tidyverse.org/reference/index.html#scales) and often there are similar ones that apply to different aesthetics:
+
+- `scale_color_gradient2()` and `scale_fill_gradient2()`
+    - Allows you to set a midpoint
+- `scale_x_log10()` and `scale_y_log`()` 
+    - Log transformation of the scale on the x or y axis.
+- `scale_color_manual()` and `scale_fill_manual()`
+    - Manually pick colors for different categories
+- `scale_color_brewer()` and `scale_fill_brewer()`
+    - A selection of pallettes for categorical data. 
+
+## Adding More Scales
+
+```{r}
+ggplot(df, aes(x=vdem_academ, y=mad_gdppc,color=fh_polity2)) + 
+    geom_point(size=3) + scale_y_log10() +
+    scale_color_gradient2("Democracy", 
+    low="pink", mid="gray", high="green", midpoint = 5) +theme_minimal() + 
+    labs(y="GDP per Cap\n(Log scale)", x="Academic Freedom", 
+    title="GDP vs Academic Freedom")
+```
+
+## Check 
+
+Pick two interval variables, and an additional variable (any type). Make a scatter plot of the variables using the third variable to color in the points. 
+
+Label things nicely. 
+
+# Combining Mutate and ggplot 
+
+## Making Our Guides Nice
+
+As discussed before, often the values of our variables don't make for good labels. The easiest way to relabel these is by adjusting the data _prior_ to making a plot. 
+
+We can then pipe that data into our new plot
+
+## Example {auto-animate=true}
+
+```{.r}
+df %>% filter(!is.na(br_elect)) %>% 
+    mutate(br_elect_label = factor(br_elect, levels=c(0, 1, 2, 3), 
+        labels=c("None", "Single-party", "Non-dem multi-party", "Democratic"))) %>% 
+```
+
+
+## Example {auto-animate=true}
+
+```{.r}
+df %>% filter(!is.na(br_elect)) %>% 
+    mutate(br_elect_label = factor(br_elect, levels=c(0, 1, 2, 3), 
+        labels=c("None", "Single-party", "Non-dem multi-party", "Democratic"))) %>% 
+    ggplot(aes(x=vdem_academ, y=mad_gdppc, color=br_elect_label)) + 
+    geom_point() + 
+    scale_color_brewer("Election Type", type="qual", palette = 3) +theme_minimal() + 
+    labs(y="GDP per Cap\n(Log scale)", x="Academic Freedom", 
+    title="GDP vs Academic Freedom")
+```
+
+## Example {auto-animate=true}
+
+```{r}
+df %>% filter(!is.na(br_elect)) %>% 
+    mutate(br_elect_label = factor(br_elect, levels=c(0, 1, 2, 3), 
+        labels=c("None", "Single-party", "Non-dem multi-party", "Democratic"))) %>% 
+    ggplot(aes(x=vdem_academ, y=mad_gdppc, color=br_elect_label)) + 
+    geom_point() + 
+    scale_color_brewer("Election Type", type="qual", palette = 3) +theme_minimal() + 
+    labs(y="GDP per Cap\n(Log scale)", x="Academic Freedom", 
+    title="GDP vs Academic Freedom")
+```
+
+# Saving Plots
+
+## Two ways to save plots
+
+- Rstudio has an "export" button above the plots that you can use. 
+- Call `ggsave()` with a file name:
+
+```{.r}
+p <- ggplot(...
+ggsave(filename="file.png", plot=p, width=6, 
+    height=4, units="in")
+```
+Saves plot `p` as a png, with a size of 6 by 4 inches. 
+

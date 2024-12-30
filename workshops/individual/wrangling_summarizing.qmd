@@ -1,0 +1,506 @@
+---
+title: "Wrangling and Summarizing Data in R"
+author: "Kevin Reuning"
+format: revealjs
+revealjs-plugins:
+  - codefocus
+execute: 
+  cache: true
+---
+
+
+
+## Goals for Today
+
+- Manipulate data (filter specific rows, select columns).
+- pipes
+- Summarizing data
+
+## Tidyverse
+
+- A lot of data science work is done using the Tidyverse suite of packages.
+- We can install the entire suite using: `install.package()`
+
+Run: 
+```{.R}
+install.packages("tidyverse")
+```
+
+There might be a popup asking about installing things from "Source" you can hit no on it. 
+
+
+# Data for today 
+
+Today we are going to use a subset of country data from [The Quality of Governance Institute](https://www.gu.se/en/quality-government/qog-data).
+
+- Download the [data we'll be using here](../r_bootcamp/images/country_data.csv)
+- You can open it with `read_csv()`
+
+
+```{r}
+library(readr)
+setwd("../r_bootcamp/images/")
+df <- read_csv("country_data.csv")
+```
+
+
+
+## Variables
+
+There is a description of all the [variables I've included here.](https://kevinreuning.com/presentations/workshops/r_bootcamp/country_data.html) 
+
+For now though we are going to use a few of them: 
+
+- `bmr_demdur` is how long the country has been in the same regime type category
+- `top_top1_income_share` is the proportion of income that goes to the top 1%. 
+
+# Filtering Data 
+
+Often you want to select just specific rows of data that meet certain requirements. 
+
+
+## Logical Checks 
+
+We need to include some more operators to do this:
+
+- `<` less than and `>` greater than
+- `<=` less than or equal to and `>=` greater than or equal to 
+- `==` equal to and `!=` not equal to
+
+. . .
+
+```{r}
+43 < 4
+(4*pi)^2 > 5
+```
+
+## Logical Values 
+
+- The output from these checks is another form of variable called a **logical**. 
+- We can have vectors of logical values
+
+```{r}
+names <- c("Kevin", "Anne", "Sophie")
+names == "Kevin"
+```
+
+## Logical Checks with Data 
+
+We can do the same thing but using a variable from our dataset: 
+
+```{r}
+## Returns true if dem_dur (regime type length) is more than 100.
+df$bmr_demdur > 100 
+```
+
+## Filtering Data 
+
+We can use logical checks to filter our data. 
+
+- The `filter()` function is part of the **plyr** package in the **tidyverse**. 
+- The first argument will be the data you want to filter. 
+- The second argument will be the logical check.  
+
+::: {.callout-note}
+Within the `filter()` call you do not need to use `data$` before the variable name, it already knows you are using the data you put in the first argument.
+:::
+
+## Filtering Data - Example 
+
+```{r}
+library(tidyverse)
+
+# df <- read_csv("country_data.csv") ## remember I did this already
+filter(df, bmr_demdur>100)
+```
+
+. . . 
+
+If we want we can save the new data as well: 
+
+```{.R}
+sub_df <- filter(df, bmr_demdur>100)
+```
+
+
+# Checking Multiple Things 
+
+What about if we want to check if our rows meet multiple condition? Then we need **logical operators**. 
+
+## Logical Operators
+- We can reverse a logical value with `!` (e.g. `!TRUE == FALSE`) 
+- We have **and** and **or** operators to check multiple logical values. 
+    - **and** is `&`
+    - **or** is `|` (shift + backslash)
+- `&` returns `TRUE` if both values are `TRUE`
+- `|` returns `TRUE` if at least one value is `TRUE`
+
+. . .
+
+```{.R}
+TRUE & TRUE 
+TRUE | FALSE 
+TRUE | TRUE 
+```
+All would return `TRUE`
+
+## Combining Logical Check
+
+We can then combine logical checks together.
+
+```{r}
+val <- pi^(2/3)
+(val < 1) | (val > 4) # Is it less than 0 or greater than 4?
+```
+
+## Multiple Checks in Filtering 
+
+Lets collect countries with 100 years of the same regime type where more than 10% of income goes to the top 1%
+
+```{r}
+sub_df <- filter(df, bmr_demdur > 100 & top_top1_income_share > .1)
+sub_df$cname
+```
+
+## Check 
+
+Create two new datasets.
+
+1. Only countries that have an income share greater than 25%
+2. Countries that have had the same regime type for 50 to 100 years. 
+
+## How I did it
+
+```{r}
+sub_df1 <- filter(df, top_top1_income_share > .25)
+sub_df1$cname
+```
+
+```{r}
+sub_df2 <- filter(df, bmr_demdur > 50 & bmr_demdur < 100)
+sub_df2$cname
+```
+
+# Pipes %>% 
+
+Tidyverse syntax makes use of pipes to chain multiple functions together. 
+
+- You use the pipe operator (`%>%`) in between each step. 
+- This operator is like saying "take the output from the previous function and put it in the next function"
+
+. . . 
+
+For example (in pseudo-code): 
+
+`Output <- Step 1(Input) %>% Step 2() %>% Step 3()`
+
+**Translation**: Take the Input, apply Step 1 to it, then take the output of Step 1 and apply Step 2 to it, then take the output of Step 2 and apply Step 3 to it, and finally store the output of Step 3 as Output. 
+
+## Example 
+
+```{r}
+filter(df, bmr_demdur > 100 & top_top1_income_share > .1) %>% pull(cname)
+```
+
+What does the `pull()` function do? It is another way to access a certain column in your data. 
+
+
+## How else could we have done this? 
+
+```{r}
+pull(filter(df, bmr_demdur > 100 & top_top1_income_share > .1), cname)
+sub_df <- filter(df, bmr_demdur > 100 & top_top1_income_share > .1)
+sub_df$cname
+```
+
+## A Note of Caution 
+
+- The `%>%` has been around for a while in the tidyverse. 
+- R recently added its own version of this to base R BUT they use `|>` instead. 
+- In most cases `%>%` is the same as `|>` 
+
+Yes this is all kind of silly and strange. 
+
+# Summarizing Data 
+
+One of the most useful tidyverse functions is `summarize()`.
+
+- `summarize()` transforms data by applying a function(s) to columns in the data. 
+- The first argument will be the data, the rest of the arguments will be functions you want to apply to it. 
+- The output will be a smaller data frame where the columns are the output from each function it applied. 
+
+## Simple Examples
+
+What if we want to figure out the mean regime type length for our data? 
+
+```{r}
+#| output-location: fragment
+summarize(df, mean(bmr_demdur))
+```
+
+. . .
+
+What if we want to calculate other statistics? 
+
+. . .
+
+```{r}
+summarize(df, mean(bmr_demdur), sd(bmr_demdur), median(bmr_demdur))
+```
+
+## Caution - Multiple Return Values
+
+You generally want to use functions that only return 1 value. Why? 
+
+. . . 
+
+```{r}
+summarize(df, mean(bmr_demdur), sd(bmr_demdur), median(bmr_demdur), range(bmr_demdur))
+```
+
+## Filtering and Summarizing 
+
+What if we want to figure out the average income share for the top 1% for countries that have been around for more than 100 years? 
+
+```{r}
+#| output-location: fragment
+df %>% filter(bmr_demdur > 100) %>% summarize(mean(top_top1_income_share))
+```
+
+. . .
+
+We can improve the output by changing the column name: `summarize(col_name = mean(variable))`
+
+```{r}
+df %>% filter(bmr_demdur > 100) %>% summarize(mean = mean(top_top1_income_share))
+```
+
+## Number of Observations 
+
+There is also a function specifically for the number of observations: `n()`
+
+```{r}
+df %>% filter(bmr_demdur > 100) %>% summarize(n())
+```
+
+## Check 
+
+Find the mean and median regime type duration for countries that have more than 0.05 of their income going to the top 1%. Include the number of observations as well. 
+
+Then find the mean and median GDP per capita (`mad_gdppc`) along with the number of observations for countries with a regime type duration of less than 50 years. _There are missing values in this variable, what do we do to ignore them?_
+
+## My Solutions 
+
+```{r}
+df %>% filter(top_top1_income_share > .05) %>% 
+    summarize(mean=mean(bmr_demdur), median=median(bmr_demdur))
+```
+
+. . .
+
+```{r}
+df %>% filter(bmr_demdur < 50) %>% 
+    summarize(mean=mean(mad_gdppc, na.rm=T), 
+              median=median(mad_gdppc, na.rm=T),
+              n=n())
+```
+
+::: callout-note
+You can use multiple lines with pipes, it is common to put the pipe at the end of each line and indent the next line. 
+:::
+
+# Grouping
+
+Often we want to provide summaries of groups within the data. For example: how does the GDP vary by type of political regime? 
+
+Here we'll use the `group_by()` function to create groups of our data. 
+
+## `group_by()` alone
+
+`group_by()` expects variable(s) that you want to use to group your dataset: 
+
+```{r}
+df %>% group_by(br_elect) 
+```
+
+Only change is the addition of **# Groups: by_elect [5]** (grouping variable, and number of groups). 
+
+## Group and Summarize
+
+Lets chain together `group_by()` and `summarize()`
+
+```{r}
+df %>% group_by(br_elect) %>% 
+    summarize(mean=mean(mad_gdppc, na.rm=T), n = n())
+```
+
+. . . 
+
+What is ugly about this? 
+
+## Adding in Filtering 
+
+`is.na()` checks if something is missing or not. 
+
+```{r}
+df %>% filter(!is.na(br_elect)) %>% 
+    group_by(br_elect) %>% 
+    summarize(mean=mean(mad_gdppc, na.rm=T), n = n())
+```
+
+::: callout-tip
+The `drop_na( )` tidyverse function can replace `filter(!is.na( ))`
+:::
+
+## Check 
+
+There are several variables that can be used to group countries. Pick one of them, pick an interval variable that you think might vary by the group, and then calculate the number of observations, mean, and median for each group. 
+
+## My Solution 
+
+- Grouping variable: `br_pvote`
+- Interval variable: `van_part`
+- Expectation: Countries with proportional representation (1) will have higher participation
+
+```{.R}
+df %>% 
+    drop_na(br_pvote) %>% 
+    group_by(br_pvote) %>%
+    summarize(n=n(), mean=mean(van_part, na.rm=T),
+            median=median(van_part, na.rm=T))
+```
+::: {.fragment .current-only data-code-focus="1"}
+Data that I am using
+:::
+
+::: {.fragment .current-only data-code-focus="2"}
+Filtering out observations that are missing a value for `br_pvote`
+:::
+
+::: {.fragment .current-only data-code-focus="3"}
+Grouping the data frame by `br_pvote`
+:::
+
+::: {.fragment data-code-focus="4-5"}
+Summarizing (number of observations, mean of `van_part`, median of `van_part`)
+:::
+
+
+## Another Improvement
+
+Our groups could have better names than 0, 1, 2, and 3. 
+
+```{r}
+df %>% filter(!is.na(br_elect)) %>% 
+    group_by(br_elect) %>% 
+    summarize(mean=mean(mad_gdppc, na.rm=T), n = n())
+```
+
+
+
+# Changing variables
+
+## `mutate()`
+
+If we want to change the values of a variable we use `mutate()`
+
+General format: 
+
+``mutate(new_var = f(old_var))`` 
+
+. . . 
+
+What function though? `br_elect` is a small set of numbers where each represent a category. This is a factor.  
+
+## Applying `factor()`
+
+`factor()` creates a factor, with a certain set of numeric levels, and labels and so needs somethings:
+
+- The variable you are change (the first thing).
+- The set of numeric levels in the variable. `levels=c( )`
+- Labels you want to apply to the levels. `labels=c( )` 
+
+## Example of Factor 
+
+```{R}
+library(tidyverse)
+df %>% mutate(br_elect_label = 
+        factor(br_elect, levels=c(0, 1, 2, 3), 
+                labels=c("None", "Single-party", 
+                "Non-dem multi-party", "Democratic"))) %>%
+    pull(br_elect_label)
+```
+
+## Making better labels
+
+
+```{R}
+df %>% filter(!is.na(br_elect)) %>% 
+    mutate(br_elect_label = 
+            factor(br_elect, levels=c(0, 1, 2, 3), 
+                    labels=c("None", "Single-party", 
+                    "Non-dem multi-party", "Democratic"))) %>% 
+    group_by(br_elect_label) %>% 
+    summarize(mean=mean(mad_gdppc, na.rm=T), n = n())
+```
+
+## More Complicated Situations 
+
+Often there are variables we want to _coarsen_ (take from interval and put them into categories), here we can use the `cut()` function to **cut** our variable up into categories. 
+
+There are a variety of ways to `cut()` the most common way is giving it a set of "breaks" where you tell it where you want the bins to be.
+
+```{r}
+set.seed(1) ## Lets me recreate the exact random variables
+vector <- rnorm(100) # creating a bunch of random variables 
+cut_vector <- cut(vector, breaks=c(-4,-1, -0.5, 0, 0.5, 1, 4))
+table(cut_vector)
+```
+
+## Adding Labels
+
+You can also add labels to it, but remember **N** breaks creates **N-1** labels. 
+
+```{r}
+
+set.seed(2)
+vector <- rnorm(100)
+cut_vector <- cut(vector, breaks=c(-4,-1, -0.5, 0, 0.5, 1, 4), 
+    labels=c("Lowest", "Low", "Mid-Low", 
+            "Mid-High", "High", "Highest"))
+table(cut_vector)
+
+```
+
+## Using Cut in Mutate
+
+
+```{r}
+df %>% mutate(
+    corrupt = cut(ti_cpi, breaks=c(0, 33, 66, 100), 
+            labels=c("Low", "Mid", "High"))
+            ) %>%
+    group_by(corrupt) %>% 
+    summarize(mean=mean(mad_gdppc, na.rm=T), n = n())
+
+```
+
+## Check 
+
+There is a variable that captures the fertility rate, mutate it into a variable with 3 categories one that is around replacement rate (2.1), one that is below it, and one that is above it. 
+
+Then `group_by()` that new variable and count up how many observations in each bin. 
+
+(it might help to use `range()` before identifying the bins)
+
+## My Solution
+
+```{r}
+df %>% mutate(
+    fert_groups = cut(wdi_fertility, breaks=c(0, 1.8, 2.4, Inf), 
+            labels=c("Below", "Replacement", "Above"))
+            ) %>%
+    group_by(fert_groups) %>% 
+    summarize(n = n())
+
+```
