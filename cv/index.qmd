@@ -2,7 +2,10 @@
 title: CV
 format:
     html: default
-    pdf: default
+    pdf: 
+        include-before-body: upper.tex
+        title: "Kevin Reuning"
+        fontsize: 10pt
 ---
 
 # Education 
