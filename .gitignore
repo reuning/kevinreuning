@@ -5,7 +5,7 @@ node_modules
 public
 _freeze
 
-.quarto
+/.quarto/
 _site
 .venv
 
@@ -15,4 +15,3 @@ anes*.xlsx
 *_cache
 *_files
 .vdoc.r
-.quarto
