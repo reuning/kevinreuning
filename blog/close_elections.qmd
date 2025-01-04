@@ -14,10 +14,10 @@ execute:
 ---
 
 
-The 2024 election was not a landslide, but how close was it? Close. Trump's victory depends on a margin of 229,000 votes or 0.16% of all votes cast. At the same time, American elections, at least when you look at the through the lense of the margins that matter (in the closest states or the closest Congressional Districts) are incredibly close and have been for a while.
+The 2024 election was not a landslide, but how close was it? Close. Trump's victory depends on a margin of 229,000 votes or 0.16% of all votes cast. At the same time, American elections, at least when you look at them through the lens of the margins that matter (in the closest states or the closest Congressional Districts) are incredibly close and have been for a while.
 
 
-@fig-pres plots the margins for the Presidential elections going back to 1976. On the left is the margin considering the electoral college, while the right shows the same for the popular vote. In 2024 a total margin of 229,000 votes in three states separated President-Elect Trump from President-Elect Harris. Although 229,000 is small, it is actually better than recent elections. In 2016 and 2020 the margins were 77,000 and 123,000 representatively. Trump was actually the first Republican since 1988 to have a margin of more than 150,000 votes. 
+@fig-pres plots the margins for the Presidential elections going back to 1976. On the left is the margin considering the electoral college, while the right shows the same for the popular vote. In 2024 a total margin of 229,000 votes in three states separated President-elect Trump from President-elect Harris. Although 229,000 is small, it is actually better than recent elections. In 2016 and 2020 the margins were 77,000 and 123,000 respectfully. In fact, Trump was the first Republican since 1988 to have a margin of more than 150,000 votes. 
 
 ```{r}
 #| fig-cap: Margin Presidential Election
@@ -81,9 +81,9 @@ p
 
 ```
 
-The right side of @fig-pres shows the popular vote margin, which is (in most cases) significantly larger than the margin in the electoral college. While a 229,000 vote margin in the electoral college might sound large it pales in comparison to the 2.4 million vote margin Trump received in the popular vote. The popular vote margin is only "closer" than the electoral college margin in years where the candidate who won the popular vote did _not_ win the electoral college. 
+The right side of @fig-pres shows the popular vote margin, which is (in most cases) significantly larger than the margin in the electoral college. The 229,000 vote margin in the electoral college pales in comparison to the 2.4 million vote margin Trump received in the popular vote. The popular vote margin is only "closer" than the electoral college margin in years where the candidate who won the popular vote did _not_ win the electoral college. 
 
-@fig-cong plots the same data but for Congress. Although everyone is now aware of how slim the Republican margin is in the House of Representatives, this margin is even tighter when looking at the vote margins in the closest Congressional Districts. Republicans won control of the House with a total margin of approximately 3,200 votes. This is down from their 2022 margin of 7,500 and is less than 10% of the Democrats 2018 margin of 35,000. Since 1992 there have only been four Congressional elections where the margin was more than 200,000 votes. 
+@fig-cong plots the same data but for Congress. Although everyone is now aware of how slim the Republican margin is in the House of Representatives, this margin is even tighter when looking at the vote margins in the closest Congressional Districts. Republicans won control of the House with a total margin of approximately 3,200 votes. This is down from their 2022 margin of 7,500 and is less than 10% of the Democrat's 2018 margin of 35,000. Since 1992 there have only been four Congressional elections where the margin was more than 200,000 votes. 
 
 Similar to the Presidential election, the margins for control of the House of Representatives tend to look a lot more substantial when examining the popular vote. In 2024, Republicans with their 3,200 actual vote margin had a national margin of over 4 million votes.[^footnote] 
 
@@ -277,9 +277,7 @@ p
 
 ```
 
-
-
-
+It is an interesting question about _why_ the national margin is larger than the Electoral College or Congressional District margin. I have no clear answers why, but I do have some speculation. Parties/candidates are strategic actors who focus their efforts where they matter the most. They focus their energies on the few swing states or districts that matter. Because they both do this, it makes those states and districts very competitive. In areas with less strategic importance the results are likely to reflect the overall trends of the country with no opposing party dampening the dampening any swings. The national trends also bleed into the strategic areas but the effects are lessened by all the campaigning.
 ## Data Sources and Concerns
 
 - **Presidential Elections:** Data is copied and pasted from Wikipedia (eg [1972's Results](https://en.wikipedia.org/wiki/1972_United_States_presidential_election#Results_by_state)). 
