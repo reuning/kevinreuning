@@ -1,0 +1,879 @@
+party,candidate,vote,state,district
+REP,Barry Moore,258619,Alabama,1
+DEM,Tom Holmes,70929,Alabama,1
+DEM,Shomari Figures,158041,Alabama,2
+REP,Caroleene Dobson,131414,Alabama,2
+REP,Mike Rogers,243848,Alabama,3
+REP,Robert Aderholt,274498,Alabama,4
+REP,Dale Strong,250322,Alabama,5
+REP,Gary Palmer,243741,Alabama,6
+DEM,Elizabeth Anderson,102504,Alabama,6
+DEM,Terri Sewell,186723,Alabama,7
+REP,Robin Litaker,106312,Alabama,7
+REP,David Schweikert,225538,Arizona,1
+DEM,Amish Shah,208966,Arizona,1
+REP,Eli Crane,221413,Arizona,2
+DEM,Jonathan Nez,184963,Arizona,2
+DEM,Yassamin Ansari,143336,Arizona,3
+REP,Jeff Zink,53705,Arizona,3
+DEM,Greg Stanton,176428,Arizona,4
+REP,Kelly Cooper,152052,Arizona,4
+REP,Andy Biggs,255628,Arizona,5
+DEM,Katrina Schaffner,167680,Arizona,5
+REP,Juan Ciscomani,215596,Arizona,6
+DEM,Kirsten Engel,204774,Arizona,6
+DEM,Raúl Grijalva,171954,Arizona,7
+REP,Daniel Butierez,99057,Arizona,7
+REP,Abe Hamadeh,208269,Arizona,8
+DEM,Greg Whitten,160344,Arizona,8
+REP,Paul Gosar,249583,Arizona,9
+DEM,Quacy Smith,132640,Arizona,9
+REP,Rick Crawford,194711,Arkansas,1
+DEM,Rodney Govens,64113,Arkansas,1
+REP,French Hill,180509,Arkansas,2
+DEM,Marcus Jones,125777,Arkansas,2
+REP,Steve Womack,192101,Arkansas,3
+DEM,Caitlin Draper,95652,Arkansas,3
+REP,Bruce Westerman,197046,Arkansas,4
+DEM,Risie Howard,73207,Arkansas,4
+REP,Doug LaMalfa,208592,California,1
+DEM,Rose Yee,110636,California,1
+DEM,Jared Huffman,272883,California,2
+REP,Chris Coulombe,106734,California,2
+REP,Kevin Kiley,234246,California,3
+DEM,Jessica Morse,188067,California,3
+DEM,Mike Thompson,227730,California,4
+REP,John Munn,114950,California,4
+REP,Tom McClintock,227643,California,5
+DEM,Mike Barkley,140919,California,5
+DEM,Ami Bera,165408,California,6
+REP,Christine Bish,121664,California,6
+DEM,Doris Matsui,197429,California,7
+REP,Tom Silva,98341,California,7
+DEM,John Garamendi,201962,California,8
+REP,Rudy Recile,71068,California,8
+DEM,Josh Harder,130183,California,9
+REP,Kevin Lincoln,121174,California,9
+DEM,Mark DeSaulnier,242325,California,10
+REP,Katherine Piccinini,122219,California,10
+DEM,Nancy Pelosi,274796,California,11
+REP,Bruce Lou,64315,California,11
+DEM,Lateefah Simon,185176,California,12
+DEM,Jennifer Tran,97849,California,12
+DEM,Adam Gray,105554,California,13
+REP,John Duarte,105367,California,13
+DEM,Eric Swalwell,187263,California,14
+REP,Vin Kruttiventi,89125,California,14
+DEM,Kevin Mullin,211648,California,15
+REP,Anna Cheng Kramer,77896,California,15
+DEM,Sam Liccardo,179583,California,16
+DEM,Evan Low,128893,California,16
+DEM,Ro Khanna,172462,California,17
+REP,Anita Chen,82415,California,17
+DEM,Zoe Lofgren,147674,California,18
+REP,Peter Hernandez,80832,California,18
+DEM,Jimmy Panetta,252458,California,19
+REP,Jason Anderson,111862,California,19
+REP,Vince Fong,187862,California,20
+REP,Mike Boudreaux,100926,California,20
+DEM,Jim Costa,102798,California,21
+REP,Michael Maher,92733,California,21
+REP,David Valadao,89484,California,22
+DEM,Rudy Salas,78023,California,22
+REP,Jay Obernolte,159286,California,23
+DEM,Derek Marshall,105563,California,23
+DEM,Salud Carbajal,214724,California,24
+REP,Thomas Cole,127755,California,24
+DEM,Raul Ruiz,137837,California,25
+REP,Ian Weeks,107194,California,25
+DEM,Julia Brownley,187393,California,26
+REP,Michael Koslow,146913,California,26
+DEM,George Whitesides,154040,California,27
+REP,Mike Garcia,146050,California,27
+DEM,Judy Chu,204489,California,28
+REP,April Verlato,110455,California,28
+DEM,Luz Rivas,146312,California,29
+REP,Benito Bernal,63374,California,29
+DEM,Laura Friedman,213100,California,30
+REP,Alex Balekian,98559,California,30
+DEM,Gil Cisneros,148095,California,31
+REP,Daniel Martinez,99856,California,31
+DEM,Brad Sherman,212934,California,32
+REP,Larry Thompson,108711,California,32
+DEM,Pete Aguilar,137197,California,33
+REP,Tom Herman,96078,California,33
+DEM,Jimmy Gomez,105394,California,34
+DEM,David Kim,84020,California,34
+DEM,Norma Torres,136413,California,35
+REP,Mike Cargile,97142,California,35
+DEM,Ted Lieu,246002,California,36
+REP,Melissa Toomim,111985,California,36
+DEM,Sydney Kamlager-Dove,160364,California,37
+NPP,Juan Rey,44450,California,37
+DEM,Linda Sanchez,165110,California,38
+REP,Eric Ching,110818,California,38
+DEM,Mark Takano,130191,California,39
+REP,David Serpa,99469,California,39
+REP,Young Kim,211998,California,40
+DEM,Joe Kerr,171637,California,40
+REP,Ken Calvert,183216,California,41
+DEM,Will Rollins,171229,California,41
+DEM,Robert Garcia,159153,California,42
+REP,John Briscoe,74410,California,42
+DEM,Maxine Waters,160080,California,43
+REP,Steve Williams,53152,California,43
+DEM,Nanette Barragan,164765,California,44
+REP,Roger Groh,66087,California,44
+DEM,Derek Tran,158264,California,45
+REP,Michelle Steel,157611,California,45
+DEM,Lou Correa,134013,California,46
+REP,David Pan,77279,California,46
+DEM,Dave Min,181721,California,47
+REP,Scott Baugh,171554,California,47
+REP,Darrell Issa,213625,California,48
+DEM,Stephen Houlahan,146665,California,48
+DEM,Mike Levin,197397,California,49
+REP,Matt Gunderson,180950,California,49
+DEM,Scott Peters,231836,California,50
+REP,Peter Bono,128859,California,50
+DEM,Sara Jacobs,198835,California,51
+REP,Bill Wells,128749,California,51
+DEM,Juan Vargas,172217,California,52
+REP,Justin Lee,87501,California,52
+DEM,Diana DeGette,264606,Colorado,1
+REP,Valdamar Archuleta,74598,Colorado,1
+DEM,Joe Neguse,284994,Colorado,2
+REP,Marshall Dawson,120633,Colorado,2
+REP,Jeff Hurd,201951,Colorado,3
+DEM,Adam Frisch,182147,Colorado,3
+REP,Lauren Boebert,240213,Colorado,4
+DEM,Trisha Calvarese,188249,Colorado,4
+REP,Jeff Crank,197924,Colorado,5
+DEM,River Gassen,147972,Colorado,5
+DEM,Jason Crow,202686,Colorado,6
+REP,John Fabbricatore,132174,Colorado,6
+DEM,Brittany Pettersen,235688,Colorado,7
+REP,Sergei Matveyuk,175273,Colorado,7
+REP,Gabe Evans,163320,Colorado,8
+DEM,Yadira Caraveo,160871,Colorado,8
+REP,Matt Gaetz,274108,Florida,1
+DEM,Gay Valimont,140980,Florida,1
+REP,Neal Dunn,247957,Florida,2
+DEM,Yen Bailey,154323,Florida,2
+REP,Kat Cammack,241174,Florida,3
+DEM,Tom Wells,150283,Florida,3
+REP,Aaron Bean,222364,Florida,4
+DEM,LaShonda Holloway,165912,Florida,4
+REP,John Rutherford,267471,Florida,5
+DEM,Jay McGovern,156570,Florida,5
+REP,Michael Waltz,284414,Florida,6
+DEM,James Stockton,143050,Florida,6
+REP,Cory Mills,233937,Florida,7
+DEM,Jennifer Adams,179917,Florida,7
+REP,Mike Haridopolos,280352,Florida,8
+DEM,Sandy Kennedy,170097,Florida,8
+DEM,Darren Soto,178785,Florida,9
+REP,Thomas Chalifoux,138076,Florida,9
+DEM,Maxwell Frost,181455,Florida,10
+REP,Willie Montague,109460,Florida,10
+REP,Daniel Webster,269277,Florida,11
+DEM,Barbie Harden Hall,176726,Florida,11
+REP,Gus Bilirakis,306487,Florida,12
+DEM,Rock Aboujaoude,124949,Florida,12
+REP,Anna Paulina Luna,225636,Florida,13
+DEM,Whitney Fox,185930,Florida,13
+DEM,Kathy Castor,199423,Florida,14
+REP,Rocky Rochford,145643,Florida,14
+REP,Laurel Lee,195334,Florida,15
+DEM,Pat Kemp,152361,Florida,15
+REP,Vern Buchanan,247516,Florida,16
+DEM,Jan Schneider,168625,Florida,16
+REP,Greg Steube,291347,Florida,17
+DEM,Manny Lopez,164566,Florida,17
+REP,Scott Franklin,225170,Florida,18
+DEM,Andrea Kale,119637,Florida,18
+REP,Byron Donalds,275708,Florida,19
+DEM,Kari Lerner,140038,Florida,19
+DEM,Sheila Cherfilus-McCormick,0,Florida,20
+REP,Brian Mast,277435,Florida,21
+DEM,Thomas Witkop,171312,Florida,21
+DEM,Lois Frankel,201608,Florida,22
+REP,Dan Franzese,165248,Florida,22
+DEM,Jared Moskowitz,196311,Florida,23
+REP,Joe Kaufman,178006,Florida,23
+DEM,Frederica Wilson,194874,Florida,24
+REP,Jesus Navarro,90692,Florida,24
+DEM,Debbie Wasserman Schultz,186942,Florida,25
+REP,Chris Eddy,156208,Florida,25
+REP,Mario Diaz-Balart,217199,Florida,26
+DEM,Joey Atkins,89072,Florida,26
+REP,Maria Elvira Salazar,199159,Florida,27
+DEM,Lucia Baez-Geller,130708,Florida,27
+REP,Carlos Giménez,210057,Florida,28
+DEM,Phil Ehr,115280,Florida,28
+REP,Buddy Carter,220576,Georgia,1
+DEM,Patti Hewitt,135281,Georgia,1
+DEM,Sanford Bishop,176028,Georgia,2
+REP,Wayne Johnson,136473,Georgia,2
+REP,Brian Jack,273036,Georgia,3
+DEM,Maura Keller,138749,Georgia,3
+DEM,Hank Johnson,229290,Georgia,4
+REP,Eugene Yu,74071,Georgia,4
+DEM,Nikema Williams,294470,Georgia,5
+REP,John Salvesen,49221,Georgia,5
+DEM,Lucy McBath,277027,Georgia,6
+REP,Jeff Criswell,93909,Georgia,6
+REP,Rich McCormick,275907,Georgia,7
+DEM,Bob Christian,149535,Georgia,7
+REP,Austin Scott,231547,Georgia,8
+DEM,Darrius Butler,104434,Georgia,8
+REP,Andrew Clyde,271062,Georgia,9
+DEM,Tambrei Cash,121754,Georgia,9
+REP,Mike Collins,256442,Georgia,10
+DEM,Lexy Doherty,150274,Georgia,10
+REP,Barry Loudermilk,269849,Georgia,11
+DEM,Katy Stamper,131064,Georgia,11
+REP,Rick Allen,205849,Georgia,12
+DEM,Elizabeth Johnson,135417,Georgia,12
+DEM,David Scott,256902,Georgia,13
+REP,Jonathan Chavez,100730,Georgia,13
+REP,Marjorie Taylor Greene,243446,Georgia,14
+DEM,Shawn Harris,134759,Georgia,14
+DEM,Jonathan Jackson,208398,Illinois,1
+REP,Marcus Lewis,108064,Illinois,1
+DEM,Robin Kelly,195777,Illinois,2
+REP,Ashley Ramos,94004,Illinois,2
+DEM,Delia Ramirez,174825,Illinois,3
+REP,John Booras,84987,Illinois,3
+DEM,"Jesús ""Chuy"" García",139343,Illinois,4
+REP,Lupe Castillo,56323,Illinois,4
+DEM,Mike Quigley,251025,Illinois,5
+REP,Tommy Hanson,112931,Illinois,5
+DEM,Sean Casten,196647,Illinois,6
+REP,Niki Conforti,166116,Illinois,6
+DEM,Danny Davis,222408,Illinois,7
+REP,Chad Koppie,44598,Illinois,7
+DEM,Raja Krishnamoorthi,172920,Illinois,8
+REP,Mark Rice,130153,Illinois,8
+DEM,Janice Schakowsky,231722,Illinois,9
+REP,Seth Cohen,107106,Illinois,9
+DEM,Brad Schneider,196358,Illinois,10
+REP,Jim Carris,131025,Illinois,10
+DEM,Bill Foster,199825,Illinois,11
+REP,Jerry Evans,159630,Illinois,11
+REP,Mike Bost,272754,Illinois,12
+DEM,Brian Roberts,94875,Illinois,12
+DEM,Nikki Budzinski,191339,Illinois,13
+REP,Joshua Loyd,137917,Illinois,13
+DEM,Lauren Underwood,183446,Illinois,14
+REP,James Marter,149464,Illinois,14
+REP,Mary Miller,308825,Illinois,15
+REP,Darin LaHood,310925,Illinois,16
+DEM,Eric Sorensen,170261,Illinois,17
+REP,Joe McGraw,142567,Illinois,17
+REP,Andy Harris,246356,Maryland,1
+DEM,Blane Miller,154985,Maryland,1
+DEM,Johnny Olszewski,223797,Maryland,2
+REP,Kim Klacik,152079,Maryland,2
+DEM,Sarah Elfreth,236681,Maryland,3
+REP,Robert Steinberger,151186,Maryland,3
+DEM,Glenn Ivey,239596,Maryland,4
+REP,George McDermott,30454,Maryland,4
+DEM,Steny Hoyer,283619,Maryland,5
+REP,Michelle Talkington,133985,Maryland,5
+DEM,April McClain Delaney,199788,Maryland,6
+REP,Neil Parrott,175974,Maryland,6
+DEM,Kweisi Mfume,232849,Maryland,7
+REP,Scott Collier,49799,Maryland,7
+DEM,Jamie Raskin,292101,Maryland,8
+REP,Cheryl Riley,77821,Maryland,8
+DEM,Richard Neal,223325,Massachusetts,1
+IND,Nadia Milleron,133552,Massachusetts,1
+DEM,Jim McGovern,251441,Massachusetts,2
+IND,Cornelius Shea,114065,Massachusetts,2
+DEM,Lori Trahan,264698,Massachusetts,3
+DEM,Jake Auchincloss,289374,Massachusetts,4
+DEM,Katherine Clark,286689,Massachusetts,5
+DEM,Seth Moulton,321186,Massachusetts,6
+DEM,Ayanna Pressley,232094,Massachusetts,7
+DEM,Stephen Lynch,265432,Massachusetts,8
+REP,Rob Burke,110638,Massachusetts,8
+DEM,Bill Keating,251931,Massachusetts,9
+REP,Dan Sullivan,193822,Massachusetts,9
+REP,Jack Bergman,282264,Michigan,1
+DEM,Callie Barr,180937,Michigan,1
+REP,John Moolenaar,279167,Michigan,2
+DEM,Michael Lynch,135824,Michigan,2
+DEM,Hillary Scholten,225510,Michigan,3
+REP,Paul Hudson,183952,Michigan,3
+REP,Bill Huizenga,234489,Michigan,4
+DEM,Jessica Swartz,184641,Michigan,4
+REP,Tim Walberg,269215,Michigan,5
+DEM,Libbi Urban,134282,Michigan,5
+DEM,Debbie Dingell,281162,Michigan,6
+REP,Heather Smiley,158658,Michigan,6
+REP,Tom Barrett,226722,Michigan,7
+DEM,Curtis Hertel,209959,Michigan,7
+DEM,Kristen McDonald Rivet,217490,Michigan,8
+REP,Paul Junge,189317,Michigan,8
+REP,Lisa McClain,312593,Michigan,9
+DEM,Clint St. Mosley,138138,Michigan,9
+REP,John James,217437,Michigan,10
+DEM,Carl Marlinga,191363,Michigan,10
+DEM,Haley Stevens,260780,Michigan,11
+REP,Nick Somberg,177432,Michigan,11
+DEM,Rashida Tlaib,253354,Michigan,12
+REP,James Hooper,92490,Michigan,12
+DEM,Shri Thanedar,220788,Michigan,13
+REP,Martell Bivings,78917,Michigan,13
+REP,Brad Finstad,220929,Minnesota,1
+DEM,Rachel Bohman,156375,Minnesota,1
+DEM,Angie Craig,231751,Minnesota,2
+REP,Joe Teirab,175621,Minnesota,2
+DEM,Kelly Morrison,240209,Minnesota,3
+REP,Tad Jude,170427,Minnesota,3
+DEM,Betty McCollum,242802,Minnesota,4
+REP,May Lor Xiong,117618,Minnesota,4
+DEM,Ilhan Omar,261066,Minnesota,5
+REP,Dalia Al-Aqidi,86213,Minnesota,5
+REP,Tom Emmer,260095,Minnesota,6
+DEM,Jeanne Hendricks,155836,Minnesota,6
+REP,Michelle Fischbach,275098,Minnesota,7
+DEM,AJ Peters,114979,Minnesota,7
+REP,Pete Stauber,244498,Minnesota,8
+DEM,Jen Schultz,176724,Minnesota,8
+DEM,Donald Norcross,208808,New Jersey,1
+REP,Teddy Liddell,144390,New Jersey,1
+REP,Jeff Van Drew,215946,New Jersey,2
+DEM,Joe Salerno,153117,New Jersey,2
+DEM,Herb Conaway,202034,New Jersey,3
+REP,Rajesh Mohan,169454,New Jersey,3
+REP,Chris Smith,265652,New Jersey,4
+DEM,Matthew Jenkins,124803,New Jersey,4
+DEM,Josh Gottheimer,208359,New Jersey,5
+REP,Mary Jo Guinchard,165287,New Jersey,5
+DEM,Frank Pallone,170275,New Jersey,6
+REP,Scott Fegler,122519,New Jersey,6
+REP,Thomas Kean Jr.,223331,New Jersey,7
+DEM,Sue Altman,200025,New Jersey,7
+DEM,Rob Menendez,116434,New Jersey,8
+REP,Anthony Valdes,68152,New Jersey,8
+DEM,Nellie Pou,130514,New Jersey,9
+REP,Billy Prempeh,117939,New Jersey,9
+DEM,LaMonica McIver,182020,New Jersey,10
+REP,Carmen Bucco,54405,New Jersey,10
+DEM,Mikie Sherrill,222583,New Jersey,11
+REP,Joseph Belnome,164556,New Jersey,11
+DEM,Bonnie Watson Coleman,196871,New Jersey,12
+REP,Darius Mayfield,117222,New Jersey,12
+REP,Nicholas LaLota,226285,New York,1
+DEM,John Avlon,183540,New York,1
+REP,Andrew Garbarino,202597,New York,2
+DEM,Rob Lubin,136371,New York,2
+DEM,Thomas Suozzi,187651,New York,3
+REP,Mike LiPetri,174693,New York,3
+DEM,Laura Gillen,191760,New York,4
+REP,Anthony D'Esposito,183157,New York,4
+DEM,Gregory Meeks,168425,New York,5
+REP,Paul King,62529,New York,5
+DEM,Grace Meng,120205,New York,6
+REP,Thomas Zmich,74559,New York,6
+DEM,Nydia Velazquez,172795,New York,7
+REP,Bill Kregler,48435,New York,7
+DEM,Hakeem Jeffries,168036,New York,8
+REP,John Delaney,54863,New York,8
+DEM,Yvette Clarke,173207,New York,9
+REP,Menachem Raitport,60064,New York,9
+DEM,Dan Goldman,206206,New York,10
+REP,Alexander Dodenhoff,37555,New York,10
+REP,Nicole Malliotakis,167099,New York,11
+DEM,Andrea Morse,93586,New York,11
+DEM,Jerrold Nadler,260165,New York,12
+REP,Michael Zumbluskas,62989,New York,12
+DEM,Adriano Espaillat,181800,New York,13
+REP,Ruben Dario Vargas,35822,New York,13
+DEM,Alexandria Ocasio-Cortez,132714,New York,14
+REP,Tina Forte,59078,New York,14
+DEM,Ritchie Torres,130392,New York,15
+REP,Gonzalo Duran,36010,New York,15
+DEM,George Latimer,217668,New York,16
+REP,Miriam Flisser,86408,New York,16
+REP,Mike Lawler,197845,New York,17
+DEM,Mondaire Jones,173899,New York,17
+WFL,Anthony Frascone,7530,New York,17
+DEM,Pat Ryan,207106,New York,18
+REP,Alison Esposito,155129,New York,18
+DEM,Josh Riley,192647,New York,19
+REP,Marc Molinaro,184290,New York,19
+DEM,Paul Tonko,221997,New York,20
+REP,Kevin Waltz,141151,New York,20
+REP,Elise Stefanik,215996,New York,21
+DEM,Paula Collins,132447,New York,21
+DEM,John Mannion,194450,New York,22
+REP,Brandon Williams,161939,New York,22
+REP,Nick Langworthy,246969,New York,23
+DEM,Thomas Carle,128397,New York,23
+REP,Claudia Tenney,235867,New York,24
+DEM,Dave Wagenhauser,123317,New York,24
+DEM,Joseph Morelle,219175,New York,25
+REP,Gregg Sadwick,141195,New York,25
+DEM,Timothy Kennedy,209131,New York,26
+REP,Anthony Marecki,111772,New York,26
+DEM,Don Davis,186341,North Carolina,1
+REP,Laurie Buckhout,180034,North Carolina,1
+DEM,Deborah Ross,268662,North Carolina,2
+REP,Alan Swain,128164,North Carolina,2
+REP,Greg Murphy,248276,North Carolina,3
+LIB,Gheorghe Cormos,72565,North Carolina,3
+DEM,Valerie Foushee,308064,North Carolina,4
+REP,Eric Blankenburg,112084,North Carolina,4
+REP,Virginia Foxx,238304,North Carolina,5
+DEM,Chuck Hubbard,162390,North Carolina,5
+REP,Addison McDowell,233303,North Carolina,6
+CST,Kevin Hayes,104017,North Carolina,6
+REP,David Rouzer,254022,North Carolina,7
+DEM,Marlando Pridgen,179512,North Carolina,7
+REP,Mark Harris,238640,North Carolina,8
+DEM,Justin Dues,161709,North Carolina,8
+REP,Richard Hudson,210042,North Carolina,9
+DEM,Nigel Bristow,140852,North Carolina,9
+REP,Pat Harrigan,233814,North Carolina,10
+DEM,Ralph Scott,155383,North Carolina,10
+REP,Chuck Edwards,245546,North Carolina,11
+DEM,Caleb Rudow,186977,North Carolina,11
+DEM,Alma Adams,259627,North Carolina,12
+REP,Addul Ali,91128,North Carolina,12
+REP,Brad Knott,243655,North Carolina,13
+DEM,Frank Pierce,171835,North Carolina,13
+REP,Tim Moore,232987,North Carolina,14
+DEM,Pam Genant,168269,North Carolina,14
+REP,Brian Fitzpatrick,261390,Pennsylvania,1
+DEM,Ashley Ehasz,202042,Pennsylvania,1
+DEM,Brendan Boyle,193691,Pennsylvania,2
+REP,Aaron Bashir,77355,Pennsylvania,2
+DEM,Dwight Evans,340223,Pennsylvania,3
+DEM,Madeleine Dean,269066,Pennsylvania,4
+REP,David Winkler,186457,Pennsylvania,4
+DEM,Mary Gay Scanlon,267754,Pennsylvania,5
+REP,Alfeia Goodwin,142355,Pennsylvania,5
+DEM,Chrissy Houlahan,235625,Pennsylvania,6
+REP,Neil Young,183638,Pennsylvania,6
+REP,Ryan Mackenzie,203688,Pennsylvania,7
+DEM,Susan Wild,199626,Pennsylvania,7
+REP,Rob Bresnahan,195663,Pennsylvania,8
+DEM,Matt Cartwright,189411,Pennsylvania,8
+REP,Dan Meuser,276212,Pennsylvania,9
+DEM,Amanda Waldman,115523,Pennsylvania,9
+REP,Scott Perry,205567,Pennsylvania,10
+DEM,Janelle Stelson,200434,Pennsylvania,10
+REP,Lloyd Smucker,253672,Pennsylvania,11
+DEM,Jim Atkinson,149641,Pennsylvania,11
+DEM,Summer Lee,234802,Pennsylvania,12
+REP,James Hayes,181426,Pennsylvania,12
+REP,John Joyce,301460,Pennsylvania,13
+DEM,Beth Farnham,104823,Pennsylvania,13
+REP,Guy Reschenthaler,268380,Pennsylvania,14
+DEM,Chris Dziados,134755,Pennsylvania,14
+REP,Glenn Thompson,279027,Pennsylvania,15
+DEM,Zach Womer,111408,Pennsylvania,15
+REP,Mike Kelly,256923,Pennsylvania,16
+DEM,Preston Nouri,146709,Pennsylvania,16
+DEM,Chris Deluzio,242838,Pennsylvania,17
+REP,Rob Mercuri,207900,Pennsylvania,17
+REP,Diana Harshbarger,257825,Tennessee,1
+DEM,Kevin  Jenkins,64021,Tennessee,1
+REP,Tim Burchett,250782,Tennessee,2
+DEM,Jane George,111316,Tennessee,2
+REP,Chuck Fleischmann,236519,Tennessee,3
+DEM,Jack Allen,102841,Tennessee,3
+REP,Scott DesJarlais,219133,Tennessee,4
+DEM,Victoria Broderick,83832,Tennessee,4
+REP,Andy Ogles,205075,Tennessee,5
+DEM,Maryam Abolfazli,142387,Tennessee,5
+REP,John Rose,225543,Tennessee,6
+DEM,Lore Bergman,106144,Tennessee,6
+REP,Mark Green,191992,Tennessee,7
+DEM,Megan Barry,122764,Tennessee,7
+REP,David Kustoff,240411,Tennessee,8
+DEM,Sarah Freeman,85043,Tennessee,8
+DEM,Steve Cohen,159522,Tennessee,9
+REP,Charlotte Bergmann,57411,Tennessee,9
+REP,Nathaniel Moran,258523,Texas,1
+REP,Dan Crenshaw,214631,Texas,2
+DEM,Peter Filler,112252,Texas,2
+REP,Keith Self,237794,Texas,3
+DEM,Sandeep Srivastava,142953,Texas,3
+REP,Pat Fallon,241603,Texas,4
+DEM,Simon Cardell,111696,Texas,4
+REP,Lance Gooden,192185,Texas,5
+DEM,Ruth Torres,107712,Texas,5
+REP,Jake Ellzey,188119,Texas,6
+DEM,John Love,98319,Texas,6
+DEM,Lizzie Fletcher,149820,Texas,7
+REP,Caroline Kane,94651,Texas,7
+REP,Morgan Luttrell,233423,Texas,8
+DEM,Laura Jones,108754,Texas,8
+DEM,Al Green,184141,Texas,9
+REP,Michael McCaul,221229,Texas,10
+DEM,Theresa Boisseau,118280,Texas,10
+REP,August Pfluger,211975,Texas,11
+REP,Craig Goldman,215564,Texas,12
+DEM,Trey Hunt,124154,Texas,12
+REP,Ronny Jackson,240622,Texas,13
+REP,Randy Weber,210320,Texas,14
+DEM,Rhonda Hart,95875,Texas,14
+REP,Monica De La Cruz,127804,Texas,15
+DEM,Michelle Vallejo,95965,Texas,15
+DEM,Veronica Escobar,131391,Texas,16
+REP,Irene Armendariz Jackson,89281,Texas,16
+REP,Pete Sessions,193101,Texas,17
+DEM,Mark Lorenzen,97941,Texas,17
+DEM,Sylvester Turner,151834,Texas,18
+REP,Lana Centonze,66810,Texas,18
+REP,Jodey Arrington,214950,Texas,19
+IND,Nathan Lewis,27461,Texas,19
+LIB,Bernard Johnson,23964,Texas,19
+DEM,Joaquin Castro,157890,Texas,20
+REP,Chip Roy,263744,Texas,21
+DEM,Kristin Hook,153765,Texas,21
+REP,Troy Nehls,209285,Texas,22
+DEM,Marquette Greene-Scott,127604,Texas,22
+REP,Tony Gonzales,180720,Texas,23
+DEM,Santos Limon,109373,Texas,23
+REP,Beth Van Duyne,227108,Texas,24
+DEM,Sam Eppler,149518,Texas,24
+REP,Roger Williams,263042,Texas,25
+REP,Brandon Gill,241096,Texas,26
+DEM,Ernest Lineberger,138558,Texas,26
+REP,Michael Cloud,183980,Texas,27
+DEM,Tanya Lloyd,94596,Texas,27
+DEM,Henry Cuellar,125490,Texas,28
+REP,Jay Furman,112117,Texas,28
+DEM,Sylvia Garcia,99379,Texas,29
+REP,Alan Garza,52830,Texas,29
+DEM,Jasmine Crockett,197650,Texas,30
+LIB,Jrmar Jefferson,35175,Texas,30
+REP,John Carter,229087,Texas,31
+DEM,Stuart Whitlow,126470,Texas,31
+DEM,Julie Johnson,140536,Texas,32
+REP,Darrell Day,85941,Texas,32
+DEM,Marc Veasey,114289,Texas,33
+REP,Patrick Gillespie,51864,Texas,33
+DEM,Vicente Gonzalez,102780,Texas,34
+REP,Mayra Flores,97603,Texas,34
+DEM,Greg Casar,170509,Texas,35
+REP,Steven Wright,82610,Texas,35
+REP,Brian Babin,206009,Texas,36
+DEM,Dayna Steele,91009,Texas,36
+DEM,Lloyd Doggett,252980,Texas,37
+REP,Jenny Garcia Sharon,80366,Texas,37
+REP,Wesley Hunt,215030,Texas,38
+DEM,Melissa McDonough,127640,Texas,38
+REP,Rob Wittman,269657,Virginia,1
+DEM,Leslie Mehta,208445,Virginia,1
+REP,Jen Kiggans,207368,Virginia,2
+DEM,Missy Cotter Smasal,191666,Virginia,2
+DEM,Bobby Scott,219926,Virginia,3
+REP,John Sitka,93801,Virginia,3
+DEM,Jennifer McClellan,252885,Virginia,4
+REP,Bill Moher,121814,Virginia,4
+REP,John McGuire,249564,Virginia,5
+DEM,Gloria Witt,184229,Virginia,5
+REP,Ben Cline,255849,Virginia,6
+DEM,Ken Mitchell,140099,Virginia,6
+DEM,Eugene Vindman,203336,Virginia,7
+REP,Derrick Anderson,192847,Virginia,7
+DEM,Donald Beyer,274593,Virginia,8
+REP,Jerry Torres,94676,Virginia,8
+REP,Morgan Griffith,290645,Virginia,9
+DEM,Karen Baker,109570,Virginia,9
+DEM,Suhas Subramanyam,215131,Virginia,10
+REP,Mike Clancy,196343,Virginia,10
+DEM,Gerry Connolly,273529,Virginia,11
+REP,Mike Van Meter,134802,Virginia,11
+DEM,Suzan DelBene,227213,Washington,1
+REP,Jeb Brewer,132538,Washington,1
+DEM,Rick Larsen,263750,Washington,2
+REP,Cody Hart,148167,Washington,2
+DEM,Marie Gluesenkamp Perez,215177,Washington,3
+REP,Joe Kent,199054,Washington,3
+REP,Dan Newhouse,153477,Washington,4
+REP,Jerrod Sessler,136175,Washington,4
+REP,Michael Baumgartner,240619,Washington,5
+DEM,Carmela Conroy,156074,Washington,5
+DEM,Emily Randall,239687,Washington,6
+REP,Drew MacEwen,182182,Washington,6
+DEM,Pramila Jayapal,352286,Washington,7
+REP,Dan Alexander,66220,Washington,7
+DEM,Kim Schrier,224607,Washington,8
+REP,Carmen Goers,190675,Washington,8
+DEM,Adam Smith,182780,Washington,9
+DEM,Melissa Chaudhry,90601,Washington,9
+DEM,Marilyn Strickland,203732,Washington,10
+REP,Don Hewett,143492,Washington,10
+REP,Bryan Steil,212515,Wisconsin,1
+DEM,Peter Barca,172402,Wisconsin,1
+DEM,Mark Pocan,320317,Wisconsin,2
+REP,Erik Olsen,136357,Wisconsin,2
+REP,Derrick Van Orden,212064,Wisconsin,3
+DEM,Rebecca Cooke,200808,Wisconsin,3
+DEM,Gwen Moore,249938,Wisconsin,4
+REP,Tim Rogers,74921,Wisconsin,4
+REP,Scott Fitzgerald,300521,Wisconsin,5
+DEM,Ben Steinhoff,165653,Wisconsin,5
+REP,Glenn Grothman,251889,Wisconsin,6
+DEM,John Zarbano,159042,Wisconsin,6
+REP,Tom Tiffany,273553,Wisconsin,7
+DEM,Kyle Kilbourn,156524,Wisconsin,7
+REP,Tony Wied,240040,Wisconsin,8
+DEM,Kristin Lyerly,178666,Wisconsin,8
+DEM,John Larson,208649,Connecticut,1
+REP,Jim Griffin,115065,Connecticut,1
+DEM,Joe Courtney,218162,Connecticut,2
+REP,Mike France,157878,Connecticut,2
+DEM,Rosa DeLauro,193684,Connecticut,3
+REP,Michael Massey,135113,Connecticut,3
+DEM,Jim Himes,200791,Connecticut,4
+REP,Michael Goldstein,122793,Connecticut,4
+DEM,Jahana Hayes,180268,Connecticut,5
+REP,George Logan,157258,Connecticut,5
+DEM,Ed Case,164237,Hawaii,1
+REP,Patrick Largey,64373,Hawaii,1
+DEM,Jill Tokuda,166251,Hawaii,2
+REP,Steve Bond,75471,Hawaii,2
+REP,Russ Fulcher,331049,Idaho,1
+DEM,Kaylee Peterson,118656,Idaho,1
+REP,Mike Simpson,250119,Idaho,2
+DEM,David Roth,126229,Idaho,2
+DEM,Frank Mrvan,172467,Indiana,1
+REP,Randy Niemeyer,145056,Indiana,1
+LIB,Dakotah Miskus,5200,Indiana,1
+REP,Rudy Yakym,184848,Indiana,2
+DEM,Lori Camp,101962,Indiana,2
+LIB,William Henry,7795,Indiana,2
+REP,Marlin Stutzman,202653,Indiana,3
+DEM,Kiley Adolph,97871,Indiana,3
+LIB,Jarrad Lancaster,11015,Indiana,3
+REP,Jim Baird,209794,Indiana,4
+DEM,Derrick Holder,100091,Indiana,4
+LIB,Ashley Groff,13710,Indiana,4
+REP,Victoria Spartz,203293,Indiana,5
+DEM,Deborah Pickett,136554,Indiana,5
+LIB,Lauri Shillings,9567,Indiana,5
+REP,Jefferson Shreve,201357,Indiana,6
+DEM,Cinde Wirth,99841,Indiana,6
+LIB,James Sceniak,13711,Indiana,6
+DEM,André Carson,185987,Indiana,7
+REP,John Schmitz,78792,Indiana,7
+LIB,Rusty Johnson,7369,Indiana,7
+REP,Mark Messmer,219941,Indiana,8
+DEM,Erik Hurt,95311,Indiana,8
+LIB,Richard Fitzlaff,8381,Indiana,8
+REP,Erin Houchin,222884,Indiana,9
+DEM,Tim Peck,113400,Indiana,9
+LIB,Russell Brooksbank,9454,Indiana,9
+REP,Mariannette Miller-Meeks,206955,Iowa,1
+DEM,Christina Bohannan,206156,Iowa,1
+REP,Ashley Hinson,233340,Iowa,2
+DEM,Sarah Corkery,169740,Iowa,2
+REP,Zach Nunn,213746,Iowa,3
+DEM,Lanon Baccam,197962,Iowa,3
+REP,Randy Feenstra,250522,Iowa,4
+DEM,Ryan Melton,122175,Iowa,4
+REP,Tracey Mann,210493,Kansas,1
+DEM,Paul Buskirk,93965,Kansas,1
+REP,Derek Schmidt,172847,Kansas,2
+DEM,Nancy Boyda,115685,Kansas,2
+DEM,Sharice Davids,209871,Kansas,3
+REP,Prasanth Reddy,167570,Kansas,3
+REP,Ron Estes,198465,Kansas,4
+DEM,Esau Freeman,106632,Kansas,4
+REP,James Comer,252729,Kentucky,1
+DEM,Erin Marshall,85524,Kentucky,1
+REP,Brett Guthrie,252826,Kentucky,2
+DEM,Hank Linderman,93029,Kentucky,2
+DEM,Morgan McGarvey,203100,Kentucky,3
+REP,Mike Craven,124713,Kentucky,3
+REP,Thomas Massie,278386,Kentucky,4
+REP,Hal Rogers,261407,Kentucky,5
+REP,Andy Barr,222291,Kentucky,6
+DEM,Randy Cravens,130344,Kentucky,6
+REP,Steve Scalise,238842,Louisiana,1
+DEM,Mel Manuel,85911,Louisiana,1
+REP,Randall Arrington,17856,Louisiana,1
+REP,Ross Shales,8330,Louisiana,1
+NPA,Frankie Hyers,6781,Louisiana,1
+DEM,Troy Carter,184009,Louisiana,2
+REP,Christy Lynch,41641,Louisiana,2
+REP,Devin Graham,39174,Louisiana,2
+DEM,Devin Davis,32482,Louisiana,2
+REP,Shondrell Perrilloux,7878,Louisiana,2
+REP,Clay Higgins,226279,Louisiana,3
+DEM,Priscilla Gonzalez,59834,Louisiana,3
+DEM,Sadi Summerlin,21323,Louisiana,3
+REP,Xan John,13246,Louisiana,3
+REP,Mike Johnson,262821,Louisiana,4
+REP,Joshua Morott,43427,Louisiana,4
+REP,Julia Letlow,201037,Louisiana,5
+DEM,Michael Vallien,82981,Louisiana,5
+REP,Vinny Mendoza,35833,Louisiana,5
+DEM,Cleo Fields,150323,Louisiana,6
+REP,Elbert Guillory,111737,Louisiana,6
+DEM,Quentin Anderson,23811,Louisiana,6
+DEM,Peter Williams,6252,Louisiana,6
+DEM,Wilken Jones,3910,Louisiana,6
+DEM,Chellie Pingree,249798,Maine,1
+REP,Ronald Russell,154849,Maine,1
+IND,Ethan Alcorn,20883,Maine,1
+DEM,Jared Golden,196189,Maine,2
+REP,Austin Theriault,194030,Maine,2
+WRI,Diana Merenda,420,Maine,2
+REP,Trent Kelly,223589,Mississippi,1
+DEM,Dianne Black,96697,Mississippi,1
+DEM,Bennie Thompson,177885,Mississippi,2
+REP,Ron Eller,108956,Mississippi,2
+REP,Michael Guest,265159,Mississippi,3
+REP,Mike Ezell,215095,Mississippi,4
+DEM,Craig Raybon,75771,Mississippi,4
+DEM,Wesley Bell,233312,Missouri,1
+REP,Andrew Jones,56453,Missouri,1
+REP,Ann Wagner,233444,Missouri,2
+DEM,Ray Hartmann,182056,Missouri,2
+REP,Bob Onder,240620,Missouri,3
+DEM,Bethany Mann,138532,Missouri,3
+REP,Mark Alford,259886,Missouri,4
+DEM,Jeanette Cass,96568,Missouri,4
+DEM,Emanuel Cleaver,199900,Missouri,5
+REP,Sean Smith,120957,Missouri,5
+REP,Sam Graves,265210,Missouri,6
+DEM,Pam May,100999,Missouri,6
+REP,Eric Burlison,263231,Missouri,7
+DEM,Missi Hesketh,96655,Missouri,7
+REP,Jason Smith,271249,Missouri,8
+DEM,Randi McCallian,77649,Missouri,8
+REP,Ryan Zinke,168529,Montana,1
+DEM,Monica Tranel,143783,Montana,1
+REP,Troy Downing,181832,Montana,2
+DEM,John Driscoll,93713,Montana,2
+REP,Mike Flood,187559,Nebraska,1
+DEM,Carol Blood,124498,Nebraska,1
+REP,Don Bacon,160198,Nebraska,2
+DEM,Tony Vargas,154369,Nebraska,2
+REP,Adrian Smith,243481,Nebraska,3
+DEM,Daniel Ebers,59287,Nebraska,3
+DEM,Dina Titus,167885,Nevada,1
+REP,Mark Robertson,143650,Nevada,1
+REP,Mark Amodei,219918,Nevada,2
+NPD,Greg Kidd,144064,Nevada,2
+IAP,Lynn Chapman,19784,Nevada,2
+LIB,Javi Trujillo Tachiquin,15817,Nevada,2
+DEM,Susie Lee,191304,Nevada,3
+REP,Drew Johnson,181084,Nevada,3
+DEM,Steven Horsford,174926,Nevada,4
+REP,John Lee,148061,Nevada,4
+DEM,Chris Pappas,218577,New Hampshire,1
+REP,Russell Prescott,185936,New Hampshire,1
+DEM,Maggie Goodlander,211641,New Hampshire,2
+REP,Lily Tang Williams,187810,New Hampshire,2
+DEM,Melanie Stansbury,193203,New Mexico,1
+REP,Steve Jones,149546,New Mexico,1
+DEM,Gabriel Vasquez,138177,New Mexico,2
+REP,Yvette Herrell,127145,New Mexico,2
+DEM,Teresa Leger Fernandez,162342,New Mexico,3
+REP,Sharon Clahchischilliage,126085,New Mexico,3
+DEM,Greg Landsman,213916,Ohio,1
+REP,Orlando Sonza,177993,Ohio,1
+REP,David Taylor,268211,Ohio,2
+DEM,Samantha Meadows,96401,Ohio,2
+DEM,Joyce Beatty,242632,Ohio,3
+REP,Michael Young,100355,Ohio,3
+REP,Jim Jordan,273297,Ohio,4
+DEM,Tamie Wilson,125905,Ohio,4
+REP,Bob Latta,255633,Ohio,5
+DEM,Keith Mundy,123024,Ohio,5
+REP,Michael Rulli,245860,Ohio,6
+DEM,Michael Kripchak,122515,Ohio,6
+REP,Max Miller,204494,Ohio,7
+DEM,Matt Diemer,144613,Ohio,7
+IND,Dennis Kucinich,51265,Ohio,7
+REP,Warren Davidson,237503,Ohio,8
+DEM,Vanessa Enoch,140625,Ohio,8
+DEM,Marcy Kaptur,181098,Ohio,9
+REP,Derek Merrin,178716,Ohio,9
+REP,Mike Turner,213695,Ohio,10
+DEM,Amy Cox,145420,Ohio,10
+DEM,Shontel Brown,236883,Ohio,11
+REP,Alan Rapoport,59394,Ohio,11
+REP,Troy Balderson,260450,Ohio,12
+DEM,Jerrad Christian,119738,Ohio,12
+DEM,Emilia Sykes,197466,Ohio,13
+REP,Kevin Coughlin,188924,Ohio,13
+REP,David Joyce,243427,Ohio,14
+DEM,Brian Kenderes,140431,Ohio,14
+REP,Mike Carey,196338,Ohio,15
+DEM,Adam Miller,151411,Ohio,15
+REP,Kevin Hern,188832,Oklahoma,1
+DEM,Dennis Baker,107903,Oklahoma,1
+REP,Josh Brecheen,238123,Oklahoma,2
+DEM,Brandon Wade,68841,Oklahoma,2
+REP,Frank Lucas,0,Oklahoma,3
+REP,Tom Cole,199962,Oklahoma,4
+DEM,Mary Brannon,86641,Oklahoma,4
+REP,Stephanie Bice,207636,Oklahoma,5
+DEM,Madison Horn,134471,Oklahoma,5
+DEM,Suzanne Bonamici,241556,Oregon,1
+REP,Bob Todd,98908,Oregon,1
+REP,Cliff Bentz,224601,Oregon,2
+DEM,Dan Ruby,115337,Oregon,2
+DEM,Maxine Dexter,226405,Oregon,3
+REP,Joanna Harbour,84344,Oregon,3
+DEM,Val Hoyle,195862,Oregon,4
+REP,Monique DeSpain,166430,Oregon,4
+DEM,Janelle Bynum,191365,Oregon,5
+REP,Lori Chavez-DeRemer,180420,Oregon,5
+DEM,Andrea Salinas,180869,Oregon,6
+REP,Mike Erickson,157634,Oregon,6
+DEM,Gabriel Amo,139352,Rhode Island,1
+REP,Allen Waters,70742,Rhode Island,1
+DEM,Seth Magaziner,153439,Rhode Island,2
+REP,Steven Corvi,109381,Rhode Island,2
+REP,Nancy Mace,227502,South Carolina,1
+DEM,Michael Moore,162582,South Carolina,1
+REP,Joe Wilson,211514,South Carolina,2
+DEM,David Robinson,142985,South Carolina,2
+REP,Sheri Biggs,248451,South Carolina,3
+DEM,Bryon Best,87735,South Carolina,3
+REP,William Timmons,206916,South Carolina,4
+DEM,Kathryn Harvey,128976,South Carolina,4
+REP,Ralph Norman,228260,South Carolina,5
+DEM,Evangeline Hundley,130592,South Carolina,5
+DEM,Jim Clyburn,182056,South Carolina,6
+REP,Duke Buckner,112360,South Carolina,6
+REP,Russell Fry,240326,South Carolina,7
+DEM,Mal Hyman,129522,South Carolina,7
+REP,Blake Moore,230975,Utah,1
+DEM,Bill Campbell,117319,Utah,1
+REP,Celeste Maloy,205234,Utah,2
+DEM,Nathaniel Woodward,121114,Utah,2
+REP,Mike Kennedy,242496,Utah,3
+DEM,Glenn Wright,122780,Utah,3
+REP,Burgess Owens,230627,Utah,4
+DEM,Katrina Fallick-Wang,109838,Utah,4
+REP,Carol Miller,228491,West Virginia,1
+DEM,Chris Reed,90038,West Virginia,1
+REP,Riley  Moore,268190,West Virginia,2
+DEM,Steven Wendelin,110775,West Virginia,2
+REP,Nick Begich,159550,Alaska,1
+DEM,Mary Peltola,152828,Alaska,1
+AKI,John Wayne Howe,13010,Alaska,1
+DEM,Eric Hafner,3417,Alaska,1
+DEM,Sarah McBride,287830,Delaware,1
+REP,John Whalen,209606,Delaware,1
+REP,Julie Fedorchak,249101,North Dakota,1
+DEM,Trygve Hammer,109231,North Dakota,1
+REP,Dusty Johnson,303630,South Dakota,1
+DEM,Sheryl Johnson,117818,South Dakota,1
+DEM,Becca Balint,218398,Vermont,1
+REP,Mark Coester,104451,Vermont,1
+REP,Harriet Hageman,184680,Wyoming,1
+DEM,Kyle Cameron,60778,Wyoming,1

@@ -1,0 +1,289 @@
+---
+title: "American Election are Close"
+format: html
+date: 2024-01-04
+categories: 
+  - Elections
+  - President
+  - Congress
+execute: 
+  echo: false
+  warning: false
+  fig-asp: .6
+  fig-width: 8
+---
+
+
+The 2024 election was not a landslide, but how close was it? Close. Trump's victory depends on a margin of 229,000 votes or 0.16% of all votes cast. At the same time, American elections, at least when you look at the through the lense of the margins that matter (in the closest states or the closest Congressional Districts) are incredibly close and have been for a while.
+
+
+@fig-pres plots the margins for the Presidential elections going back to 1976. On the left is the margin considering the electoral college, while the right shows the same for the popular vote. In 2024 a total margin of 229,000 votes in three states separated President-Elect Trump from President-Elect Harris. Although 229,000 is small, it is actually better than recent elections. In 2016 and 2020 the margins were 77,000 and 123,000 representatively. Trump was actually the first Republican since 1988 to have a margin of more than 150,000 votes. 
+
+```{r}
+#| fig-cap: Margin Presidential Election
+#| label: fig-pres
+library(tidyverse)
+library(here)
+library(ggpubr)
+#library(plotly)
+df <- read_csv(here("blog", "data", "Presidential_Data.csv"))
+
+
+prepped_data <- df |> 
+  mutate(Margin = `Dem Votes` - `Rep Votes`, 
+      "Pct Margin" = `Dem Percent` - `Rep Percent`) |>
+  group_by(Year) |> 
+  arrange(Year, `Pct Margin`) |> 
+  mutate(Signed_EV = ifelse(Margin < 0, -1* `Rep EV`, `Dem EV`), 
+        EV_Switch =tail(cumsum(Signed_EV), 1))
+
+pop_votes <- prepped_data |> group_by(Year) |> 
+    summarize(National_Switch = sum(`Dem Votes`) - sum(`Rep Votes`), 
+            Dem_Winner = sum(`Dem EV`, na.rm=TRUE) > sum(`Rep EV`, na.rm=TRUE))
+
+switches_needed <- prepped_data |> filter(sign(Signed_EV) == sign(EV_Switch)) |> 
+  arrange(Year, abs(`Pct Margin`)) |> 
+  mutate(Switch_Needed =ifelse(abs(lag(cumsum(Signed_EV))) > abs(EV_Switch)/2, "Not", "Necessary")) |> 
+  mutate(Switch_Needed = replace_na(Switch_Needed, "Necessary")) |>
+  filter(Switch_Needed=="Necessary")  |> #View()
+  group_by(Year) |> 
+  summarize(Margin = sum(Margin), 
+          "Avg State Margin"=mean(`Pct Margin`), 
+          "Total States"=n())
+
+all_data <- left_join(pop_votes, switches_needed) |> 
+  filter(Year > 1972)
+
+
+
+p <-all_data |> 
+  mutate(`Popular Vote` = 
+      case_when(
+        sign(National_Switch) == sign(Margin) ~ abs(National_Switch),
+        sign(National_Switch) != sign(Margin) ~ -abs(National_Switch)  )) |> 
+  mutate(`Electoral College` = abs(Margin), 
+        Winner = ifelse(Dem_Winner, "Democrat", "Republican")) |> 
+  pivot_longer(cols=c("Electoral College", "Popular Vote"), 
+          names_to="Type", values_to="Votes") |>   
+  ggplot(aes(x=Year, y=Votes,fill=Winner)) + 
+  geom_col() + 
+  scale_y_continuous("Margin", labels = scales::comma) + 
+  facet_wrap(~Type, scales = "free_y") + 
+  theme_pubr() +
+  theme(legend.position="bottom") +
+    scale_fill_manual("President?", 
+      values=c("Democrat"="steelblue3", "Republican"="orangered3")) + 
+  labs(caption="In 2000 and 2016 Democrats won majority of national vote but Republicans won presidency.") + 
+  #geom_text(aes(label=`Total States`), vjust=0, size=5)  + 
+  NULL 
+
+p
+
+```
+
+The right side of @fig-pres shows the popular vote margin, which is (in most cases) significantly larger than the margin in the electoral college. While a 229,000 vote margin in the electoral college might sound large it pales in comparison to the 2.4 million vote margin Trump received in the popular vote. The popular vote margin is only "closer" than the electoral college margin in years where the candidate who won the popular vote did _not_ win the electoral college. 
+
+@fig-cong plots the same data but for Congress. Although everyone is now aware of how slim the Republican margin is in the House of Representatives, this margin is even tighter when looking at the vote margins in the closest Congressional Districts. Republicans won control of the House with a total margin of approximately 3,200 votes. This is down from their 2022 margin of 7,500 and is less than 10% of the Democrats 2018 margin of 35,000. Since 1992 there have only been four Congressional elections where the margin was more than 200,000 votes. 
+
+Similar to the Presidential election, the margins for control of the House of Representatives tend to look a lot more substantial when examining the popular vote. In 2024, Republicans with their 3,200 actual vote margin had a national margin of over 4 million votes.[^footnote] 
+
+[^footnote]: One thing that makes this slightly more complicated is that candidates with no challengers in the general election are not actually voted on in all states. This means that the national vote count under counts votes (for both parties).  
+
+```{r cong-data-prep}
+# read_csv(here("data", "1976-2022-house.csv")) |> 
+#   filter(state=="LOUISIANA" & year == 2002) |> View()
+cong_df <- read_csv(here("blog", "data", "1976-2022-house.csv")) |> 
+  mutate(party = case_when(
+                  party =="DEMOCRATIC-FARMER-LABOR" & state =="MINNESOTA" ~ "DEMOCRAT", 
+                  party == "INDEPENDENT-REPUBLICAN"& state =="MINNESOTA" ~ "REPUBLICAN",
+                  candidate == "BERNARD SANDERS" & year > 1988 ~ "DEMOCRAT",
+                  candidate == "JO ANN EMERSON" & year == 1996 ~ "REPUBLICAN",
+                  .default=party), 
+        stage = case_when(
+          district %in% c(3,5,6,7,18,22,24,26,29,30) & state == "TEXAS" & year == 1996 ~ "GEN",
+          .default = stage
+        ), 
+        special = case_when(
+          district %in% c(3,5,6,7,18,22,24,26,29,30) & state == "TEXAS" & year == 1996 ~ FALSE,
+          district %in% c(15, 21, 25, 28) & state == "TEXAS" & year == 2006 ~ FALSE,
+          .default = special
+        ), 
+        candidatevotes = case_when(
+          candidate == "FREDERICA S WILSON" & year == 2016 ~ Inf, 
+          candidate == "MARIO DIAZ-BALART" & year == 2020 ~ Inf, 
+          candidate == "JOHN H RUTHERFORD" & year == 2022 ~ Inf,
+          .default = candidatevotes
+        )) |>
+  filter(!(state == "LOUISIANA" & district == 5 & year == 2002 & runoff==FALSE))
+# fusion_races <- cong_df |> filter(stage == "GEN" & special == FALSE & 
+#     fusion_ticket == TRUE) |> 
+#     distinct(state, year, district) |> 
+#     mutate(fusion_present=Yes)
+
+
+fusion_df <- cong_df |> filter(stage == "GEN" & special == FALSE & 
+    fusion_ticket == TRUE) |>   filter(!is.na(party)) |> 
+    pivot_wider(id_cols=c("state", "year", "district", "candidate"), 
+    names_from=party, 
+  values_from = candidatevotes) |>
+    rowwise() |> 
+    mutate(candidatevotes=sum(c_across(DEMOCRAT:`ITKIS CAMPAIGN`), na.rm=TRUE)) |> 
+    select(state, year, district, candidate, DEMOCRAT, REPUBLICAN, candidatevotes) |> 
+    ungroup() |>
+    mutate(party = case_when(
+      !is.na(DEMOCRAT) ~ "DEMOCRAT", 
+      !is.na(REPUBLICAN) ~ "REPUBLICAN", 
+      .default="OTHER"
+    )) |> select(-DEMOCRAT, -REPUBLICAN)|>
+       mutate(party = case_when(
+      year == 1978 & candidate == "FRANK HORTON" ~ "REPUBLICAN", 
+      .default = party
+    ))
+  
+
+cong_df <- cong_df |> filter(stage == "GEN" & special == FALSE & 
+  fusion_ticket == FALSE & 
+    party %in% c("REPUBLICAN", "DEMOCRAT") & 
+    state != "DISTRICT OF COLUMBIA") |> 
+  select(state, year, district, candidate, party, candidatevotes) |> 
+  rbind(fusion_df) |> 
+  pivot_wider(id_cols=c("state", "year", "district"), names_from=party, 
+  values_from = candidatevotes, 
+  values_fn=~sum(.x, na.rm=TRUE), values_fill = 0) |> 
+    mutate(Total = REPUBLICAN + DEMOCRAT, 
+        Dem_Win = DEMOCRAT > REPUBLICAN)  
+# ## DROP
+
+
+
+df_2024 <- read_csv(here("blog", "data", "house_2024.csv")) |> 
+  mutate(vote = case_when(
+    candidate == "Sheila Cherfilus-McCormick" ~ Inf, 
+    .default=vote
+  ))
+cong_df <- df_2024 |> 
+  mutate(party = case_match(party, 
+        "REP" ~ "REPUBLICAN",
+        "DEM" ~ "DEMOCRAT", 
+        .default = "OTHER"), 
+        state = toupper(state)) |> 
+  pivot_wider(id_cols=c(state, district), 
+            values_from =vote, names_from=party, values_fn=sum, 
+            values_fill=0) |> 
+  mutate(Total = (REPUBLICAN+ DEMOCRAT), 
+        Dem_Win = DEMOCRAT > REPUBLICAN, 
+        year=2024)   |> 
+  rbind(cong_df) 
+
+# cong_df |> group_by(year, Dem_Win) |> count() |> View() 
+# cong_df |> filter(year == 2024) |> group_by(state, Dem_Win) |> 
+#   summarize(n()) |> View()
+# df_2024 |> filter( state == "Florida") |> View()
+# cong_df |> filter(year == 2022 & state == "FLORIDA" & district %in% c(5)) |> View()
+
+cong_df <- cong_df |> mutate(
+  REPUBLICAN = case_when(
+    Total == 1 & REPUBLICAN == 1 ~ Inf, 
+    .default=REPUBLICAN
+  ), 
+  DEMOCRAT = case_when(
+    Total == 1 & DEMOCRAT == 1 ~ Inf, 
+    .default=DEMOCRAT
+  ), 
+  Total = case_when(
+    Total == 1 ~ Inf, 
+    .default=Total
+  )
+)
+
+```
+
+
+
+```{r}
+#| fig-cap: Margin in House of Rep Control
+#| label: fig-cong
+
+prepped_data <- cong_df |> 
+  mutate(Margin = DEMOCRAT - REPUBLICAN, 
+      "Pct Margin" = (DEMOCRAT - REPUBLICAN)/(DEMOCRAT + REPUBLICAN)) |>
+  mutate(`Pct Margin`= case_match(Margin,
+                        Inf ~ Inf, 
+                        -Inf ~ -Inf,
+                        .default = `Pct Margin` )) |> 
+  group_by(year) |> 
+  arrange(year, `Pct Margin`) |> 
+  mutate(Signed_Vote = ifelse(Margin < 0, -1, 1), 
+        Vote_Switch =tail(cumsum(Signed_Vote), 1))
+
+drop_infinite <- function(x){
+  sapply(x, function(y){
+      if(is.infinite(y)){
+        0
+      } else {
+        y
+      }
+  })
+
+}
+
+
+pop_votes <- prepped_data |> group_by(year) |> 
+    summarize(National_Switch = sum(drop_infinite(DEMOCRAT) - drop_infinite(REPUBLICAN)), 
+            Dem_Winner = sum(Signed_Vote) > 0 )
+
+switches_needed <- prepped_data |> filter(sign(Signed_Vote) == sign(Vote_Switch)) |> 
+  arrange(year, abs(`Pct Margin`)) |> 
+  mutate(Switch_Needed =ifelse(abs(lag(cumsum(Signed_Vote))) > abs(Vote_Switch)/2, "Not", "Necessary")) |> 
+  mutate(Switch_Needed = replace_na(Switch_Needed, "Necessary")) |>
+  filter(Switch_Needed=="Necessary")  |> 
+  group_by(year) |> 
+  summarize(Margin = sum(Margin), 
+          "Avg District Margin"=mean(`Pct Margin`), 
+          "Total Districts"=n())
+
+
+
+
+all_data <- left_join(pop_votes, switches_needed)
+
+
+
+
+p <-all_data |> 
+  mutate(`Popular Vote` = 
+      case_when(
+        sign(National_Switch) == sign(Margin) ~ abs(National_Switch),
+        sign(National_Switch) != sign(Margin) ~ -abs(National_Switch)  )) |> 
+  mutate(`Congressional Districts` = abs(Margin), 
+        Winner = ifelse(Dem_Winner, "Democrats", "Republicans")) |> 
+  pivot_longer(cols=c("Congressional Districts", "Popular Vote"), 
+          names_to="Type", values_to="Votes") |>   
+  rename(Year=year) |>
+  ggplot(aes(x=Year, y=Votes,fill=Winner)) + 
+  geom_col() + 
+  scale_y_continuous("Margin", labels = scales::comma) + 
+  facet_wrap(~Type, scales = "free_y") + 
+  theme_pubr() +
+    theme(legend.position="bottom") +
+    scale_fill_manual("Chamber Control?", 
+      values=c("Democrats"="steelblue3", "Republicans"="orangered3")) + 
+  labs(caption="In 1996 and 2012 Democrats won majority of national vote but Republicans won chamber.") + 
+  #geom_text(aes(label=`Total States`), vjust=0, size=5)  + 
+  NULL 
+
+p
+
+
+```
+
+
+
+
+## Data Sources and Concerns
+
+- **Presidential Elections:** Data is copied and pasted from Wikipedia (eg [1972's Results](https://en.wikipedia.org/wiki/1972_United_States_presidential_election#Results_by_state)). 
+- **Congressional Elections:**
+  - Data from 1976 to 2022 is from the [MIT Election Lab.](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/IG0UN2)
+  - Data from 2024 was [scraped from CNN.](https://www.cnn.com/election/2024/results/house?election-data-id=2024-HG&election-painting-mode=projection-with-lead&filter-key-races=false&filter-flipped=false&filter-remaining=false)
+- **Caveats:** I checked that the number of districts won were correct for congressional election, but the total votes cast were not the same as Wikipedia (but were off by only a few percent). In addition, Congressional elections are full of strangeness including [North Carolina re-running an election in 2018](https://en.wikipedia.org/wiki/2018_North_Carolina%27s_9th_congressional_district_election), Louisiana having open general elections with runoffs, and other strangeness. The numbers reported here are probably individually wrong, but the trends should be right.
