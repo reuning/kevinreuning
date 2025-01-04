@@ -1,8 +1,10 @@
 ---
 title: "BERTopics Example"
-author:
-    - name: Kevin Reuning
-      url: http://kevinreuning.com 
+date: 2024-11-18
+categories:
+    - Python
+    - ML
+    - Text-as-data
 format: 
     html:
         code-fold: true
