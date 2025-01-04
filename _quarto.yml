@@ -11,6 +11,8 @@ website:
   title: "Kevin Reuning"
   site-url: "https://kevinreuning.com/"
   open-graph: true
+  repo-url: https://github.com/reuning/kevinreuning
+  repo-actions: [edit, source, issue]
   navbar:
     left:
       - cv/index.qmd
