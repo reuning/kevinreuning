@@ -5,7 +5,7 @@ categories:
     - POL 307
 ---
 
-This guide walks you through how to create cross tabs and calculate a $\chi^2$ test in Google Sheets. I assume you've gone through the the [guide on calculating univariate statistics](univariate_stats.qmd) which covers how to load a CSV file into a google sheet and create pivot tables. 
+This guide walks you through how to create cross tabs and calculate a $\chi^2$ test in Google Sheets. I assume you've gone through the [guide on calculating univariate statistics](univariate_stats.qmd) which covers how to load a CSV file into a google sheet and create pivot tables. 
 
 ## Creating Cross Tabs
 

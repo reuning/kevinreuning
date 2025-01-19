@@ -20,5 +20,5 @@ Note: When you first open RStudio a window might pop-up about installing RTools 
 
 1. Download the most recent version of [R from here](https://cran.r-project.org/bin/windows/base/). This will be in the form of ‘Download R X.Y.Z for Windows’. Currently it is R-4.4.1
 2. Once it has downloaded click on the file and follow the prompts to install it.
-3. Download the most recent version of [RStudio from here](https://posit.co/download/rstudio-desktop/#download). TScroll to the table and there should be a row that says “Windows 10/11”, click the download link to the right of that. Once it downloads again click on it and follow the install instructions.
+3. Download the most recent version of [RStudio from here](https://posit.co/download/rstudio-desktop/#download). Scroll to the table and there should be a row that says “Windows 10/11”, click the download link to the right of that. Once it downloads again click on it and follow the install instructions.
 4. Open **RStudio** to ensure that everything loads right.

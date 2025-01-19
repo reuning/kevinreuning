@@ -61,7 +61,7 @@ There are a few other things you can do:
 
 - If you'd like to change the theme/colors. Select the plot and then go to Format $\rightarrow$ Theme. You'll have options that pop up in the menu on the right. 
 - To move the legend position, in the chart editor go to Customize $\rightarrow$ Legend and then use the Position dropdown. 
-- You can customize particular colors by going to Cusotmize $\rightarrow$ Series and then selecting a particular category from the first dropdown. You can then edit how that is displayed.
+- You can customize particular colors by going to Customize $\rightarrow$ Series and then selecting a particular category from the first dropdown. You can then edit how that is displayed.
 - To edit the title double click on it. You can do the same with other labels. 
 - You can also switch if the rows are on the axis and the columns the fill by going to Setup. Scroll to the bottom and check the "Switch rows / columns" box. 
 

@@ -30,7 +30,7 @@ If you want to follow along the Nevada egdelist data is [here](network_data/NV-2
 
 The `network()` function can be used to convert both an adjacency matrix or an edgelist. You can set the type of data using `matrix.type` argument but it will also guess. In general if you provide a matrix it will assume it is an adjacency matrix. If you provide a data.frame it will assume it is an edgelist. 
 
-In order to convert our dataframe into a matrix we need to use `as.matrix()` but this can create a problem if some of our columns are not numbers. OFten the first column in your adjacency csv is the vertex names. To deal with this when we read in the data using `read.csv()` we are going to set `row.names=1` which makes the first column in your csv into rownames instead of treating it as a regular column.
+In order to convert our dataframe into a matrix we need to use `as.matrix()` but this can create a problem if some of our columns are not numbers. Often the first column in your adjacency csv is the vertex names. To deal with this when we read in the data using `read.csv()` we are going to set `row.names=1` which makes the first column in your csv into rownames instead of treating it as a regular column.
 
 ```{r}
 library(network)
@@ -61,7 +61,7 @@ There are some additional arguments to worry about (there are more as well but t
 
 igraph has a set of functions that can be used to convert different data types into a network. For adjacency matrix we use `graph_from_adjacency_matrix()` and `graph_from_data_frame()` but there is also `read_graph()` which can be used to read data directly from a file, including a wide range of formats (pajek, graphml, gml, etc).
 
-In order to convert our dataframe into a matrix we need to use `as.matrix()` but this can create a problem if some of our columns are not numbers. OFten the first column in your adjacency csv is the vertex names. To deal with this when we read in the data using `read.csv()` we are going to set `row.names=1` which makes the first column in your csv into rownames instead of treating it as a regular column.
+In order to convert our dataframe into a matrix we need to use `as.matrix()` but this can create a problem if some of our columns are not numbers. Often the first column in your adjacency csv is the vertex names. To deal with this when we read in the data using `read.csv()` we are going to set `row.names=1` which makes the first column in your csv into rownames instead of treating it as a regular column.
 
 ```{r}
 library(igraph)
@@ -143,7 +143,7 @@ The biggest difference between the two is that statnet modifies the network obje
 
 To access a vertex attribute you use `get.vertex.attribute()` with the network object and name of the attribute you want to access. 
 
-You can set a vertex attribute using `set.vertex.attribute()` along with the network object, the name of the attribute you want to access, the value(s) and which vertex (or vertices) you want to modify. **When you call this it modifies the network in-place and nothing is returned**
+You can set a vertex attribute using `set.vertex.attribute()` along with the network object, the name of the attribute you want to access, the value(s) and which vertex (or vertices) you want to modify. **When you call this it modifies the network in-place and nothing is returned.**
 
 Each vertex has a numeric ID from 1 to the number of vertices n the network. 
 
@@ -296,7 +296,7 @@ df[1:5,]
 
 ## igraph 
 
-For graiph this is accomplished using `as_data_frame()` and indicating whether you want to convert to a vertex or edge dataframe using the `what=` argument. In the below example I calculate the degree and betweenness centrality of each node, then convert it to a dataframe and show the first 5 rows. 
+For igraph this is accomplished using `as_data_frame()` and indicating whether you want to convert to a vertex or edge dataframe using the `what=` argument. In the below example I calculate the degree and betweenness centrality of each node, then convert it to a dataframe and show the first 5 rows. 
 
 ```{r}
 #| echo: false
@@ -335,7 +335,7 @@ degree(statnet_net)[1:10] #will work
 degree(igraph_net)[1:10] #won't work 
 ```
 
-A solution to this is to prepend function calls with the library the come from: 
+A solution to this is to pre-end function calls with the library the come from: 
 
 ```{r}
 sna::degree(statnet_net)[1:10] #will work
