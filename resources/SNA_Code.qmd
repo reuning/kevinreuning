@@ -14,8 +14,8 @@ For anyone discovering this, the code below here is pulled from quarto slides so
 
 - [igraph](https://r.igraph.org/): To do most of the network work here. 
 - [ggraph](https://ggraph.data-imaginist.com/): To visualize the networks. 
-- [smacof](https://cran.r-project.org/web/packages/smacof/index.html): for MDS scaling.  
-- [FactoMineR](http://factominer.free.fr/index.html): for correspondence analysis. 
+- [smacof](https://cran.r-project.org/web/packages/smacof/index.html): For MDS scaling.  
+- [FactoMineR](http://factominer.free.fr/index.html): For correspondence analysis. 
 - [blockmodeling](https://cran.r-project.org/web/packages/blockmodeling/index.html): For blockmodeling and structural equivalence.
 - [sna](https://cran.r-project.org/web/packages/sna/index.html): A few random things that igraph cannot do and QAP
 - [ergm](https://github.com/statnet/ergm): For ERGMs (not currently on this page).
@@ -249,7 +249,7 @@ edge_attr_names(net)
 graph_attr_names(net)
 ```
 
-### Accessing a Attribute
+### Accessing an Attribute
 
 
 There are several weights to access a vertex or edge attribute, but the easiest one is to something like: `V(net)$attr` where `attr` is the name of the attribute. You can do this with `E()` as well
@@ -573,7 +573,7 @@ ggplot(df_out, aes(x=indegree, y=outdegree)) +
 ```
 
 
-### Changing Aesthetics for Somethings 
+### Changing Aesthetics for Some Things 
 
 We can also use the `aes()` function within the `geom_point()` call to have different aesthetics mapped to our data. The below will change the color of the dots depending on whether they are a cutpoint or not.
 
@@ -681,7 +681,7 @@ There are three main functions we will need for this:
 - `hclust()` a base R function (along with `cutree()` and `dist()`). 
 
 
-## MDS BScaling 
+## MDS Scaling 
 
 The `mds()` function in `smacof` lets us estimate multiple types of MDS: 
 
@@ -877,7 +877,7 @@ groups[1:20]
 
 ## Correspondence Analysis 
 
-For correspondence analysis we use the `CA()` function, and can set the number of dimensions to estimate with `ncp=` (feel free to se this to something high)
+For correspondence analysis we use the `CA()` function, and can set the number of dimensions to estimate with `ncp=` (feel free to see this to something high)
 
 The [data here](network_data/EU_seats.csv) shows the number of a country's EU MEPs are in each party group.
 
@@ -1204,7 +1204,7 @@ Vertex attributes are included for a variety of reasons. This includes:
 
 - Demonstrating who is important in a network. 
 - Showing groups in a network. 
-- Presenting other relevant details 
+- Presenting other relevant details.
 
 ### Scaling by Degree
 
@@ -1258,7 +1258,7 @@ ggraph(graph=net, "stress") +
 
 There are a few things we might want to do with our edges: 
 
-- Add arrows for a directed network
+- Add arrows for a directed network.
 - Show edge attributes.
 
 ###  General 
@@ -1277,7 +1277,7 @@ ggraph(graph=net, "stress") +
 
 ### Adding Arrows 
 
-Arrows are _annoying_ to add here, but there is some good help [online](https://ggraph.data-imaginist.com/articles/Edges.html#decorating-edges). We manualy create an arrow (`arrow`) and manually end them before the node (`end_cap`)
+Arrows are _annoying_ to add here, but there is some good help [online](https://ggraph.data-imaginist.com/articles/Edges.html#decorating-edges). We manually create an arrow (`arrow`) and manually end them before the node (`end_cap`)
 
  
 ```{r}
@@ -1756,7 +1756,7 @@ ggraph(overlap_net, "fr") +
 
 There are several functions we will use to find clusters:
 
-- Grivan-Newman/Edge Betweenness: `cluster_edge_betweenness()`
+- Girvan-Newman/Edge Betweenness: `cluster_edge_betweenness()`
 - Fast-Greedy: `cluster_fast_greedy()`
 - Walktrap: `cluster_walktrap()`
 - Louvain: `cluster_louvain()`
@@ -1864,7 +1864,7 @@ net
 
 ## Structural similarity 
 
-The `sedist()` function from the `blocmodeling` package calculate structural similarity. 
+The `sedist()` function from the `blockmodeling` package calculates structural similarity. 
 
 `sedist()` accepts for arguments: 
 
@@ -1985,7 +1985,7 @@ We can use this to look at it as a blockmodel. There are a few ways to do this:
   - `M=` and `clu=` (same as above)
   - `FUN=` the function you want to use. 
 
-### Plotting Blockmodel  
+### Plotting Blockmodels
 
  
 
@@ -2053,7 +2053,7 @@ EM(blocks)
 
 ### Accessing Clusters
 
-You can either use `clu()` or `orderClu()` to access the clusters. `orderClu()` simple reorders the clusters (similar as above)
+You can either use `clu()` or `orderClu()` to access the clusters. `orderClu()` simply reorders the clusters (similar as above)
  
 
 ```{r}
@@ -2663,7 +2663,7 @@ What do we need to do to test what leads to having more trading partners?
 4) Run our permutation regression. 
 
 
-(If `degree()` is freaking out it might be a clash between `sna` and `igraph` fix it with `igraph::degree()`)
+(If `degree()` is freaking out, it might be a clash between `sna` and `igraph` fix it with `igraph::degree()`)
 
 ```{r}
 #| echo: true 
@@ -2994,4 +2994,4 @@ We can look at each term here in kind:
 - `nodefactor.Grupo.B`,  `nodefactor.Grupo.C`, and `nodefactor.Grupo.D` show whether students in group B, C, and D are more likely to have friends than those in group A. This is again, not significant, so there is no difference. 
 - `nodecov.prosocial` This shows whether the overall total amount of "prosocial" behavior increases a friendship between two people. There is again, no effect. 
 - `gwesp.fixed.0.75` This shows how much transitivity matters to the network structure. The coefficient is positive (1.32) and statistically significant (p-value < 0.05) meaning that triangles are likely to form in this network (more than compared to a random network). In practice this indicates that transitivity happens in this networks. 
-- `gwdeg.fixed.0.75` This models the distribution of degrees, the positive (1.08) and significant (p-value <0.05) means that there is a "rich get richer" aspect to this. The distribution of degrees tends towards a few with a large number of ties and many with few ties. (If it was negative we'd expect a more uniform distribution of degrees).
+- `gwdeg.fixed.0.75` This models the distribution of degrees, the positive (1.08) and significant (p-value <0.05) means that there is a "rich get richer" aspect to this. The distribution of degrees tends towards a few with a large number of ties and many with few ties (if it was negative we'd expect a more uniform distribution of degrees).
