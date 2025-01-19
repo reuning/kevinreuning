@@ -30,7 +30,7 @@ If you want to follow along the Nevada egdelist data is [here](network_data/NV-2
 
 The `network()` function can be used to convert both an adjacency matrix or an edgelist. You can set the type of data using `matrix.type` argument but it will also guess. In general if you provide a matrix it will assume it is an adjacency matrix. If you provide a data.frame it will assume it is an edgelist. 
 
-In order to convert our dataframe into a matrix we need to use `as.matrix()` but this can create a problem if some of our columns are not numbers. OFten the first column in your adjacency csv is the vertex names. To deal with this when we read in the data using `read.csv()` we are going to set `row.names=1` which makes the first column in your csv into rownames instead of treating it as a regular column.
+In order to convert our dataframe into a matrix we need to use `as.matrix()` but this can create a problem if some of our columns are not numbers. Often the first column in your adjacency csv is the vertex names. To deal with this when we read in the data using `read.csv()` we are going to set `row.names=1` which makes the first column in your csv into rownames instead of treating it as a regular column.
 
 ```{r}
 library(network)
@@ -61,7 +61,7 @@ There are some additional arguments to worry about (there are more as well but t
 
 igraph has a set of functions that can be used to convert different data types into a network. For adjacency matrix we use `graph_from_adjacency_matrix()` and `graph_from_data_frame()` but there is also `read_graph()` which can be used to read data directly from a file, including a wide range of formats (pajek, graphml, gml, etc).
 
-In order to convert our dataframe into a matrix we need to use `as.matrix()` but this can create a problem if some of our columns are not numbers. OFten the first column in your adjacency csv is the vertex names. To deal with this when we read in the data using `read.csv()` we are going to set `row.names=1` which makes the first column in your csv into rownames instead of treating it as a regular column.
+In order to convert our dataframe into a matrix we need to use `as.matrix()` but this can create a problem if some of our columns are not numbers. Often the first column in your adjacency csv is the vertex names. To deal with this when we read in the data using `read.csv()` we are going to set `row.names=1` which makes the first column in your csv into rownames instead of treating it as a regular column.
 
 ```{r}
 library(igraph)
