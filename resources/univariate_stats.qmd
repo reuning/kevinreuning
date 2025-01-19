@@ -59,7 +59,7 @@ In order to calculate the proportions present in a variable click the `Add` butt
 
 In order to fill in cells we need to add something to the the values. We are going to do this by adding the survey weights. In this case are survey weights are called `weight_pid`. Click `Add` next to Values and select `weight_PID`. By using the weights we adjust how much each individual row counts.[^unweighted] Once you've selected the value it should default to having the `Summarize by` as `SUM`. This will sum `weight_PID` for each row. Finally switch `Show as` to `% of column` so that it calculates the percent in each column. 
 
-Again what we are doing here is dividing our dataset by whatever we've selected in the Row section. We then add up the weight column in each division of the dataset. Finally we convert those sums into proportions/percentages as thats what we are interested in. 
+Again what we are doing here is dividing our dataset by whatever we've selected in the Row section. We then add up the weight column in each division of the dataset. Finally we convert those sums into proportions/percentages as that's what we are interested in. 
 
 ![](images/values_5.png){#fig-values}
 
@@ -76,7 +76,7 @@ $$ \sqrt{ p(1-p) \frac{N}{N-1} } $$
 
 Where $p$ is the proportion in a category and `N` is the number of observations in your data. Although it is possible to calculate the number of observations, in this case it is easiest to just note that we have 537 observations. We will pull the proportion directly from the cell.
 
-Start by clicking in the cell where you want the first row's standard deviation to be. Type `=` to start a formula. We are going to square root everything so our formula will start with `SQRT(`. Next we want to click the cell we want to calculate the SD from, this will insert the cell into the formula (you'll now have something like `SQRT(B1`). Now multiply that by using the asterisk `*` by (1-p) by again selecting the cel of interest. Finally multiply that by the number of rows divided by the number of rows minus 1 (putting the latter in parentheses). In full your formula should look something like: `SQRT(B1*(1-B1)*(537/536))` (or look at @fig-sd).
+Start by clicking in the cell where you want the first row's standard deviation to be. Type `=` to start a formula. We are going to square root everything so our formula will start with `SQRT(`. Next we want to click the cell we want to calculate the SD from, this will insert the cell into the formula (you'll now have something like `SQRT(B1`). Now multiply that by using the asterisk `*` by (1-p) by again selecting the cell of interest. Finally multiply that by the number of rows divided by the number of rows minus 1 (putting the latter in parentheses). In full your formula should look something like: `SQRT(B1*(1-B1)*(537/536))` (or look at @fig-sd).
 
 ![](images/sd.png){#fig-sd}
 
