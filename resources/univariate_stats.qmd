@@ -28,7 +28,7 @@ You should now have your CSV file opened in the Google Sheet. At this point you 
 
 ## Creating A New Pivot Table 
 
-We will be using a [pivot table](https://en.wikipedia.org/wiki/Pivot_table) to do our analysis. Pivot tables allow you to quickly aggregate your data in different ways and to create different aggregations for different groups. You'll start by going ot `Insert` and selecting `Pivot Table` (@fig-pivot1).
+We will be using a [pivot table](https://en.wikipedia.org/wiki/Pivot_table) to do our analysis. Pivot tables allow you to quickly aggregate your data in different ways and to create different aggregations for different groups. You'll start by going to `Insert` and selecting `Pivot Table` (@fig-pivot1).
 
 ![](images/pivot_1.png){#fig-pivot1}
 
