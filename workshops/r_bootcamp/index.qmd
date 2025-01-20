@@ -1,0 +1,13 @@
+---
+title: R Bootcamp
+format: html
+---
+
+Introduction to R Bootcamp slides: 
+
+1) [Basics](day_1.qmd)
+2) [Data Manipulation and Summary](day_3.qmd)
+3) [Basic Plotting](day_2.qmd)
+4) [More Plotting and Reports](day_4.qmd)
+
+[The data dictionary is here](country_data.qmd)
