@@ -1,0 +1,108 @@
+---
+title: "Scaling Movie Summaries"
+date: 2025-02-23
+categories:
+    - Python
+    - ML
+    - Text-as-data
+format: 
+    html:
+        code-fold: false
+        page-layout: full
+execute:
+    warnings: false
+    freeze: true
+    output: false 
+---
+
+My students are learning about MDS scaling this week. For previous semesters I've had them look at campaign donations, but I've learned that the data analytics students don't always have the requisite background to easily identify what the scales mean. After spending a day or two searching the internet for different options I came across this [dataset of movie summaries](https://huggingface.co/datasets/vishnupriyavr/wiki-movie-plots-with-summaries). It includes plot summaries scraped from wikipedia. I thought it would be interesting to see if it would be possible to identify genres through similarities in plot summaries. 
+
+This process requires a few steps:
+
+1) Download and process the dataset to make it more manageable for my students. 
+2) Embed the summaries using a sentence embedding model. 
+3) Collapse those embeddings to avoid the curse of dimensionality.
+4) Calculate the pairwise distances between each summary (what my students will actually use). 
+
+We'll start by downloading and processing the data. 
+
+```{python}
+from datasets import load_dataset
+from sentence_transformers import SentenceTransformer
+from sklearn.metrics import pairwise_distances 
+import umap
+import pandas as pd
+
+ds = load_dataset("vishnupriyavr/wiki-movie-plots-with-summaries")      # <1>
+ds = ds.filter(lambda movie: movie['Release Year'] == 2016)             # <2>
+ds = ds.filter(lambda movie: movie['Origin/Ethnicity'] == "American")   # <2>
+ds = ds.filter(lambda movie: movie['Genre'] != "unknown")               # <2>
+```
+
+1. Loads the dataset using the dataset package from Hugging Faces
+2. Filters down to just one year, produced in the US, and drops some of the _stranger_ films that have an unknown genre. 
+
+
+In order to embed the summaries I use the [SentenceTransformer package](https://sbert.net/index.html). This package makes it easy to embed "sentences" (really just longer blocks of text) using a variety of pre-trained models. These embeddings are a way of placing the sentences into a multi-dimensional space where similar content should be near each other. There are a lot of potential models you can use to do this (the range of options remains one of the more overwhelming aspects of using LLM related techniques for me). The maintainers of SentenceTransformer suggest using this [MTEB Rankings](https://huggingface.co/spaces/mteb/leaderboard) which summaries how well a range of models do on a wide variety of tasks.
+
+I selected [Lajavaness's bilingual-embedding-large](https://huggingface.co/Lajavaness/bilingual-embedding-large) as it will run quickly on my laptop and seems to perform well. The biggest issue here is that it only uses 512 tokens (meaning longer summaries might be cut off). 
+
+The code for all this is relatively simple: 
+
+```{python}
+model = SentenceTransformer("Lajavaness/bilingual-embedding-large", trust_remote_code=True) # <1>
+ds = ds.map(lambda movie: {"embedding" : model.encode(movie['PlotSummary'])})               # <2>
+```
+
+1. Loads the model from Hugging Faces.
+2. We use a lambda function (fancy term for a function you don't save) to encode each plot summary. This needs to return a dictionary item. 
+
+
+We've now embedded each summary into a 1,024 dimensional space. I could hand this over to my students as is but I wanted to make sure the data would lead them to some interesting patterns. Large dimensional spaces are bad because everything is very far from each other. There is a variety of ways of dealing with this, but I've come to appreciate the [UMAP](https://umap-learn.readthedocs.io/en/latest/) approach which will reduce the dimension down. Here we drop it down to 5 dimensions. 
+
+```{python}
+reducer = umap.UMAP(n_components=5, n_neighbors=5, random_state=1)           # <1>
+low_dim = reducer.fit_transform(ds['train']['embedding'])                    # <2>
+```
+
+1. Setup the UMAP function to scale it down to 5 dimensions (`n_components`). `n_neigbors` is another parameter that identifies how much of the local space (versus global space) to preserve around each observation. The default is 15, I lowered it to 5 as this is a relatively small dataset and playing around with it this led to clearer clustering in the end. 
+2. Reduce the dimensions. 
+
+
+Finally I calculated the euclidean distance between each observation and save the data. 
+
+
+```{python}
+distances = pairwise_distances(low_dim, metric="euclidean") # <1>
+data = pd.DataFrame(distances)                              # <2>
+data = data.set_index(pd.Index(ds['train']['Title']))       # <3>
+data.columns = ds['train']['Title']                         # <3> 
+data.to_csv("data/Movie_Distances.csv")                     # <4>
+```
+
+1. Calculates the euclidean distance between each observation. 
+2. Converts that array into a pandas dataframe (I'm more comfortable with dataframes)
+3. Adds row and column labels to the data frame
+4. Write the [distance matrix out.](data/Movie_Distances.csv)
+
+As a check @tbl-dist shows the five closest and furthest movies to Deadpool. The ones closest (except for Zoolander 2) are also action films featuring a super hero (or something close to it). The ones furthest are all over the place, including comedies and more traditional dramas. 
+
+```{python}
+#| echo: false 
+#| output: true
+#| tbl-cap: Distance from Deadpool
+#| label: tbl-dist
+
+from itables import show
+
+most = data['Deadpool'].nlargest(5)
+most = most.reset_index()
+most.columns = ['Title', 'Distance']
+least = data['Deadpool'].nsmallest(6)[1:6]
+least.columns = "Least"
+least = least.reset_index()
+least.columns = ['Title', 'Distance']
+
+show(pd.concat([least, most], axis=1))
+
+```
