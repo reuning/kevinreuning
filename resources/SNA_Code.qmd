@@ -1911,27 +1911,28 @@ as.matrix(age_dist)[1:5, 1:5]
 
 What we need though is a full vector of ages and distances so we can directly compare them. 
 
-If we put a matrix into `c()` it will convert it to a vector. Example:
+The `sna` package has a helper function for this `sna::gvectorize()`
 
- 
+\footnotesize 
 
 ```{r}
 #| echo: true 
-test_mat <- matrix(1:4, nrow=2, ncol=2)
+test_mat <- matrix(1:9, nrow=3, ncol=3)
 test_mat
 
-c(test_mat)
+sna::gvectorize(test_mat, mode="graph") ### for undirected
+
 ```
 
 ### Creating a Dataframe 
 
-We can do the same thing to our distance matrix. 
+We can do the same thing to our distance matrix (first converting it to a normal matrix) and use `na.omit()` to drop the `NA`s
 
- 
 ```{r}
 #| echo: true 
-data <- data.frame("Age_Dist"=c(age_dist),
-                   "SE_Dist"=c(london_se))
+data <- data.frame("Age_Dist"=sna::gvectorize(as.matrix(age_dist), mode="graph"),
+                   "SE_Dist"=sna::gvectorize(as.matrix(london_se), mode="graph"))
+data <- na.omit(data)
 data[1:5,]
 ```
 
