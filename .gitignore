@@ -14,4 +14,4 @@ anes*.csv
 anes*.xlsx
 *_cache
 *_files
-.vdoc.r
+.vdoc.*

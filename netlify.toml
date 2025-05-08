@@ -8,4 +8,4 @@ command = "quarto render"
 [[plugins]]
   package = "netlify-plugin-checklinks"
     [plugins.inputs]
-    skipPatterns = ["/presentations/", "https://cdn", ".pdf", "https://fonts.google", "dataverse.harvard.edu", "plausible.io"]
+    skipPatterns = ["/presentations/", "https://cdn", ".pdf", "https://fonts.google", "dataverse.harvard.edu", "plausible.io", "unpkg.com"]

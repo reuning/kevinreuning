@@ -107,7 +107,7 @@ The data is [here](network_data/wheel_of_time_ep1.csv) and is an adjacency matri
 
 ```{r}
 #| echo: true
-net_mat <- read.csv("network_data/wheel_of_time_ep1.csv", row.names=1)
+net_mat <- read.csv(here::here("resources/network_data/wheel_of_time_ep1.csv"), row.names=1)
 # setting row.names=1, turns the first column into rownames
 net_mat[1:5, 1:5] # look at first 5 rows and cols
 ```
@@ -487,7 +487,7 @@ I have [data](network_data/OH_134_cosponsor.csv) that shows connections between 
 
  
 ```{r}
-edge_data <- read.csv("network_data/OH_134_cosponsor.csv")
+edge_data <- read.csv(here::here("resources/network_data/OH_134_cosponsor.csv"))
 head(edge_data)
 ```
 
@@ -507,7 +507,7 @@ With an edge list we can also easily add in information about each node/vertex. 
 
  
 ```{r}
-vertex_data <- read.csv("network_data/OH_134_people.csv")
+vertex_data <- read.csv(here::here("resources/network_data/OH_134_people.csv"))
 leg_net <- graph_from_data_frame(edge_data, directed=FALSE, 
             vertices=vertex_data)
 leg_net
@@ -883,7 +883,7 @@ The [data here](network_data/EU_seats.csv) shows the number of a country's EU ME
 
 ```{r}
 #| echo: true
-df <- read.csv("network_data/EU_seats.csv", row.names=1)
+df <- read.csv(here::here("resources/network_data/EU_seats.csv"), row.names=1)
 library(FactoMineR)
 
 ca <- CA(df, ncp=5)
@@ -966,7 +966,7 @@ It is a communication network between workers at a sawmill. It also is a unique 
 ```{r}
 #| echo: true
 library(igraph)
-net <- read_graph("network_data/strike.paj", format="pajek")
+net <- read_graph(here::here("resources/network_data/strike.paj"), format="pajek")
 ecount(net)
 vcount(net)
 ```
@@ -1134,7 +1134,7 @@ Network of DNC emails from [here.](https://networks.skewed.de/net/dnc)
 #| cache: true
 #| echo: true
 #| out-height: 40%
-dnc_net <- read_graph("network_data/dnc.gml", format='gml')
+dnc_net <- read_graph(here::here("resources/network_data/dnc.gml"), format='gml')
 
 ggraph(graph=dnc_net, "graphopt") + 
   geom_edge_link() +  geom_node_point()
@@ -1161,11 +1161,12 @@ dnc_net |> largest_component() |>
 Deleting all the isolates using `which()` and `delete_vertices()`.
 
 
+
 ```{r}
 #| echo: true
 #| cache: true 
 
-isolates <- which(degree(dnc_net)==0)
+isolates <- which(igraph::degree(dnc_net)==0)
 dnc_net |> delete_vertices(v=isolates) |> 
     ggraph("fr") + geom_edge_link() +  geom_node_point()
 
@@ -1214,7 +1215,7 @@ Often we will scale a node size by a measure of importance, like degree:
 ```{r}
 #| echo: true
 #| out-height: 40%
-V(net)$degree <- degree(net)
+V(net)$degree <- igraph::degree(net)
 ggraph(graph=net, "stress") + 
   geom_edge_link() +  geom_node_point(aes(size=degree)) +
   ggtitle("Sized by Degree") + 
@@ -1230,8 +1231,8 @@ This data is of [Spanish high school students](https://networks.skewed.de/net/sp
  
 ```{r}
 #| echo: true 
-edges <- read.csv("network_data/spanish_hs_edges.csv")
-nodes <- read.csv("network_data/spanish_hs_nodes.csv")
+edges <- read.csv(here::here("resources/network_data/spanish_hs_edges.csv"))
+nodes <- read.csv(here::here("resources/network_data/spanish_hs_nodes.csv"))
 net <- graph_from_data_frame(edges, vertices=nodes, directed=T)
 neg_edges <- which(E(net)$weight < 0)
 net <- delete_edges(net, neg_edges)
@@ -1336,8 +1337,8 @@ This data shows the relationships between donors in the Ohio legislature. You ca
 ```{r}
 #| echo: true
 library(igraph)
-edges <- read.csv("network_data/edge_OH.csv")
-nodes <- read.csv("network_data/meta_OH.csv")
+edges <- read.csv(here::here("resources/network_data/edge_OH.csv"))
+nodes <- read.csv(here::here("resources/network_data/meta_OH.csv"))
 net <- graph_from_data_frame(edges, directed=F, vertices=nodes)
 ```
 
@@ -1452,7 +1453,7 @@ Weighted degree is the `strength()` function.
 
 
 weighted_degree <- strength(net)
-regular_degree <- degree(net)
+regular_degree <- igraph::degree(net)
 plot(x=regular_degree, y=weighted_degree)
 ```
 
@@ -1491,8 +1492,8 @@ Lets use the Spanish High School Network you used earlier this week:
 ```{r}
 #| echo: true
 library(igraph)
-edges <- read.csv("network_data/spanish_hs_edges.csv")
-nodes <- read.csv("network_data/spanish_hs_nodes.csv")
+edges <- read.csv(here::here("resources/network_data/spanish_hs_edges.csv"))
+nodes <- read.csv(here::here("resources/network_data/spanish_hs_nodes.csv"))
 net <- graph_from_data_frame(edges, vertices=nodes, directed=T)
 net <- delete_edges(net, E(net)[E(net)$weight <= 0])
 
@@ -1523,7 +1524,7 @@ Degree can be calculated with `degree()` and then average it up with `mean()`
 #| echo: true
 
 # note that this has gmode, instead of mode. why? 
-deg <- degree(net)
+deg <- igraph::degree(net)
 mean(deg)
 
 ```
@@ -1655,7 +1656,7 @@ We are going to use the [Cocaine Mambo](network_data/COCAINE_MAMBO.csv) network 
 ```{r}
 #| echo: true
 
-df <- read.csv("network_data/COCAINE_MAMBO.csv", row.names=1)
+df <- read.csv(here::here("resources/network_data/COCAINE_MAMBO.csv"), row.names=1)
 mat <- as.matrix(df)
 mat[mat>1] <- 1 # there is a weird cell with a 2, not a 1. 
 coke_net <- graph_from_adjacency_matrix(mat, mode="undirected")
@@ -1858,7 +1859,7 @@ The data we will use is a [london gang network](network_data/london.graphml).
 
 ```{r}
 #| echo: true
-net <- read_graph("network_data/london.graphml", format="graphml")
+net <- read_graph(here::here("resources/network_data/london.graphml"), format="graphml")
 net
 ```
 
@@ -1907,32 +1908,16 @@ as.matrix(age_dist)[1:5, 1:5]
 
 ```
 
-### Converting to Vectors 
 
-What we need though is a full vector of ages and distances so we can directly compare them. 
-
-The `sna` package has a helper function for this `sna::gvectorize()`
-
-\footnotesize 
-
-```{r}
-#| echo: true 
-test_mat <- matrix(1:9, nrow=3, ncol=3)
-test_mat
-
-sna::gvectorize(test_mat, mode="graph") ### for undirected
-
-```
 
 ### Creating a Dataframe 
 
-We can do the same thing to our distance matrix (first converting it to a normal matrix) and use `na.omit()` to drop the `NA`s
-
+We need to convert our distance matrices into vectors and then stick it into a dataframe. 
 ```{r}
 #| echo: true 
-data <- data.frame("Age_Dist"=sna::gvectorize(as.matrix(age_dist), mode="graph"),
-                   "SE_Dist"=sna::gvectorize(as.matrix(london_se), mode="graph"))
-data <- na.omit(data)
+data <- data.frame("Age_Dist"=c(age_dist),
+                   "SE_Dist"=c(london_se))
+
 data[1:5,]
 ```
 
@@ -2102,7 +2087,7 @@ For igraph the `graph_from_biadjacency_matrix()` function can be used to convert
 library(igraph)
 library(ggraph)
 
-inc_df <- read.csv("network_data/scotland.csv", row.names=1)
+inc_df <- read.csv(here::here("resources/network_data/scotland.csv"), row.names=1)
 inc_mat <- as.matrix(inc_df)
 
 net <- graph_from_biadjacency_matrix(inc_mat)
@@ -2163,8 +2148,8 @@ Lets start by calculating the degree for each group _independently_ this is easy
 
 ```{r}
 #| echo: true 
-corp_degree <- degree(net)[V(net)$label == "Company"]
-member_degree <- degree(net)[V(net)$label != "Company"]
+corp_degree <- igraph::degree(net)[V(net)$label == "Company"]
+member_degree <- igraph::degree(net)[V(net)$label != "Company"]
 
 mean(corp_degree)
 mean(member_degree)
@@ -2240,7 +2225,7 @@ hist(E(members_net)$weight)
 
 Lets drop any edge with a weight less than 1 (THIS IS A BAD IDEA FOR THIS NETWORK)
 
-We can use `which()` to identify which edges are at a certain threshold and `delete.edges()` to... delete edges 
+We can use `which()` to identify which edges are at a certain threshold and `delete_edges()` to... delete edges 
 
  
 ```{r}
@@ -2248,7 +2233,7 @@ We can use `which()` to identify which edges are at a certain threshold and `del
 #| cache: true
 #| 
 edge_to_delete <- which(E(members_net)$weight < 2)
-pruned_net <- delete.edges(members_net, edge_to_delete)
+pruned_net <- delete_edges(members_net, edge_to_delete)
 
 ggraph(pruned_net, "kk") + 
     geom_edge_link(color="gray", aes(width=weight)) + 
@@ -2287,6 +2272,26 @@ ggraph(bonac_memb_net, "kk") +
     geom_node_point(size=3) + scale_edge_width(range=c(0.5, 2))
 ```
 
+If you want to get the other mode you need to transpose the matrix:
+
+```{r}
+#| echo: true 
+#| cache: true
+
+bonac_trans <- project_bonac(t(mat)) #transposed 
+bonac_comp_net <- graph_from_adjacency_matrix(bonac_trans, 
+    diag=F, mode="undirected", weight=T)
+```
+
+ 
+```{r}
+#| echo: true 
+#| cache: true
+#| 
+ggraph(bonac_comp_net, "kk") + 
+    geom_edge_link(color="gray", aes(width=weight)) + 
+    geom_node_point(size=3) + scale_edge_width(range=c(0.5, 2))
+```
 
 
 ## Clustering Bipartite Network
@@ -2318,7 +2323,8 @@ V(net)$dual_cluster[node_select] <- LETTERS[clust_2$membership]
 
 # To clean things up I'm going to drop
 # the isolates
-plot_net <- delete.vertices(net, degree(net) == 0)
+
+plot_net <- delete_vertices(net, igraph::degree(net) == 0)
 ggraph(plot_net, "kk") + 
     geom_edge_link(color="gray") + 
     geom_node_point(size=3, 
@@ -2347,17 +2353,16 @@ We are going to use three networks and two other datasets.
 #| echo: true
 library(igraph)
 
-setwd("network_data")
-mids_df <- read.csv("cow/mids_net.csv")
-nmc_data <- read.csv("cow/nmc_vertex.csv")
+mids_df <- read.csv(here::here("resources/network_data/cow/mids_net.csv"))
+nmc_data <- read.csv(here::here("resources/network_data/cow/nmc_vertex.csv"))
 mids_net <- graph_from_data_frame(mids_df, 
         vertices=nmc_data, directed=F)
 
-trade_df <- read.csv("cow/trade_net.csv")
+trade_df <- read.csv(here::here("resources/network_data/cow/trade_net.csv"))
 trade_net <- graph_from_data_frame(trade_df,
         vertices=nmc_data, directed=F)
 
-cont_df <- read.csv("cow/cont_net.csv")
+cont_df <- read.csv(here::here("resources/network_data/cow/cont_net.csv"))
 cont_net <- graph_from_data_frame(cont_df, 
         vertices=nmc_data, directed=F)
 
@@ -2436,6 +2441,7 @@ It takes:
 - `x=` a list of independent variables (as matrices or networks) 
 - `reps=` the number of reps (for not set this at like 10). 
 - `nullhyp=` If we want to do Y-permutations (`"qap"`) or semi-partial (`"qapspp"`)
+- `mode=` If your network(s) are directed or undirected. 
 
 We already have our trade network, and contiguity network, so we can just put them into this: 
 
@@ -2445,7 +2451,8 @@ We already have our trade network, and contiguity network, so we can just put th
 
 mod <- netlogit(y=mids_mat,
         x=list(trade_mat, cont_mat), 
-        reps=100, nullhyp="qapspp")
+        reps=100, nullhyp="qapspp", 
+        mode="graph")
 
 ```
 
@@ -2531,7 +2538,7 @@ We can add that matrix to the `netlogit` function just as we did with the networ
 
 mod <- netlogit(y=mids_mat,
         x=list(trade_mat, cont_mat, mil_cap_mat), 
-        reps=100)
+        reps=100, mode="graph")
 summary(mod)
 
 ```
@@ -2545,8 +2552,8 @@ We are going to load the high school data we had before and then delete the node
 
 ```{r}
 #| echo: true 
-edges <- read.csv("network_data/spanish_hs_edges.csv")
-nodes <- read.csv("network_data/spanish_hs_nodes.csv")
+edges <- read.csv(here::here("resources/network_data/spanish_hs_edges.csv"))
+nodes <- read.csv(here::here("resources/network_data/spanish_hs_nodes.csv"))
 net <- graph_from_data_frame(edges, vertices=nodes, directed=T)
 net <- delete_vertices(net, which(is.na(V(net)$prosocial)))
 
@@ -2671,8 +2678,7 @@ What do we need to do to test what leads to having more trading partners?
 #| 
 V(trade_net)$degree <- igraph::degree(trade_net)
 trade_df <- as_data_frame(trade_net, what="vertices")
-setwd("network_data")
-democracy_df <- read.csv("cow/democracy_data.csv")
+democracy_df <- read.csv(here::here("resources/network_data/cow/democracy_data.csv"))
 ```
 
 ### Merging Data 
@@ -2735,21 +2741,20 @@ We are going to go back to the MIDs data we were using before (scroll above for 
 library(network)
 library(ergm)
 library(intergraph)
-setwd("network_data")
 
-mids_df <- read.csv("cow/mids_net.csv")
-nmc_data <- read.csv("cow/nmc_vertex.csv")
+mids_df <- read.csv(here::here("resources/network_data/cow/mids_net.csv"))
+nmc_data <- read.csv(here::here("resources/network_data/cow/nmc_vertex.csv"))
 mids_net <- graph_from_data_frame(mids_df, 
         vertices=nmc_data, directed=F)
 V(mids_net)$milper[V(mids_net)$milper<0] <- 0
 mids_net <- asNetwork(mids_net)
 
-trade_df <- read.csv("cow/trade_net.csv")
+trade_df <- read.csv(here::here("resources/network_data/cow/trade_net.csv"))
 trade_net <- graph_from_data_frame(trade_df,
         vertices=nmc_data, directed=F)
 trade_net <- asNetwork(trade_net)
 
-cont_df <- read.csv("cow/cont_net.csv")
+cont_df <- read.csv(here::here("resources/network_data/cow/cont_net.csv"))
 cont_net <- graph_from_data_frame(cont_df, 
         vertices=nmc_data, directed=F)
 cont_net <- asNetwork(cont_net)
@@ -2810,11 +2815,12 @@ summary(mod)
 
 The two gw-terms we've learned:
 
-- `gwdegree()`captures the tendency towards transitivity. Positive values mean open triads are more likely to close.
-- `gwesp()` captures a tendency towards having equal or unequal distributions of edges. Positive values mean edges are more equally distributed, negative values mean edges tend to go to those who already have edges (popularity). 
+
+- `gwesp()` captures the tendency towards transitivity. Positive values mean open triads are more likely to close.
+- `gwdegree()` captures a tendency towards having equal or unequal distributions of edges. Positive values mean edges are more equally distributed, negative values mean edges tend to go to those who already have edges (popularity). 
 
 
-Both can have their decay set to 0 with `decay=0, fixed=T`. 
+You can set their decay with `decay=, fixed=TRUE`. 
 
 
 ```{r}
@@ -2822,8 +2828,8 @@ Both can have their decay set to 0 with `decay=0, fixed=T`.
 #| cache: true
 full_mod <- ergm(mids_net ~ edges + dyadcov(trade_net) + 
             dyadcov(cont_net) + nodecov("milper") +
-            gwdegree(decay=0, fixed=T) + 
-            gwesp(decay=0, fixed=T) )
+            gwdegree(decay=0.5, fixed=TRUE) + 
+            gwesp(decay=0.5, fixed=TRUE) )
 
 summary(full_mod)
 
@@ -2868,16 +2874,121 @@ The boxplots show the distribution of descriptive statistics for the simulated n
 
 
 
+
+## French Office
+
+I found [data of interactions](http://www.sociopatterns.org/datasets/test/) in a french workplace. It includes the department that they work in. 
+
+```{r}
+#| echo: false 
+net <- read_graph(here::here("resources","network_data","french_office.graphml"), format="graphml")
+
+ggraph(net, "kk") + geom_edge_link(color="gray") + 
+  geom_node_point(aes(color=Department))  + 
+  scale_color_brewer(type="qual", palette=3)
+```
+
+
+Lets start with two questions: 
+
+1. Do people in the same office interact more? `nodematch()` creates a term for if two nodes have the same attribute on "Department"
+2. Are there any particular offices that interact with people more than others? `nodefactor()`: "number of times that nodes with a given level of a categorical nodal attribute appear within the edgeset"
+
+```{.r}
+set.seed(1)
+mod <- ergm(asNetwork(net)~edges + nodematch("Department") + 
+  nodefactor("Department") )
+
+summary(mod)
+```
+
+
+```{r}
+#| echo: false 
+#| output: false 
+set.seed(1)
+mod_simple <- ergm(asNetwork(net)~edges + nodematch("Department") + 
+  nodefactor("Department") )
+```
+
+
+```{r}
+#| echo: true 
+summary(mod_simple)
+```
+
+
+
+The coefficient on `nodematch.Department` is 3.53 and has a two-sided p-value < 0.01. It shows that interactions are significantly, and substantively more likely between people in the same department. For `nodefactor.Department` the DCAR department is the heldout variable. Compared to DCAR, individuals in DMCT, DMI, DSE, and SFLE are less likely to have interactions, while individuals in DISQ are more likely to have interactions. 
+
+```{r}
+#| echo: false
+#| out-height: 100%
+est_gof <- gof(mod_simple)
+par(mfrow=c(2,2)) # Creates a 2 by 2
+plot(est_gof)
+
+```
+
+
+### What About Dyadic Dependencies? 
+
+- Are interactions transitive? Could this be explaining homophily? We need to add `gwesp(decay=, fixed=TRUE)`
+- Is the network centralized? We need to add `gwdegree(decay=, fixed=TRUE)`
+
+We can always adjust the decay (stay between 0 and 1) and try to find one that leads to better fit (we'll get to that later). 
+
+```{.r}
+set.seed(1)
+mod_simple <- ergm(asNetwork(net)~edges + nodematch("Department") + 
+  nodefactor("Department") + 
+  gwdegree(decay=0.25, fixed=TRUE) +
+  gwesp(decay=0.25, fixed=TRUE) )
+
+summary(mod_simple)
+```
+
+
+
+```{r}
+#| echo: false 
+#| output: false
+set.seed(1)
+mod_full <- ergm(asNetwork(net)~edges + nodematch("Department") + 
+  nodefactor("Department") + 
+  gwdegree(decay=0.25, fixed=TRUE) +
+  gwesp(decay=0.25, fixed=TRUE)  )
+```
+
+```{r}
+#| echo: false
+summary(mod_full)
+```
+
+
+The coefficient on homophily has decreased, so some of that effect was explained by transitvitity. The positive and significant coefficient on `gwesp.fixed.025` means that there is a tendency to close triangles, or for interactions to be transitive. In contrast the negatve coefficient on `gwdeg.fixed.025` indicates that there is a tendency towards "centralization" with interactions being more common among those who already have interactions (there is inequality in the distribution of interactions). 
+
+
+```{r}
+#| echo: false
+#| out-height: 100%
+est_gof <- gof(mod_full)
+par(mfrow=c(2,2)) # Creates a 2 by 2
+plot(est_gof)
+
+```
+
 ## Different Example - High Schools
 
-Lets look at trade networks in particular, lets see if democracies are more likely to trade with other democracies.
 
 Need to do some cleaning to get the data in: 
 
 ```{r}
 #| echo: true 
-edges <- read.csv("network_data/spanish_hs_edges.csv")
-nodes <- read.csv("network_data/spanish_hs_nodes.csv")
+
+
+edges <- read.csv(here::here("resources/network_data/spanish_hs_edges.csv"))
+nodes <- read.csv(here::here("resources/network_data/spanish_hs_nodes.csv"))
 net <- graph_from_data_frame(edges, vertices=nodes, directed=T)
 net <- delete_vertices(net, which(is.na(V(net)$prosocial)))
 net <- delete_edges(net, which(E(net)$weight < 0))
@@ -2921,7 +3032,7 @@ set.seed(1)
 mod <- ergm(net ~ edges +nodematch("Sexo") + nodematch("Grupo") + 
             nodefactor("Sexo") + nodefactor("Grupo") +
             nodecov("prosocial") + 
-    gwesp(decay=0, fixed=T) + gwdegree(0, fixed=T))
+    gwesp(decay=0.5, fixed=T) + gwdegree(0.5, fixed=T))
 est_gof <- gof(mod)
 ```
 
@@ -2934,6 +3045,7 @@ plot(est_gof)
 
 ### Changing the decay a bit? 
 
+
 ```{r ergm2}
 #| cache: true
 #| output: false
@@ -2941,7 +3053,7 @@ plot(est_gof)
 mod <- ergm(net ~ edges +nodematch("Sexo") + nodematch("Grupo") + 
             nodefactor("Sexo") + nodefactor("Grupo") +
             nodecov("prosocial") + 
-    gwesp(decay=.25, fixed=T) + gwdegree(.25, fixed=T))
+    gwesp(decay=0.25, fixed=T) + gwdegree(0.25, fixed=T))
 est_gof <- gof(mod)
 ```
 
@@ -2950,30 +3062,18 @@ par(mfrow=c(2,2))
 plot(est_gof)
 ```
 
+No major improvement, maybe a little worse? 
 
-```{r ergm3}
-#| cache: true
-#| output: false
-
-mod <- ergm(net ~ edges +nodematch("Sexo") + nodematch("Grupo") + 
-            nodefactor("Sexo") + nodefactor("Grupo") +
-            nodecov("prosocial") + 
-    gwesp(decay=.5, fixed=T) + gwdegree(.5, fixed=T))
-est_gof <- gof(mod)
-```
-
-```{r}
-par(mfrow=c(2,2)) 
-plot(est_gof)
-```
 
 ```{r ergm4}
 #| cache: true
 #| output: false
+
+set.seed(1)
 mod <- ergm(net ~ edges +nodematch("Sexo") + nodematch("Grupo") + 
             nodefactor("Sexo") + nodefactor("Grupo") +
             nodecov("prosocial") + 
-    gwesp(decay=.75, fixed=T) + gwdegree(.75, fixed=T))
+    gwesp(decay=0.75, fixed=T) + gwdegree(0.75, fixed=T))
 est_gof <- gof(mod)
 ```
 
@@ -2983,6 +3083,7 @@ plot(est_gof)
 summary(mod)
 ```
 
+Looking better. 
 
 ### Interpretation 
 
@@ -2990,9 +3091,9 @@ We can look at each term here in kind:
 
 - `edges` This is equivalent to the intercept of a normal regression and so generally is _not_ worth discussing. 
 - `nodematch.Sexo` This shows the effect of two students having the _same_ sex. The positive coefficient (0.72) is statistically significant (p-value < 0.05). This means that two students are more likely to have a friendship (an edge) if they are of the same sex. 
-- `nodematch.Grupo` This shows the effect of two students being in _same_ group. This coefficient is against positive (1.48) and is significant (p-value < 0.05) meaning that students in the same group are more likely to be friends. 
+- `nodematch.Grupo` This shows the effect of two students being in _same_ group. This coefficient is against positive (1.41) and is significant (p-value < 0.05) meaning that students in the same group are more likely to be friends. 
 - `nodefactor.Sexo.Male` This shows whether male students are more likely to have friends than female students. It is not significant so there is no difference. 
 - `nodefactor.Grupo.B`,  `nodefactor.Grupo.C`, and `nodefactor.Grupo.D` show whether students in group B, C, and D are more likely to have friends than those in group A. This is again, not significant, so there is no difference. 
 - `nodecov.prosocial` This shows whether the overall total amount of "prosocial" behavior increases a friendship between two people. There is again, no effect. 
-- `gwesp.fixed.0.75` This shows how much transitivity matters to the network structure. The coefficient is positive (1.32) and statistically significant (p-value < 0.05) meaning that triangles are likely to form in this network (more than compared to a random network). In practice this indicates that transitivity happens in this networks. 
-- `gwdeg.fixed.0.75` This models the distribution of degrees, the positive (1.08) and significant (p-value <0.05) means that there is a "rich get richer" aspect to this. The distribution of degrees tends towards a few with a large number of ties and many with few ties (if it was negative we'd expect a more uniform distribution of degrees).
+- `gwesp.fixed.0.75` This shows how much transitivity matters to the network structure. The coefficient is positive (1.31) and statistically significant (p-value < 0.05) meaning that triangles are likely to form in this network (more than compared to a random network). In practice this indicates that transitivity happens in this networks. 
+- `gwdeg.fixed.0.75` This models the distribution of degrees, the positive (1.06) and significant (p-value <0.05) means that there is a fair number of "middle value" degrees (or that friendships are more equally distributed). If it was negative we would have a tendency towards inequality in friendships (some with many friends, many with some friends).
