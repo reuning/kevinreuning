@@ -5,3 +5,4 @@ author:
 format: 
   html: 
     toc: false
+    anchor-sections: true
