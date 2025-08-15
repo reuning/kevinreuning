@@ -12,7 +12,6 @@ format:
         execute:
             echo: false
             fig-align: center
-        mermaid-format: png
         mermaid:
             theme: neutral
 ---
