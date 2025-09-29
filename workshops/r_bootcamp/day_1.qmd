@@ -31,6 +31,7 @@ format:
 
 - Not be afraid of R/Rstudio
 - Able to load data in and calculate useful statistics with it. 
+    - Difference of means and linear regression. 
 - Make a variety of beautiful plots. 
 
 ## Where We Are Going
@@ -42,15 +43,26 @@ format:
 library(tidyverse)
 setwd("images")
 df <- read_csv("country_data.csv")
-df %>% mutate(type = cut(fh_polity2,  breaks=c(0, 3, 7, 10), 
-                        labels=c("Autocracy", "Anocracy", "Democracy"))) %>% 
-    drop_na(type) %>%  ggplot(aes(y=wdi_afp, x=mad_gdppc)) + 
-    geom_smooth(method="lm", color='black') + 
-    geom_point(color='orangered3') + facet_wrap(~type) + 
-    scale_x_log10(labels=scales::label_dollar()) +
-    theme_minimal() + theme(strip.text=element_text(size=20)) + 
-    labs(y="Percent of Labor\nForce in Military", 
-    x="GDP per Capita\n(Log scale)") 
+df %>%
+  mutate(
+    type = cut(
+      fh_polity2,
+      breaks = c(0, 3, 7, 10),
+      labels = c("Autocracy", "Anocracy", "Democracy")
+    )
+  ) %>%
+  drop_na(type) %>%
+  ggplot(aes(y = wdi_afp, x = mad_gdppc)) +
+  geom_smooth(method = "lm", color = 'black') +
+  geom_point(color = 'orangered3') +
+  facet_wrap(~type) +
+  scale_x_log10(labels = scales::label_dollar()) +
+  theme_minimal() +
+  theme(strip.text = element_text(size = 20)) +
+  labs(
+    y = "Percent of Labor\nForce in Military",
+    x = "GDP per Capita\n(Log scale)"
+  )
 ```
 
 # Goals for Today
@@ -200,7 +212,8 @@ There are some limits, they cannot start with numbers and cannot use some symbol
 #| error: true
 #| cache: false
 
-1_variable <- 2 # variables cannot start with a number though 
+1
+_variable <- 2 # variables cannot start with a number though
 ```
 
 ## Rstudio and Variables
@@ -436,6 +449,7 @@ There might be a popup asking about installing things from "Source" you can hit 
 - It is a norm to load all the packages you use in a script at the top of a script. 
 
 ## Loading Data
+
 - `readr` is a library used to load datasets.
 - We are going to start with loading it using RStudio's interface.
 
@@ -462,6 +476,8 @@ We can do the same thing but just using R:
 ```{R}
 library(readr) # load readr package
 setwd("images") # Set working directory 
+# yours will look something like C:/users/reunink/Downloads
+# or ~/Downloads
 df <- read_csv("disability_comp.csv")
 ```
 
