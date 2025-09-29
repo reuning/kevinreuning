@@ -212,8 +212,8 @@ There are some limits, they cannot start with numbers and cannot use some symbol
 #| error: true
 #| cache: false
 
-1
-_variable <- 2 # variables cannot start with a number though
+# fmt: skip
+1_variable <- 2 # variables cannot start with a number though
 ```
 
 ## Rstudio and Variables
