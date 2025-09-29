@@ -23,10 +23,12 @@ website:
       - resources/index.qmd
       - text: Union Elections
         href: https://unionelections.org/
+      - text: Voter Perceptions 
+        href: https://voterperceptions.org/
     right:
       - text: Google Scholar
         href: https://scholar.google.com/citations?user=yVgvTK4AAAAJ
-      - text: Bluesky
+      - icon: bluesky
         href: https://bsky.app/profile/reuning.bsky.social
       - icon: envelope
         href: mailto:Kevin.Reuning@gmail.com
