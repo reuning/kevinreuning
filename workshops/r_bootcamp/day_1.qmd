@@ -33,6 +33,7 @@ format:
 - Able to load data in and calculate useful statistics with it. 
     - Difference of means and linear regression. 
 - Make a variety of beautiful plots. 
+- Exporting reports using Quarto
 
 ## Where We Are Going
 
