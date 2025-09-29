@@ -16,7 +16,7 @@ revealjs-plugins:
 ## Goals for Today
 
 - Finish off discussing plots (more on smooths, facetting, etc)
-- Discuss some principles of data visualization 
+- Basic regression and difference of means
 - Using Quarto to create reports. 
 
 # Data for Today 
@@ -102,9 +102,10 @@ If we have multiple types of observations, we can plot smooths for each one by s
 
 ```{.r}
 df_new <- df %>% mutate(
-    fert_groups = cut(wdi_fertility, breaks=c(0, 1.9, 2.3, Inf), 
-            labels=c("Below", "Replacement", "Above"))
-            ) %>%
+    fert_groups = case_when(
+            wdi_fertility < 1.9 ~ "Below",
+            wdi_fertility < 2.3 ~ "Replacement", 
+            wdi_fertility >= 2.3 ~ "Above")) %>%
     group_by(fert_groups) %>% drop_na(fert_groups)
 p <- ggplot(df_new, aes(x=bl_asymf, y=mad_gdppc)) + 
     geom_point(size=3)  + 
@@ -121,9 +122,10 @@ You can use `aes()` in a `geom_*()` if you want to specify something for just th
 ```{r}
 #| echo: false
 df_new <- df %>% mutate(
-    fert_groups = cut(wdi_fertility, breaks=c(0, 1.9, 2.3, Inf), 
-            labels=c("Below", "Replacement", "Above"))
-            ) %>%
+   fert_groups = case_when(
+            wdi_fertility < 1.9 ~ "Below",
+            wdi_fertility < 2.3 ~ "Replacement", 
+            wdi_fertility >= 2.3 ~ "Above")) %>%
     group_by(fert_groups) %>% drop_na(fert_groups)
 p <- ggplot(df_new, aes(x=bl_asymf, y=mad_gdppc)) + 
     geom_point(size=3)  + 
@@ -241,109 +243,97 @@ Labels!
 - Book that discusses principles of data viz and ggplot2: <https://socviz.co/>
 
 
-# Principles of Better Graphics
+# Difference of Means
 
-## General principles: Less is usually more
+## t-tests 
 
-Less is usually more
+The _standard_ way to test if there is a difference in the means of two groups is through a t-test. 
 
--   Plots don't need to have a lot of bells and whistle.
--   You are should direct attention to what is important.
--   At the same time\...
-    -   Everything should have a label
-    -   You can use grid lines to highlight (relevant differences
+In R there is a function `t.test()` which we can use, but we need our data in the following format: 
 
-## General principles: Follow assumptions
+| Var 1 | Var 2   |
+|-------|---------|
+| 13    | Group 1 |
+| 3     | Group 1 |
+| 5     | Group 2 |
 
-People have assumptions about how plots work, don't break them unless you make it **very** clear that you are.
+Var 1 is the variable we want to calculate means of, and Var 2 is the variable that indicates the groups. 
 
+## Prepping Data
 
-![](images/Day_4_gun_violence.jpg){fig-align="center"}
+We are going to use the `br_pvote` variable and replace 1 and 0 with "Yes" and "No" using `case_match()` 
 
-
-## Some Assumptions
-
-Some assumptions people make: 
-
-- If one of the variables is time, it usually is on the x-axis.
-- The further you are from the bottom left the higher the number.
-- The axis are continuous (and often linear)
-
-## Example - Breaking Assumptions
-
-![](images/Day_4_flipped_1.png){fig-align="center"}
-
-
-## Example - Following Assumptions
-
-General principles: Follow assumptions
-
-![](images/Day_4_flipped_2.png){fig-align="center"}
-
-## General principles: Make it clear
-
-Make it clear to the viewer what they are supposed to take away from it.
-
-- If they should look at trends, add a trend line
-- If they are making comparisons across groups put those groups together
-
-## Example: Making it Unclear 
-
-![](images/Day_4_comparisons_1.png){fig-align="center"}
-
-## Example: Making it clear 
-
-![](images/Day_4_comparisons_2.png){fig-align="center"}
-
-## Longer Example - Local Party Social Media
-
-\normalsize 
-
-- Interested in how local parties in the US use social media.
-- Collected social media info for  6,000 local parties.
-- Used Crowdtangle to download all their facebook posts from 2016 to 2021.
-- Dataset contained 3,907,203 posts with 26 variables per post.
-
-\footnotesize 
-Co-Authors: Anne Whitesell (Miami University); Lee A. Hannah (Wright State University)
-
-
-## Social Media Data
-
-Social media data can be very interesting:
-
-- We have the text of the posts.
-- We have the reactions to the post (number of likes, comments shares)
-- We have the *exact* time the post was made.
-
-## Looking at Trends
-
-Always good to look at trends in data: 
-
--  Calculate daily number of posts.
--  Calculate the average number of reactions per post per day.
-
-
-## Some of the code
-
-```{.r}
-p1 <- ggplot(tmp, aes(x=lubridate, y=N, fill=Party, 
-    color=Party, shape=Party)) + 
-    geom_point(alpha=.2) + geom_smooth(size=1,method = loess,
-    method.args=list("span" =.5)) + 
-    theme_minimal() + 
-    scale_y_continuous(labels = scales::label_comma()) + 
-    scale_color_manual("Party",
-    values=col_pal)  + 
-    scale_fill_manual(values=col_pal) + 
-    # geom_vline(xintercept = lubridate::as_date("2020-11-03"), linetype="dashed") + 
-    labs(y="Number of Posts", x="")
+```{r}
+new_df <- df %>%
+    mutate(Prop_Vote = case_match(br_pvote, 
+        1 ~ "Yes", 
+        0 ~ "No"))
+new_df |> select(Prop_Vote, van_part)
 ```
 
 
-## Plot 
+## Running t-test 
 
-![](images/Day_4_all_posts.png){fig-align="center"}
+To run a t-test we write out a formula: `Continuous_Var ~ Grouping_Var` and indicate where the variables are found with `data=`: 
+
+```{r}
+t.test(van_part ~ Prop_Vote, data=new_df) 
+```
+
+# Regression 
+
+## Linear Regression 
+
+Linear regression relies on the `lm()` (linear model) function. It uses a similar formula/data format: 
+
+`DV ~ IV1 + IV2 + IV3... data=df`
+
+One difference is that we usually want to save the output of our call to `lm()`
+
+## Linear Regression Example 
+
+Lets regress voter participation rate against our variable for indicating proportional voting, average education and fertility rate:
+
+```{r}
+mod <- lm(van_part ~ Prop_Vote + bl_asymf + wdi_fertility, data = new_df)
+```
+
+## Getting Results 
+
+We use the `summary()` function to extract results from our model
+
+```{r}
+summary(mod)
+```
+
+## More Things 
+
+There are a few packages we can use to do interesting things with our results: `gtsummary` and `marginaleffects` (`install.packages(c("gtsummary", "marginaleffects", "broom.helpers"))`)
+
+`gtsummary` can be used to make nice tables: 
+
+```{r}
+library(gtsummary)
+tbl_regression(mod, 
+    label=list(Prop_Vote="Prop?", 
+        bl_asymf="Education", 
+        wdi_fertility="Fertility"), 
+    conf.int=FALSE) %>% 
+    add_glance_table(include = c(nobs, r.squared))
+
+```
+
+## More Things
+
+`marginaleffects` is useful for plotting predictions with `ggplot` as the output:
+
+```{r}
+library(marginaleffects)
+plot_predictions(mod, condition="bl_asymf", rug = TRUE)  + 
+    theme_minimal() + 
+    labs(y="Predicted Voting", x="Education")
+
+```
 
 
 # Quarto 
