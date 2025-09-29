@@ -438,7 +438,7 @@ Take a moment now, and look at the manual of one of these functions.
 
 Run: 
 ```{.R}
-install.packages(c("tidyverse", "huxtable", "flextable", "officer"))
+install.packages(c("tidyverse", "gt", "rmarkdown"))
 ```
 
 There might be a popup asking about installing things from "Source" you can hit no on it. 
