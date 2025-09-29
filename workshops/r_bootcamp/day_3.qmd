@@ -18,17 +18,11 @@ library(readr)
 df  <- read_csv("images/country_data.csv")
 ```
 
-<!--- 
-When I redo this try to have them create new datasets
-They kept re-writing over things and getting confused. 
-Also do not use pull() as much.
-
---->
 ## Goals for Today
 
 - Understand how to make a variety of basic plots (scatter and bar)
 - Manipulate data (relabeling)
-- Export graphs
+- Make and export graphs
 
 # Data for Today 
 
@@ -108,44 +102,52 @@ df %>% filter(!is.na(br_elect)) %>%
 
 ## More Complicated Situations 
 
-Often there are variables we want to _coarsen_ (take from interval and put them into categories), here we can use the `cut()` function to **cut** our variable up into categories. 
 
-There are a variety of ways to `cut()` the most common way is giving it a set of "breaks" where you tell it where you want the bins to be.
+Often there are variables we want to _coarsen_ (take from interval and put them into categories), here we can use the `case_when()` function to find _cases_ that _match_ particular rules and replace values
 
-```{r}
-set.seed(1) ## Lets me recreate the exact random variables
-vector <- rnorm(100) # creating a bunch of random variables 
-cut_vector <- cut(vector, breaks=c(-4,-1, -0.5, 0, 0.5, 1, 4))
-table(cut_vector)
+The general format of `case_when`:
+
+```{.r}
+case_when(
+    var < VALUE ~ "New Label", 
+    var > VALUE_2 ~ "New Label", 
+    .default = NA
+)
 ```
 
-## Adding Labels
+First `var` is checked to see if it is below `VALUE` and if so then "New Label" is returned. Then if `var` is greater than `VALUE_2` "New Label" is returned. If nothing is found to be true the default of `NA` is used. 
 
-You can also add labels to it, but remember **N** breaks creates **N-1** labels. 
+## Example 
+
 
 ```{r}
-
 set.seed(2)
-vector <- rnorm(100)
-cut_vector <- cut(vector, breaks=c(-4,-1, -0.5, 0, 0.5, 1, 4), 
-    labels=c("Lowest", "Low", "Mid-Low", 
-            "Mid-High", "High", "Highest"))
-table(cut_vector)
+var <- rnorm(100)
+new_var <- case_when(
+    var < 0 ~ "Below 0",
+    var > 1 ~ "Above 1",
+    .default = "Missing"
+)
+table(new_var)
+
 
 ```
 
-## Using Cut in Mutate
+
+## Using case_when in Mutate
 
 
 ```{r}
 df %>% mutate(
-    corrupt = cut(ti_cpi, breaks=c(0, 33, 66, 100), 
-            labels=c("Low", "Mid", "High"))
-            ) %>%
+    corrupt = case_when(
+        ti_cpi < 33 ~ "Low",
+        ti_cpi < 66 ~ "Mid", 
+        ti_cpi >= 66 ~ "High")) %>%
     group_by(corrupt) %>% 
     summarize(mean=mean(mad_gdppc, na.rm=T), n = n())
-
 ```
+
+Because it goes in order, only those that are greater than 33 will get to the `ti_cpi < 66` check. 
 
 ## Check 
 
@@ -157,9 +159,10 @@ Then `group_by()` that new variable and count up how many observations in each b
 
 ```{r}
 df %>% mutate(
-    fert_groups = cut(wdi_fertility, breaks=c(0, 1.9, 2.3, 7), 
-            labels=c("Below", "Replacement", "Above"))
-            ) %>%
+    fert_groups = case_when(
+            wdi_fertility < 1.9 ~ "Below",
+            wdi_fertility < 2.3 ~ "Replacement", 
+            wdi_fertility >= 2.3 ~ "Above")) %>%
     group_by(fert_groups) %>% 
     summarize(n = n())
 
