@@ -15,10 +15,6 @@ revealjs-plugins:
 
 ## Goals for Today
 
-<!--
-Add links to the variables website when they are later.
-
----> 
 
 - Manipulate data (filter specific rows, select columns).
 - pipes
@@ -31,7 +27,7 @@ Today we are going to use a subset of country data from [The Quality of Governan
 - Download the [data we'll be using here](images/country_data.csv)
 - You can open it with `read_csv()` and if you need more help check out the [first day of slides.](https://kevinreuning.com/presentations/workshops/r_bootcamp/day_1.html)
 - There is a description of all the [variables I've included here.](https://kevinreuning.com/presentations/workshops/r_bootcamp/country_data.html) 
-- We need the following packages installed: `install.packages(c("tidyverse", "huxtable", "flextable", "officer"))`
+- We need the following packages installed: `install.packages(c("tidyverse", "gt", "rmarkdown"))`
 
 
 
@@ -356,6 +352,8 @@ The `drop_na( )` tidyverse function can replace `filter(!is.na( ))`
 
 There are several variables that can be used to group countries. Pick one of them, pick an interval variable that you think might vary by the group, and then calculate the number of observations, mean, and median for each group. 
 
+There is a description of all the [variables I've included here.](https://kevinreuning.com/presentations/workshops/r_bootcamp/country_data.html) 
+
 ## My Solution 
 
 - Grouping variable: `br_pvote`
@@ -393,11 +391,11 @@ There are two ways to save our summary results. Both can be helpful depending on
 - `write_csv()`: Writes to a CSV file. 
 - Creating an exportable table. 
 
-## Huxtable 
+## gt 
 
-We are going to use: [huxtable](https://hughjonesd.github.io/huxtable/index.html) 
+We are going to use: [gt](https://gt.rstudio.com/index.html) 
 
-The huxtable package is a _a lot_ so we are not going to get to it all but iet lets you do a lot of things:
+The gt package is a _a lot_ so we are not going to get to it all but iet lets you do a lot of things:
 
 - Convert dataframe into a table. 
 - Format tables (borders, colors, alignment)
@@ -413,64 +411,94 @@ tab_out <- df %>%
             median=median(van_part, na.rm=T))
 ```
 
-## Using Huxtable {auto-animate=true}
+## Using gt 
 
-The function `hux()` will create a table object that we can then modify. Lets see what happens when we make a table. 
+The function `gt()` will create a table object that we can then modify. Lets see what happens when we make a table. 
 
 ```{r}
-library(huxtable)
-ht <- hux(tab_out)
-ht
+library(gt)
+tab_fmted <- gt(tab_out)
+tab_fmted
 ```
 
-## Using Huxtable {auto-animate=true}
+## Using gt - Styling 
 
-We can then modify the style by pipping it into functions like a `theme_basic()` function and `set_align()`
+We can then modify the style by pipping it into functions like a `opt_stylize()` function and `cols_align()`
 
 ```{r}
-library(huxtable)
-ht <- hux(tab_out) %>% theme_basic() %>%
-    set_align(2:3, 1, "center") # 2:3 is the rows, 1 the columns to modify.
-ht
+library(gt)
+tab_fmted <- gt(tab_out) %>% 
+    opt_stylize(style=1, color="green") %>%
+    cols_align(align="center", columns="br_pvote") 
+tab_fmted
 ```
 
-## Using Huxtable {auto-animate=true}
+## Using gt - Labels 
 
-Finally we can modify values using the `set_contents()` function
+We can also change the labeling of our columns easily using the actual name and what we want it to be called
 
 ```{r}
-library(huxtable)
-ht <- hux(tab_out) %>% theme_basic() %>%
-    set_align(2:3, 1, "center") %>%
-    set_contents(1, 1:4, 
-    c("Prop Voting?", "N", "Mean", "Median")) %>%
-    set_contents(2:3, 1, c("No", "Yes"))
-ht
+library(gt)
+tab_fmted <- gt(tab_out) %>% 
+    opt_stylize(style=1, color="green") %>%
+    cols_align(align="center", columns="br_pvote") %>%
+    cols_label(
+        br_pvote = "Proportional?", 
+        n = "N", mean = "Mean", 
+        median = "Median"
+    )
+tab_fmted
+```
+
+## Using gt - Modifying Contents 
+
+We can also modify values using the `text_case_match()` function. This one will check if a cell matches what is on the left side of the tilde (`~`) and replace it with the right side.
+
+```{r}
+tab_fmted <- tab_fmted %>% 
+    text_case_match(
+        "1" ~ "Yes",
+        "0" ~ "No"
+    )
+tab_fmted
+```
+
+
+## Using gt - Table Headers and Notes 
+
+Finally, `tab_header()` and `tab_source_note()` can be used to add other information about your table:
+
+```{r}
+tab_fmted <- tab_fmted %>% 
+    tab_header("Countries by Election Type") %>% 
+    tab_source_note("Data from QoGs")
+tab_fmted
 ```
 
 
 ## Saving the Document 
 
-And now we export it with `quick_docx()`
+And now we export it with `gtsave()`
 
 ```r
-quick_docx(ht, file="My First Summary Table.docx")
+gtsave(tab_fmted, file="Table.docx")
 ```
 
 
-## Huxtable Options and Check
+## gt Options and Check
 
-There are a lot of options to modify your table [here](https://hughjonesd.github.io/huxtable/huxtable.html). 
+There are a lot of options to modify your table [here](https://gt.rstudio.com/reference/index.html). 
 
-I want you to make a table, where at least one cell has non-black text color, one cell is italic, and you have a border on the very bottom of it.
+Try to see if you can change the mean and median to be listed in [percentages](https://gt.rstudio.com/reference/fmt_percent.html) and then make the number of observations [bold](https://gt.rstudio.com/reference/tab_style.html). 
 
 ## My Solution 
 
 Using my table from before:
 
 ```{r}
-ht %>% set_italic(2:3, 3:4) %>%
-    set_text_color(1, 1:4, "green") %>%
-    set_bottom_border(3, 1:4) 
+tab_fmted %>%
+    fmt_percent(columns=c(mean, median), scale_values=FALSE) %>% 
+    tab_style(locations=cells_body(n), 
+        style=cell_text(weight="bold"))
 ```
 
