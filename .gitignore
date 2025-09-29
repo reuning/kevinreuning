@@ -15,3 +15,5 @@ anes*.xlsx
 *_cache
 *_files
 .vdoc.*
+
+**/*.quarto_ipynb
