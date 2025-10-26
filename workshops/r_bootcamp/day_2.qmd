@@ -15,6 +15,9 @@ revealjs-plugins:
 
 ## Goals for Today
 
+<!--
+Add drop_na stuff earlier 
+-->
 
 - Manipulate data (filter specific rows, select columns).
 - pipes
@@ -65,7 +68,7 @@ We need to include some more operators to do this:
 
 ```{r}
 43 < 4
-(4*pi)^2 > 5
+(4 * pi)^2 > 5
 ```
 
 ## Logical Values 
@@ -84,7 +87,7 @@ We can do the same thing but using a variable from our dataset:
 
 ```{r}
 ## Returns true if bl_asymf (average schooling) is more than 10.
-df$bl_asymf > 10 
+df$bl_asymf > 10
 ```
 
 ## Filtering Data 
@@ -105,7 +108,7 @@ Within the `filter()` call you do not need to use `data$` before the variable na
 library(tidyverse)
 
 # df <- read_csv("country_data.csv") ## remember I did this already
-filter(df, bl_asymf>10)
+filter(df, bl_asymf > 10)
 ```
 
 . . . 
@@ -143,7 +146,7 @@ All would return `TRUE`
 We can then combine logical checks together.
 
 ```{r}
-val <- pi^(2/3)
+val <- pi^(2 / 3)
 (val < 1) | (val > 4) # Is it less than 0 or greater than 4?
 ```
 
@@ -229,7 +232,7 @@ What if we want to figure out the average average education for all countries in
 
 ```{r}
 #| output-location: fragment
-summarize(df, mean(bl_asymf, na.rm=TRUE))
+summarize(df, mean(bl_asymf, na.rm = TRUE))
 ```
 
 . . .
@@ -239,9 +242,12 @@ What if we want to calculate other statistics?
 . . .
 
 ```{r}
-summarize(df, mean(bl_asymf, na.rm=TRUE), 
-            sd(bl_asymf, na.rm=TRUE), 
-            median(bl_asymf, na.rm=TRUE))
+summarize(
+  df,
+  mean(bl_asymf, na.rm = TRUE),
+  sd(bl_asymf, na.rm = TRUE),
+  median(bl_asymf, na.rm = TRUE)
+)
 ```
 
 ## Caution - Multiple Return Values
@@ -251,10 +257,13 @@ You generally want to use functions that only return 1 value. Why?
 . . . 
 
 ```{r}
-summarize(df, mean(bl_asymf, na.rm=TRUE), 
-            sd(bl_asymf, na.rm=TRUE), 
-            median(bl_asymf, na.rm=TRUE), 
-            range(bl_asymf, na.rm=TRUE))
+summarize(
+  df,
+  mean(bl_asymf, na.rm = TRUE),
+  sd(bl_asymf, na.rm = TRUE),
+  median(bl_asymf, na.rm = TRUE),
+  range(bl_asymf, na.rm = TRUE)
+)
 ```
 
 ## Filtering and Summarizing 
@@ -263,7 +272,7 @@ What if we want to figure out the average education for countries that spend les
 
 ```{r}
 #| output-location: fragment
-df %>% filter(wdi_expedu < 5) %>% summarize(mean(bl_asymf, na.rm=T))
+df %>% filter(wdi_expedu < 5) %>% summarize(mean(bl_asymf, na.rm = T))
 ```
 
 . . .
@@ -271,8 +280,7 @@ df %>% filter(wdi_expedu < 5) %>% summarize(mean(bl_asymf, na.rm=T))
 We can improve the output by changing the column name: `summarize(col_name = mean(variable))`
 
 ```{r}
-df %>% filter(wdi_expedu < 5) %>% 
-    summarize("Mean"=mean(bl_asymf, na.rm=T))
+df %>% filter(wdi_expedu < 5) %>% summarize("Mean" = mean(bl_asymf, na.rm = T))
 ```
 
 ::: callout-note
@@ -294,11 +302,14 @@ Find the mean and median average education and education expenditure for countri
 ## My Solutions 
 
 ```{r}
-df %>% filter(mad_gdppc > 10000) %>% 
-    summarize(mean_exp=mean(wdi_expedu, na.rm=TRUE), 
-        median_exp=median(wdi_expedu, na.rm=TRUE), 
-        mean_ed=mean(bl_asymf, na.rm=TRUE), 
-        median_ed=median(bl_asymf, na.rm=TRUE))
+df %>%
+  filter(mad_gdppc > 10000) %>%
+  summarize(
+    mean_exp = mean(wdi_expedu, na.rm = TRUE),
+    median_exp = median(wdi_expedu, na.rm = TRUE),
+    mean_ed = mean(bl_asymf, na.rm = TRUE),
+    median_ed = median(bl_asymf, na.rm = TRUE)
+  )
 ```
 
 . . .
@@ -316,7 +327,7 @@ Here we'll use the `group_by()` function to create groups of our data.
 `group_by()` expects variable(s) that you want to use to group your dataset: 
 
 ```{r}
-df %>% group_by(br_pvote) 
+df %>% group_by(br_pvote)
 ```
 
 Only change is the addition of **# Groups:   br_pvote [3]** (grouping variable, and number of groups). 
@@ -326,8 +337,9 @@ Only change is the addition of **# Groups:   br_pvote [3]** (grouping variable, 
 Lets chain together `group_by()` and `summarize()`
 
 ```{r}
-df %>% group_by(br_pvote) %>% 
-    summarize(mean=mean(mad_gdppc, na.rm=T), n = n())
+df %>%
+  group_by(br_pvote) %>%
+  summarize(mean = mean(mad_gdppc, na.rm = T), n = n())
 ```
 
 . . . 
@@ -339,9 +351,10 @@ What is ugly about this?
 `is.na()` checks if something is missing or not. 
 
 ```{r}
-df %>% filter(!is.na(br_pvote)) %>% 
-    group_by(br_pvote) %>% 
-    summarize(mean=mean(mad_gdppc, na.rm=T), n = n())
+df %>%
+  filter(!is.na(br_pvote)) %>%
+  group_by(br_pvote) %>%
+  summarize(mean = mean(mad_gdppc, na.rm = T), n = n())
 ```
 
 ::: callout-tip
@@ -404,11 +417,14 @@ The gt package is a _a lot_ so we are not going to get to it all but iet lets yo
 ## Get a Table to Export
 
 ```{r}
-tab_out <- df %>% 
-    drop_na(br_pvote) %>% 
-    group_by(br_pvote) %>%
-    summarize(n=n(), mean=mean(van_part, na.rm=T),
-            median=median(van_part, na.rm=T))
+tab_out <- df %>%
+  drop_na(br_pvote) %>%
+  group_by(br_pvote) %>%
+  summarize(
+    n = n(),
+    mean = mean(van_part, na.rm = T),
+    median = median(van_part, na.rm = T)
+  )
 ```
 
 ## Using gt 
@@ -427,9 +443,9 @@ We can then modify the style by pipping it into functions like a `opt_stylize()`
 
 ```{r}
 library(gt)
-tab_fmted <- gt(tab_out) %>% 
-    opt_stylize(style=1, color="green") %>%
-    cols_align(align="center", columns="br_pvote") 
+tab_fmted <- gt(tab_out) %>%
+  opt_stylize(style = 1, color = "green") %>%
+  cols_align(align = "center", columns = "br_pvote")
 tab_fmted
 ```
 
@@ -439,14 +455,15 @@ We can also change the labeling of our columns easily using the actual name and 
 
 ```{r}
 library(gt)
-tab_fmted <- gt(tab_out) %>% 
-    opt_stylize(style=1, color="green") %>%
-    cols_align(align="center", columns="br_pvote") %>%
-    cols_label(
-        br_pvote = "Proportional?", 
-        n = "N", mean = "Mean", 
-        median = "Median"
-    )
+tab_fmted <- gt(tab_out) %>%
+  opt_stylize(style = 1, color = "green") %>%
+  cols_align(align = "center", columns = "br_pvote") %>%
+  cols_label(
+    br_pvote = "Proportional?",
+    n = "N",
+    mean = "Mean",
+    median = "Median"
+  )
 tab_fmted
 ```
 
@@ -455,11 +472,11 @@ tab_fmted
 We can also modify values using the `text_case_match()` function. This one will check if a cell matches what is on the left side of the tilde (`~`) and replace it with the right side.
 
 ```{r}
-tab_fmted <- tab_fmted %>% 
-    text_case_match(
-        "1" ~ "Yes",
-        "0" ~ "No"
-    )
+tab_fmted <- tab_fmted %>%
+  text_case_match(
+    "1" ~ "Yes",
+    "0" ~ "No"
+  )
 tab_fmted
 ```
 
@@ -469,9 +486,9 @@ tab_fmted
 Finally, `tab_header()` and `tab_source_note()` can be used to add other information about your table:
 
 ```{r}
-tab_fmted <- tab_fmted %>% 
-    tab_header("Countries by Election Type") %>% 
-    tab_source_note("Data from QoGs")
+tab_fmted <- tab_fmted %>%
+  tab_header("Countries by Election Type") %>%
+  tab_source_note("Data from QoGs")
 tab_fmted
 ```
 
@@ -481,7 +498,7 @@ tab_fmted
 And now we export it with `gtsave()`
 
 ```r
-gtsave(tab_fmted, file="Table.docx")
+gtsave(tab_fmted, filename="Table.docx")
 ```
 
 
@@ -497,8 +514,7 @@ Using my table from before:
 
 ```{r}
 tab_fmted %>%
-    fmt_percent(columns=c(mean, median), scale_values=FALSE) %>% 
-    tab_style(locations=cells_body(n), 
-        style=cell_text(weight="bold"))
+  fmt_percent(columns = c(mean, median), scale_values = FALSE) %>%
+  tab_style(locations = cells_body(n), style = cell_text(weight = "bold"))
 ```
 
