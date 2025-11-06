@@ -81,7 +81,7 @@ Once we have that formula in place we can drag it down the row so we can make ou
 
 Now that we've adjusted the Female rows we will switch to adjusting the Male rows. We will follow the same process: (1) calculating the current proportion, (2) calculating the adjustment, and (3) making the adjustment. 
 
-We could drag over the adjustment but before we do that we should lock the column we are checking (we could have done this prior). To do this we change the inside part to be: `ARRAYFORMULA(IF(ABC_SoTU.csv!$AF2:$AF537 = "Female", 1, 0)` (notice the $ before AF?). We can then copy it over to the Male column. We are going to update it in two ways then. First we change "Female" to "Male" and then we change the column we weight to from A.. to B... (we will copy this over later and want to have it just reference the column one before it so we don't want to lock it). 
+We could drag over the adjustment but before we do that we should lock the column we are checking (we could have done this prior). To do this we change the inside part to be: `ARRAYFORMULA(IF(ABC_SoTU.csv!$AF2:$AF537 = "Female", 1, 0)` (notice the $ before AF?). We can then copy it over to the Male column. We are going to update it in two ways then. First we change "Female" to "Male" and then we change the column we weight to from B.. to A... (we will copy this over later and want to have it just reference the column from before) 
 
 ![](images/male_adjust_1.png){#fig-male-adjust-1}
 
