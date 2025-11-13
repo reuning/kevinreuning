@@ -1,0 +1,73 @@
+---
+format: 
+  html:
+    page-layout: full
+title: 2025 Ohio Survey Codebook
+execute: 
+    echo: false 
+    warning: false
+---
+
+
+Below is a table that shows all the variables in the survey data. This is mostly a one-to-one match of the questions asked _but_ I have done some processing to help create a few common variables and to create the survey weights. The [full Qualtrics survey is here](2025_survey.pdf) A few things to note about the data:
+
+- All variables that start with `Weight_` were used to estimate the survey weights and should probably not be used in analysis, especially the education and age variables. This is because they are mostly simplifications of what is already present. The `Weight_Educ_3` and `Weight_Age` had missing values filled with what was in the purchased data in order to estimate weights (this is a small number of case). 
+- `Age_4` is an categorical variable created using the actual reported age from survey participants. I did not provide you with the actual age (birth year) data. 
+- `Educ_4` is a slightly simplified version of the education question. 
+- `PID7` combines Q14, Q15 and Q16 in order to make a 7 point partisan variable. If you just want a 3 point partisan variable question then use Q14. The only people who answered Q15 were those who identified a partisanship stance in Q14 and those who did not do that answered Q16. 
+- The `weights` variable are the survey weights. 
+- All the questions with `_` in the name are sub-questions. To identify what they are asking look at the `Sub Question` part of the table. For example `Q9_3` asks people about infrastructure but specifically about "Broadband/Internet Access"
+
+```{r}
+library(tidyverse)
+library(here)
+library(gt)
+vars <- read_csv(here("surveys", "2025", "variables.csv"))
+data <- read_csv(here("surveys", "2025", "survey_data_cleaned.csv"))
+
+
+unique_values <- data |>
+  select(where(is.character)) |> # Select only character columns
+  summarise_all(~ list(unique(.))) |> # Get unique values for each column
+  pivot_longer(
+    cols = everything(),
+    names_to = "variable_name",
+    values_to = "unique_values"
+  ) |>
+  mutate(
+    unique_values = map_chr(unique_values, ~ paste(sort(.), collapse = ", "))
+  )
+
+# Append unique values to vars dataframe
+vars <- vars |>
+  left_join(unique_values, by = c("qname" = "variable_name"))
+
+
+additional_rows <- tribble(
+  ~qname          , ~main                                                                , ~sub , ~unique_values                                           ,
+  "weights"       , "Weight variable"                                                   , NA   , "continuous"                                             ,
+  "Age4"          , "Age in 4 categories"                                                , NA   , paste(sort(unique(data$Age_4)), collapse = ", ")         ,
+  "Educ_4"        , "Education in 4 categories"                                          , NA   , paste(sort(unique(data$Educ_4)), collapse = ", ")        ,
+  "PID7"          , "Partisan Identification in 7 categories"                            , NA   , paste(sort(unique(data$PID7)), collapse = ", ")          ,
+  "Weight_Sex"    , "Binary sex variable used to create weights"                         , NA   , paste(sort(unique(data$Weight_Sex)), collapse = ", ")    ,
+  "Weight_White"  , "Indicator if someone is White, non-Hispanic used to create weights" , NA   , paste(sort(unique(data$Weight_White)), collapse = ", ")  ,
+  "Weight_Age"    , "3 category age variable used to create weights"                     , NA   , paste(sort(unique(data$Weight_Age)), collapse = ", ")    ,
+  "Weight_Educ_3" , "3 category education variable used to create weights"               , NA   , paste(sort(unique(data$Weight_Educ_3)), collapse = ", ") ,
+  "Weight_PID3"   , "Party registration variable used to create weights"                 , NA   , paste(sort(unique(data$Weight_PID3)), collapse = ", ")   ,
+    "Weight_Vote"   , "Vote history variable used to create weights"                 , NA   , paste(sort(unique(data$Weight_Vote)), collapse = ", ")   ,
+)
+
+
+rbind(additional_rows[1, ], vars, additional_rows[-1, ]) |>
+  filter(qname != "Q20") |>
+  gt() |>
+  sub_missing(missing_text = "") |>
+  cols_label(
+    qname = "Column",
+    main = "Main Question",
+    sub = "Sub Question",
+    unique_values = "Values"
+  ) |> 
+    cols_width(main ~ pct(50))
+
+```
