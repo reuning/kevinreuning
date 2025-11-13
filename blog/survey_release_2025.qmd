@@ -1,0 +1,307 @@
+---
+title: 2025 Miami University Survey of Ohio Voters Opinions about the Midwest
+format: 
+  html:
+    page-layout: full
+    html-table-processing: none
+categories:
+    - Surveys
+    - Midwest
+execute:
+    echo: false
+    warning: false 
+draft: false
+---
+
+```{r}
+
+library(here)
+library(tidyverse)
+library(srvyr)
+library(usmap)
+library(rlang)
+library(purrr)
+library(gt)
+library(scales)
+library(plotly)
+
+get_data <- function(variable, data) {
+  data |>
+    group_by(!!rlang::sym(variable)) |>
+    summarize(survey_mean()) |>
+    rename("Response" = !!rlang::sym(variable)) |>
+    mutate(qname = variable) |>
+    mutate(
+      Response = factor(
+        Response,
+        levels = c(
+          "On",
+          "Off",
+          "Very representative",
+          "Somewhat representative",
+          "Not very representative",
+          "Not at all representative",
+          "Very accepting",
+          "Accepting",
+          "Somewhat accepting",
+          "Not very accepting",
+          "Not accepting at all",
+          "Strongly agree",
+          "Agree",
+          "Neither agree nor disagree",
+          "Somewhat disagree",
+          "Strongly disagree",
+          "A great deal of difference",
+          "A big difference",
+          "A small difference",
+          "No difference",
+          "0-10 minutes",
+          "11-20 minutes",
+          "21-30 minutes",
+          "31-45 minutes",
+          "Yes",
+          "No",
+          "Less than 1",
+          "1-5 years",
+          "6-15 years",
+          "16-30 years",
+          "30-50 years",
+          "50+ years",
+          "City",
+          "Suburb",
+          "Town",
+          "Rural Area",
+          "Democrat",
+          "Republican",
+          "Independent",
+          "Donald Trump (Republican)",
+          "Kamala Harris (Democrat)",
+          "Someone else",
+          "Couldn't vote",
+          "Didn't vote",
+          "Don't remember",
+          "Man",
+          "Woman",
+          "Non-binary / third gender",
+          "Less than $25,000",
+          "$25,000-$49,999",
+          "$50,000-$74,999",
+          "$75,000-$99,999",
+          "$100,000-$149,999",
+          "$150,000 or more",
+          "Some high school or less",
+          "High school diploma or GED",
+          "Some college, but no degree",
+          "Associates or technical degree",
+          "Bachelor’s degree",
+          "Graduate or professional degree (MA, MS, MBA, PhD, JD, MD, DDS etc.)",
+
+          "Prefer not to say",
+          "Other",
+          "Not Sure",
+          "Skipped"
+        )
+      )
+    ) |>
+    arrange(Response)
+}
+
+
+data <- read_csv(here("surveys", "2025", "survey_data_cleaned.csv"))
+
+svy_data <- as_survey(data, weights = weights)
+vars <- read_csv(here("surveys", "2025", "variables.csv"))
+
+n <- nrow(data)
+plot_data <- filter(data) |>
+  select(starts_with("Q3_")) |>
+  mutate(across(Q3_1:Q3_29, ~ .x == "On")) |>
+  summarize(across(Q3_1:Q3_29, ~ weighted.mean(.x, w = data$weights))) |>
+  pivot_longer(everything()) |>
+  left_join(vars, by = join_by(name == qname)) |>
+  select(sub, value) |>
+  mutate(fips = fips(sub))
+
+centroid_labels <- usmapdata::centroid_labels("states")
+
+data_labels <- merge(centroid_labels, plot_data, by = "fips")
+
+ohio <- svy_data |>
+  group_by(Q3_17) |>
+  summarize(survey_mean()) |>
+  filter(Q3_17 == "On") |>
+  pull(coef)
+illi <- svy_data |>
+  group_by(Q3_15) |>
+  summarize(survey_mean()) |>
+  filter(Q3_15 == "On") |>
+  pull(coef)
+ind <- svy_data |>
+  group_by(Q3_16) |>
+  summarize(survey_mean()) |>
+  filter(Q3_16 == "On") |>
+  pull(coef)
+midwestern <- svy_data |>
+  group_by(Q10) |>
+  summarize(survey_mean()) |>
+  filter(Q10 == "Yes") |>
+  pull(coef)
+
+ojs_define(plot_data = plot_data)
+```
+
+
+
+As part of the 2025-2026 John W. Altman Program in the Humanities students at Miami surveyed Ohioans to understand their own views towards the Midwest. This survey of `r number(n, big.mark=",")` Ohioans reveals TKTKTKTKT. The survey supported by the Menard Family Center for Democracy, and completed as part of the POL 307: Public Opinion Lab. Full details including all [toplines](#complete-toplines) and [survey methodology](#aapor-disclosure) are below. 
+
+
+### Where is the Midwest? 
+
+Perhaps not surprisingly, Ohioans broadly agree that they are in the Midwest, with `r percent(ohio)` identifying Ohio as part of the Midwest (although fewer, `r percent(midwestern)` identify as Midwesterners). The next most commonly identified Midwestern state is Illinois (`r percent(illi)`) and then Indiana (`r percent(ind)`). @fig-map shows the percentage of people who said a state was in the Midwest for the remaining states. 
+
+
+
+```{ojs}
+//| label: fig-map 
+//| fig-cap: Which states are in the Midwest?
+//| fig-align: center
+
+Plot.plot({
+  projection: "albers-usa",
+  color: {
+    type: "linear",
+    scheme: "blues",
+    legend: true, 
+    percent: true
+  },
+  marks: [
+    Plot.geo(state_map, {
+      fill: (d) =>  d.properties.percent,
+      stroke: "black"
+    }), 
+    Plot.text(state_map, 
+      Plot.centroid({text: (d) =>  d3.format(".0%")(d.properties.percent), 
+                    fill: "currentColor", 
+                    stroke: "white", 
+                    filter: (d) => d.properties.percent
+                    }
+        )
+      )
+    ]
+}) 
+
+
+
+
+
+```
+
+
+### What are the values of the Midwest? 
+
+```{r}
+value_vars <- c("Q4_1", "Q4_2", "Q4_3", "Q4_4", "Q4_5")
+out <- map(value_vars, get_data, data = svy_data)
+names(out) <- value_vars
+
+out <- list_rbind(out, names_to = "qname") |> left_join(vars)
+ojs_define(values = out)
+
+
+```
+
+
+```{ojs}
+//| label: fig-values 
+//| fig-cap: Which values are representative of the Midwest?
+//| fig-align: center
+
+Plot.plot({
+  x: {label: null, percent: true},
+  y: {label: null},
+  marginLeft: 100,
+  marginTop: 20,
+  color: {legend: true, domain: ["Skipped", "Not at all representative", "Not very representative",  "Somewhat representative", "Very representative"], reverse: true},
+  marks: [
+    Plot.barX(transpose(values), {
+      y: "sub",
+      x: "coef",
+      fill: "Response",
+      title: (d) =>
+              `Value: ${d.sub} \n Response: ${d.Response} \n Percent: ${d3.format(".0%")(d.coef)}`,
+      tip: true
+    })
+  
+  ]
+})
+
+```
+
+### Direction of the Midwest
+
+
+
+
+
+## Complete Toplines 
+
+
+```{r}
+#| tbl-cap: Survey Toplines
+#| label: tbl-toplines
+
+vars |>
+  filter(!qname %in% c("Q20", "Q11", "Q15", "Q16")) |>
+  pull(qname) |>
+  map(get_data, data = svy_data) |>
+  list_rbind() |>
+  left_join(vars) |>
+  mutate(
+    group = case_when(
+      is.na(sub) ~ main,
+      .default = paste(main, ": ", sub, "", sep = "")
+    )
+  ) |>
+  group_by(group) |>
+  select(Response, coef) |>
+  gt(row_group_as_column = TRUE) |>
+  fmt_percent(decimals = 0) |>
+  cols_label(coef = "Estimate") |>
+  cols_width(coef ~ pct(10), Response ~ pct(10)) |>
+  text_replace(
+    locations = cells_body(columns = coef),
+    pattern = "^0%",
+    replacement = "<1%"
+  ) |>
+  tab_options(table.width = pct(70))
+
+```
+
+
+
+## AAPOR Disclosure
+
+Data is from a survey of `r n` registered voters in Ohio fielded from October 28-30, 2025. The sample frame was purchased from L2 Data and was a random sample of registered voters with cell phones. The survey was sponsored by the Menard Family Center for Democracy. The full survey language can be found [here](/surveys/2025/2025_survey.pdf).
+
+Participants were recruited using text messages and then completed the survey online. The sample was rake weighted to Ohio registered voters using education (3 categories), race (white/non-white) by sex, age (3 categories), recalled vote for the 2024 election, party registration, and vote history. The targets for the last two variables were taken from L2 voter file data while the remaining variables (except for recalled vote choice) were from the CPS November 2024 Voter Supplement. For recalled vote choice we assumed that 5% of votes in the 2024 election would fit into the "Other/Did not vote" category. 
+
+The tables below show the results for all registered voters and then the subset of voters. The overall margin of error is $\pm$ 5 percentage points. Note this only captures the error from sampling and does not account for errors as a result of question wording, frame over or undercoverage, etc. 
+
+
+
+
+```{ojs}
+
+
+
+
+state_map = {
+  const states = topojson.feature(us, us.objects.states); 
+  const map = new Map(transpose(plot_data).map((d) => [d.fips, +d.value]));
+  states.features.forEach((g) => {
+    g.properties.percent = map.get(g.id);
+  });
+  return states.features;
+}
+import {us} from "@observablehq/us-geographic-data"
+```
