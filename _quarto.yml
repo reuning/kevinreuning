@@ -10,6 +10,7 @@ website:
   title: "Kevin Reuning"
   site-url: "https://kevinreuning.com/"
   open-graph: true
+  draft-mode: unlinked
   repo-url: https://github.com/reuning/kevinreuning
   repo-actions: [edit, source, issue]
   navbar:
