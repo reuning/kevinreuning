@@ -5,12 +5,14 @@ format:
     page-layout: full
     html-table-processing: none
 categories:
-    - Surveys
+    - Survey
     - Midwest
 execute:
     echo: false
     warning: false 
-draft: false
+draft: true
+date: 2025-11-18
+image: "/surveys/2025/midwest.png"
 ---
 
 ```{r}
@@ -48,8 +50,10 @@ get_data <- function(variable, data) {
           "Not accepting at all",
           "Strongly agree",
           "Agree",
+          "Somewhat agree",
           "Neither agree nor disagree",
           "Somewhat disagree",
+          "Disagree",
           "Strongly disagree",
           "A great deal of difference",
           "A big difference",
@@ -95,10 +99,10 @@ get_data <- function(variable, data) {
           "Associates or technical degree",
           "Bachelor’s degree",
           "Graduate or professional degree (MA, MS, MBA, PhD, JD, MD, DDS etc.)",
-
           "Prefer not to say",
           "Other",
           "Not Sure",
+          "Not sure",
           "Skipped"
         )
       )
@@ -152,13 +156,17 @@ ojs_define(plot_data = plot_data)
 
 
 
-As part of the 2025-2026 John W. Altman Program in the Humanities students at Miami surveyed Ohioans to understand their own views towards the Midwest. This survey of `r number(n, big.mark=",")` Ohioans reveals TKTKTKTKT. The survey supported by the Menard Family Center for Democracy, and completed as part of the POL 307: Public Opinion Lab. Full details including all [toplines](#complete-toplines) and [survey methodology](#aapor-disclosure) are below. 
+As part of the [2025-2026 John W. Altman Program in the Humanities](https://humanitiescenter.miamioh.edu/altman-program-archive/altman-program-2025-2026-midwest) students at Miami University surveyed Ohioans to understand their views about the Midwest. This survey of `r number(n, big.mark=",")` Ohioans reveals that the Midwest is still understood as a place where hard working individuals depend on themselves with 54% of respondents believing that a "Strong work ethic" is very representative of the Midwest and 40% believing that "Self-reliance" is very representative. We also found that although 62% of respondents said their local community was very accepting or accepting of racial minorities, 46% said the same of the Midwest as a whole. In addition, a plurality of Ohioans (40%), do not believe that the Midwest is better off than it was 25 years ago. 
 
 
-### Where is the Midwest? 
+The survey was supported by the Menard Family Center for Democracy, and completed as part of the POL 307: Public Opinion Lab. All survey questions (except for demographics) were written by students in POL 307 in consultation with students participating in the Geoffrion Family Fellowship. Additional analysis will be released after students complete it. Full details including all [toplines](#complete-toplines) and [survey methodology](#aapor-disclosure) are below. The margin of error is $\pm$5%. 
 
-Perhaps not surprisingly, Ohioans broadly agree that they are in the Midwest, with `r percent(ohio)` identifying Ohio as part of the Midwest (although fewer, `r percent(midwestern)` identify as Midwesterners). The next most commonly identified Midwestern state is Illinois (`r percent(illi)`) and then Indiana (`r percent(ind)`). @fig-map shows the percentage of people who said a state was in the Midwest for the remaining states. 
 
+### What is the Midwest? 
+
+One of the overarching question of our program this year is what is the Midwest? The inclusion of states in the Midwest is often a point of debate, as each individual has their own map of the Midwest. To better understand what Ohioans think of the Midwest, we asked them to select the states that they personally believe are in the Midwest. Perhaps not surprisingly, Ohioans broadly agree that they are in the Midwest, with `r percent(ohio)` identifying Ohio as part of the Midwest (although fewer, `r percent(midwestern)` identify themselves as Midwesterners). The next most commonly identified Midwestern state is Illinois (`r percent(illi)`) and then Indiana (`r percent(ind)`). 
+
+@fig-map shows the percentage of people who said a state was in the Midwest for the remaining states. What appears from this map are different "tiers" of Midwesterness. The top tier includes Ohio, Illinois and Indiana, which almost everyone agrees on as in the Midwest. Stepping down from this we add Iowa, and Missouri which a super majority (2/3s) agree as being in the Midwest. Finally, the last tier includes includes Wisconsin, Michigan and Minnesota (which a bare majority of Ohioans agrees as being in the Midwest). 
 
 
 ```{ojs}
@@ -166,11 +174,12 @@ Perhaps not surprisingly, Ohioans broadly agree that they are in the Midwest, wi
 //| fig-cap: Which states are in the Midwest?
 //| fig-align: center
 
-Plot.plot({
+map = Plot.plot({
   projection: "albers-usa",
   color: {
+    label: "In the Midwest?",
     type: "linear",
-    scheme: "blues",
+    scheme: "Plasma",
     legend: true, 
     percent: true
   },
@@ -180,18 +189,16 @@ Plot.plot({
       stroke: "black"
     }), 
     Plot.text(state_map, 
-      Plot.centroid({text: (d) =>  d3.format(".0%")(d.properties.percent), 
+      Plot.centroid({text: (d) =>  d.properties.percent < .01 ? "<1%" : d3.format(".0%")(d.properties.percent), 
                     fill: "currentColor", 
                     stroke: "white", 
+                    fontSize: 16,
                     filter: (d) => d.properties.percent
                     }
         )
       )
     ]
 }) 
-
-
-
 
 
 ```
@@ -207,21 +214,23 @@ names(out) <- value_vars
 out <- list_rbind(out, names_to = "qname") |> left_join(vars)
 ojs_define(values = out)
 
-
 ```
 
+
+Regions are not just defined by geography, but also by shared culture or values. In order to understand the culture of the Midwest, participants were asked "How representative of the Midwest do you believe each of the following characteristics are? Diversity, Honesty, Hospitality, Self-reliance and Strong work ethic." A majority (`r out |> filter(Response=="Very representative", qname=="Q4_1") |> pull(coef) |> percent()`) of respondents selected "Strong work ethic" as very representative and additional  `r out |> filter(Response=="Somewhat representative", qname=="Q4_1") |> pull(coef) |> percent()` selected it as somewhat representative. Self-reliance was selected as very representative  by `r out |> filter(Response=="Very representative", qname=="Q4_3") |> pull(coef) |> percent()` of participants and somewhat representative by `r out |> filter(Response=="Somewhat representative", qname=="Q4_3") |> pull(coef) |> percent()` of participants. This fits with the historical understanding of the Midwest, which has been defined as a place fill with hard working individuals who often just want to be left alone. 
+
+Standing out from the other values, diversity ranked low in representativeness. Only  `r out |> filter(Response=="Very representative", qname=="Q4_4") |> pull(coef) |> percent()` selected diversity as very representative while `r out |> filter(Response=="Not very representative", qname=="Q4_4") |> pull(coef) |> percent()` selected not very representative and `r out |> filter(Response=="Not at all representative", qname=="Q4_4") |> pull(coef) |> percent()` selected not as all. Again, this reflects broad cultural understands of the Midwest which is often portrayed as homogenous and white. 
 
 ```{ojs}
 //| label: fig-values 
 //| fig-cap: Which values are representative of the Midwest?
-//| fig-align: center
 
-Plot.plot({
+values_plot = Plot.plot({
   x: {label: null, percent: true},
   y: {label: null},
   marginLeft: 100,
   marginTop: 20,
-  color: {legend: true, domain: ["Skipped", "Not at all representative", "Not very representative",  "Somewhat representative", "Very representative"], reverse: true},
+  color: {legend: true, scheme: "Plasma", domain: ["Skipped", "Not at all representative", "Not very representative",  "Somewhat representative", "Very representative"], reverse: true},
   marks: [
     Plot.barX(transpose(values), {
       y: "sub",
@@ -230,17 +239,159 @@ Plot.plot({
       title: (d) =>
               `Value: ${d.sub} \n Response: ${d.Response} \n Percent: ${d3.format(".0%")(d.coef)}`,
       tip: true
+    }), 
+    Plot.textX(transpose(values), Plot.stackX({
+      y: "sub",
+      x: "coef",
+      fill: "currentColor", 
+      stroke: "white", 
+      fontSize: 14,
+      text: (d) => d.coef < 0.05 ? "" : d3.format(".0%")(d.coef)
     })
+    
+    )
   
   ]
 })
 
 ```
 
+### Local and Regional Acceptance  
+
+
+```{r}
+value_vars <- c("Q5", "Q6")
+out <- map(value_vars, get_data, data = svy_data)
+names(out) <- value_vars
+out <- list_rbind(out, names_to = "qname") |>
+  left_join(vars) |>
+  mutate(sub = case_match(qname, "Q5" ~ "Midwest", "Q6" ~ "Current community"))
+
+accepting_mid <- out |>
+  filter(qname == "Q5", Response %in% c("Very accepting", "Accepting")) |>
+  pull(coef) |>
+  sum()
+somewhat_accepting_mid <- out |>
+  filter(
+    qname == "Q5",
+    Response %in% c("Somewhat accepting")
+  ) |>
+  pull(coef) |>
+  sum()
+
+
+accepting_local <- out |>
+  filter(qname == "Q6", Response %in% c("Very accepting", "Accepting")) |>
+  pull(coef) |>
+  sum()
+unaccepting_local <- out |>
+  filter(
+    qname == "Q6",
+    Response %in% c("Not accepting at all", "Not very accepting")
+  ) |>
+  pull(coef) |>
+  sum()
+
+ojs_define(diversity = out)
+
+```
+
+
+Because of these perceptions of the Midwest as racially homogenous, we also asked participants how accepting they believed the Midwest was of racial minorities. As an acknowledgement that the Midwest does contain plenty of diversity, we also asked participants how accepting their current community was as well. Here we find a difference in perception. 
+
+When asked about their local community, `r percent(accepting_local)` said that their community was either very accepting or accepting of racial minorities. In contrast, when asked about the Midwest as a whole only `r percent(accepting_mid)` said it was very accepting or accepting, while `r percent(somewhat_accepting_mid)` said the Midwest was only somewhat accepting.
+
+```{ojs}
+//| label: fig-minorities 
+//| fig-cap: How accepting of racial minorities?
+
+minorities = Plot.plot({
+  x: {label: null, percent: true},
+  y: {label: null},
+  marginLeft: 100,
+  marginTop: 20,
+  color: {legend: true, scheme: "Plasma", domain: ["Skipped", "Very accepting", "Accepting",  "Somewhat accepting", "Not very accepting", "Not accepting at all"], reverse: true},
+  marks: [
+    Plot.barX(transpose(diversity), {
+      y: "sub",
+      x: "coef",
+      fill: "Response",
+      title: (d) =>
+              `Location: ${d.sub} \n Response: ${d.Response} \n Percent: ${d3.format(".0%")(d.coef)}`,
+      tip: true
+    }), 
+    Plot.textX(transpose(diversity), Plot.stackX({
+      y: "sub",
+      x: "coef",
+      fill: "currentColor", 
+      stroke: "white", 
+      fontSize: 14,
+      text: (d) => d.coef < 0.05 ? "" : d3.format(".0%")(d.coef)
+    })
+    
+    )
+  
+  ]
+})
+
+```
+
+
+
 ### Direction of the Midwest
 
+```{r}
+value_vars <- c("Q7")
+out <- map(value_vars, get_data, data = svy_data)
+names(out) <- value_vars
+out <- list_rbind(out, names_to = "qname") |> left_join(vars)
+ojs_define(direction = out)
+
+agreement <- out |>
+  filter(Response %in% c("Strongly agree", "Agree")) |>
+  pull(coef) |>
+  sum()
+disagreement <- out |>
+  filter(Response %in% c("Strongly disagree", "Disagree")) |>
+  pull(coef) |>
+  sum()
+```
 
 
+Finally, voters were asked if they agree or disagree with the statement that "The Midwest is better off today than it was 25 years ago." Given narratives about Midwest decline and the offshoring of manufacturing we expected that a large majority of individuals would disagree with this statement. In contrast, although we found that a plurality disagreed (`r percent(disagreement)`) with statement, believing that that Midwest is not better off today than it was 25 years ago, there is a sizable minority (`r percent(agreement)`) that did agree with it. Although there is plenty of pessimism about the Midwest, it is important to not forget that there are plenty of individuals who see improvement over the last few decades. 
+
+
+```{ojs}
+//| label: fig-direction 
+//| fig-cap: The Midwest is better off today than it was 25 years ago.
+
+dir_plot = Plot.plot({
+  y: {label: null, percent: true, grid: true},
+  x: {label: null,  domain: ["Strongly agree",
+          "Agree",
+          "Neither agree nor disagree",
+          "Disagree",
+          "Strongly disagree", "Not sure", "Skipped"]},
+  color: {legend: false, scheme: "Plasma", reverse: true, domain: ["Strongly agree",
+          "Agree",
+          "Neither agree nor disagree",
+          "Disagree",
+          "Strongly disagree", "Not sure", "Skipped"]},
+  marks: [
+    Plot.barY(transpose(direction), {
+      y: "coef",
+      x: "Response",
+      fill: "Response",
+      title: (d) =>
+              `Response: ${d.Response} \n Percent: ${d3.format(".0%")(d.coef)}`,
+      tip: true
+    }),
+    Plot.axisX({label: null, lineWidth: 8, marginBottom: 40})
+  
+  ]
+})
+
+```
 
 
 ## Complete Toplines 
@@ -291,9 +442,6 @@ The tables below show the results for all registered voters and then the subset 
 
 
 ```{ojs}
-
-
-
 
 state_map = {
   const states = topojson.feature(us, us.objects.states); 
