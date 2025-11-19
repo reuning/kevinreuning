@@ -199,10 +199,19 @@ map = Plot.plot({
       )
     ]
 }) 
-
-
 ```
 
+
+
+```{ojs}
+
+DOM.download(
+  pngBlob(map),
+  "map_midwest.png",
+  "Save as PNG"
+)
+
+```
 
 ### What are the values of the Midwest? 
 
@@ -256,6 +265,17 @@ values_plot = Plot.plot({
 
 ```
 
+
+```{ojs}
+
+DOM.download(
+  pngBlob(values_plot),
+  "values_midwest.png",
+  "Save as PNG"
+)
+
+```
+
 ### Local and Regional Acceptance  
 
 
@@ -305,7 +325,7 @@ When asked about their local community, `r percent(accepting_local)` said that t
 //| label: fig-minorities 
 //| fig-cap: How accepting of racial minorities?
 
-minorities = Plot.plot({
+acceptance = Plot.plot({
   x: {label: null, percent: true},
   y: {label: null},
   marginLeft: 100,
@@ -333,6 +353,16 @@ minorities = Plot.plot({
   
   ]
 })
+
+```
+
+```{ojs}
+
+DOM.download(
+  pngBlob(acceptance),
+  "acceptance_midwest.png",
+  "Save as PNG"
+)
 
 ```
 
@@ -394,6 +424,17 @@ dir_plot = Plot.plot({
 ```
 
 
+
+```{ojs}
+
+DOM.download(
+  pngBlob(dir_plot),
+  "direction_midwest.png",
+  "Save as PNG"
+)
+
+```
+
 ## Complete Toplines 
 
 
@@ -425,7 +466,6 @@ vars |>
     replacement = "<1%"
   ) |>
   tab_options(table.width = pct(70))
-
 ```
 
 
@@ -451,5 +491,33 @@ state_map = {
   });
   return states.features;
 }
-import {us} from "@observablehq/us-geographic-data"
+
+image = async (node) => {
+  const n = d3.select(node);
+  const pb = n.style("padding-bottom");
+  const bg = n.style("background-color");
+  if (node.nodeName === "FIGURE") {
+    n.style("padding-bottom", ".4em");
+    n.style("background-color", "white");
+  }
+  const im = await htmlToImage.toCanvas(node, { pixelRatio: 2 });
+  im.style = `width: ${im.width >> 1}px`;
+  if (pb) n.style("padding-bottom", pb); // restores the original styles.
+  if (bg) n.style("background-color", bg);
+  return im;
+}
+
+
+pngBlob = (async (pngOut) => {
+  const canvas = await image(pngOut);
+  return new Promise(res => canvas.toBlob(res));   
+})
+
+
+htmlToImage = import("https://cdn.skypack.dev/html-to-image@1.11.1?min")
+
+
+
+import {us} from "@observablehq/us-county-datasets"
+
 ```
