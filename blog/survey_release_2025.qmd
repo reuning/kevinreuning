@@ -10,8 +10,7 @@ categories:
 execute:
     echo: false
     warning: false 
-draft: true
-date: 2025-11-18
+date: 2025-11-19
 image: "/surveys/2025/midwest.png"
 ---
 
