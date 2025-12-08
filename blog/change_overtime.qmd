@@ -1,6 +1,6 @@
 ---
-title: ANES Panel Data
-draft: true
+title: American Preference Changes from 2016 to 2024
+draft: false
 format: 
     html:
         code-fold: false
