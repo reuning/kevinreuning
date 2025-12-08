@@ -1,0 +1,990 @@
+---
+title: ANES Panel Data
+draft: true
+format: 
+    html:
+        code-fold: false
+        page-layout: full
+        toc: true
+        toc-depth: 2
+execute:
+    warnings: false
+    freeze: true
+    echo: false
+---
+
+
+
+```{r}
+#| output: false
+#|
+library(here)
+library(tidyverse)
+library(gt)
+df <- read_csv(here(
+  "blog",
+  "data",
+  "anes_mergedfile_2016-2020-2024panel_20251030.csv"
+))
+
+df <- df |>
+  mutate(
+    Vote_2016 = case_when(
+      V162065x == 0 ~ "Not Registered",
+      V162065x == 1 ~ "Didn't Vote",
+      V162062x == 1 ~ "Democrat",
+      V162062x == 2 ~ "Republican",
+      V162062x == -8 ~ "Missing",
+      V162062x == -9 ~ "Missing",
+      V162062x %in% 3:5 ~ "Other",
+      V162065x == 2 ~ "Didn't Vote"
+    ),
+    Vote_2020 = case_when(
+      V202068x == 0 ~ "Not Registered",
+      V202068x == 1 ~ "Didn't Vote",
+      V202110x == 1 ~ "Democrat",
+      V202110x == 2 ~ "Republican",
+      V202110x == -8 ~ "Missing",
+      V202110x == -9 ~ "Missing",
+      V202110x %in% 3:5 ~ "Other",
+      V202068x < 0 ~ "Missing",
+      V202068x == 2 ~ "Didn't Vote"
+    ),
+    Vote_2024 = case_when(
+      V242051 == 2 ~ "Not Registered",
+      V242095x == 0 ~ "Didn't Vote",
+      V242096x == 1 ~ "Democrat",
+      V242096x == 2 ~ "Republican",
+      V242096x < 0 ~ "Missing",
+      V242096x %in% 3:6 ~ "Other",
+      V242095x == 1 ~ "Didn't Vote",
+      V241012 == 2 ~ "Not Registered",
+      .default = "Missing"
+    ),
+    Ideo_2016 = factor(
+      replace_na(V161126, -9),
+      levels = c(1, 2, 3, 4, -8, -9, 99, 5, 6, 7),
+      labels = c(
+        "Extremely Lib",
+        "Liberal",
+        "Slightly Lib",
+        "Moderate",
+        "Don't Know",
+        "Missing",
+        "Don't Know",
+        "Slightly Con",
+        "Conservative",
+        "Extremely Con"
+      )
+    ),
+    Ideo_2020 = factor(
+      replace_na(V201200, -9),
+      levels = c(1, 2, 3, 4, -8, -9, 99, 5, 6, 7),
+      labels = c(
+        "Extremely Lib",
+        "Liberal",
+        "Slightly Lib",
+        "Moderate",
+        "Don't Know",
+        "Missing",
+        "Don't Know",
+        "Slightly Con",
+        "Conservative",
+        "Extremely Con"
+      )
+    ),
+    Ideo_2024 = factor(
+      replace_na(V241177, -4),
+      levels = c(1, 2, 3, 4, -4, -9, 99, 5, 6, 7),
+      labels = c(
+        "Extremely Lib",
+        "Liberal",
+        "Slightly Lib",
+        "Moderate",
+        "Missing",
+        "Missing",
+        "Don't Know",
+        "Slightly Con",
+        "Conservative",
+        "Extremely Con"
+      )
+    ),
+    Birth_2016 = factor(
+      replace_na(V161193, -9),
+      levels = c(1, 3, 2, -8, -9),
+      labels = c(
+        "Favor",
+        "Neither",
+        "Oppose",
+        "Don't Know/Skipped",
+        "Don't Know/Skipped"
+      )
+    ),
+    Birth_2020 = factor(
+      replace_na(V201418, -9),
+      levels = c(1, 3, 2, -8, -9),
+      labels = c(
+        "Favor",
+        "Neither",
+        "Oppose",
+        "Don't Know/Skipped",
+        "Don't Know/Skipped"
+      )
+    ),
+    Birth_2024 = factor(
+      replace_na(V241387, -9),
+      levels = c(1, 3, 2, -8, -9),
+      labels = c(
+        "Favor",
+        "Neither",
+        "Oppose",
+        "Don't Know/Skipped",
+        "Don't Know/Skipped"
+      )
+    ),
+    Abortion_2016 = factor(
+      replace_na(V161232, -9),
+      levels = c(1, 2, 3, 4, 5, -8, -9),
+      labels = c(
+        "Never",
+        "Rape/Incest/Danger",
+        "Additional reasons",
+        "As a matter of choice",
+        "Other",
+        "Don't Know/Skipped",
+        "Don't Know/Skipped"
+      )
+    ),
+    Abortion_2020 = factor(
+      replace_na(V201336, -9),
+      levels = c(1, 2, 3, 4, 5, -8, -9),
+      labels = c(
+        "Never",
+        "Rape/Incest/Danger",
+        "Additional reasons",
+        "As a matter of choice",
+        "Other",
+        "Don't Know/Skipped",
+        "Don't Know/Skipped"
+      )
+    ),
+    Abortion_2024 = factor(
+      replace_na(V241302, -9),
+      levels = c(1, 2, 3, 4, 5, -8, -9),
+      labels = c(
+        "Never",
+        "Rape/Incest/Danger",
+        "Additional reasons",
+        "As a matter of choice",
+        "Other",
+        "Don't Know/Skipped",
+        "Don't Know/Skipped"
+      )
+    ),
+    Buy_Gun_2016 = factor(
+      replace_na(V161187, -9),
+      levels = c(1, 3, 2, -8, -9),
+      labels = c(
+        "More difficult",
+        "Same",
+        "Easier",
+        "Don't Know/Skipped",
+        "Don't Know/Skipped"
+      )
+    ),
+    Buy_Gun_2020 = factor(
+      replace_na(V202337, -9),
+      levels = c(1, 3, 2, -5, -6, -7, -8, -9),
+      labels = c(
+        "More difficult",
+        "Same",
+        "Easier",
+        "Don't Know/Skipped",
+        "Don't Know/Skipped",
+        "Don't Know/Skipped",
+        "Don't Know/Skipped",
+        "Don't Know/Skipped"
+      )
+    ),
+    Buy_Gun_2024 = factor(
+      replace_na(V242325, -9),
+      levels = c(1, 3, 2, -1, -5, -6, -7, -8, -9),
+      labels = c(
+        "More difficult",
+        "Same",
+        "Easier",
+        "Don't Know/Skipped",
+        "Don't Know/Skipped",
+        "Don't Know/Skipped",
+        "Don't Know/Skipped",
+        "Don't Know/Skipped",
+        "Don't Know/Skipped"
+      )
+    )
+  )
+
+
+summarized_pres <- df |>
+  drop_na(Vote_2016, Vote_2020, Vote_2024) |>
+  group_by(Vote_2016, Vote_2020, Vote_2024) |>
+  summarize(
+    value_2016 = sum(V160102),
+    value_2020 = sum(V200011b, na.rm = TRUE),
+    value_2024 = sum(V240106b, na.rm = TRUE)
+  ) |>
+  mutate(
+    Vote_2016 = paste(Vote_2016, "2016", sep = "-"),
+    Vote_2020 = paste(Vote_2020, "2020", sep = "-"),
+    Vote_2024 = paste(Vote_2024, "2024", sep = "-")
+  ) |>
+  ungroup() |>
+  mutate(cross_id = paste0(Vote_2016, "->", Vote_2020, "->", Vote_2024))
+
+init_pres <- summarized_pres |>
+  select(Vote_2016, Vote_2020, value_2016, value_2020, value_2024, cross_id) |>
+  rename(source = Vote_2016, target = Vote_2020) |>
+  mutate(
+    value_2016 = value_2016 / sum(value_2016),
+    value_2020 = value_2020 / sum(value_2020),
+    value_2024 = value_2024 / sum(value_2024)
+  )
+second_pres <- summarized_pres |>
+  select(Vote_2020, Vote_2024, value_2016, value_2020, value_2024, cross_id) |>
+  rename(source = Vote_2020, target = Vote_2024) |>
+  mutate(
+    value_2016 = value_2016 / sum(value_2016),
+    value_2020 = value_2020 / sum(value_2020),
+    value_2024 = value_2024 / sum(value_2024)
+  )
+data_out_pres <- rbind(init_pres, second_pres)
+#write_csv(data_out, here("blog", "data", "anes_panel.csv"))
+ojs_define(data_out_pres = data_out_pres)
+
+vote_table <- df |>
+  drop_na(Vote_2016, Vote_2020, Vote_2024) |>
+  mutate(
+    Consistent = (Vote_2016 == Vote_2020) + (Vote_2020 == Vote_2024)
+  ) |>
+  group_by(Vote_2024, Consistent) |>
+  summarize(
+    value_2024 = sum(V240106b, na.rm = TRUE)
+  ) |>
+  group_by(Vote_2024) |>
+  mutate(value_2024 = value_2024 / sum(value_2024)) |>
+  pivot_wider(
+    id_cols = Vote_2024,
+    values_from = value_2024,
+    names_from = Consistent
+  ) |>
+  mutate(
+    Vote_2024 = factor(
+      Vote_2024,
+      levels = c(
+        "Democrat",
+        "Republican",
+        "Other",
+        "Not Registered",
+        "Didn't Vote",
+        "Missing"
+      )
+    )
+  ) |>
+  arrange(Vote_2024) |>
+  rename(
+    Consistent = `2`,
+    `2 out of 3` = `1`,
+    `First Time` = `0`,
+    `2024 Vote` = Vote_2024
+  )
+
+
+```
+
+
+The [ANES has recently released panel data](https://electionstudies.org/data-center/2016-2020-2024-panel-merged-study/) with survey participants from the 2016, 2020, and 2024 elections. Unlike other survey data, panels (true panels at least) include surveys with the same individuals overtime. Because of this we can track how each of these individuals changed overtime. This does pose some problems. Not everyone responds to the survey each time and so missingness is an issue. Nonetheless, the below plots and allow you to see how people's votes and opinions changed across these three elections. I've tried to be as transparent as possible, at the top of each chart there is a dropdown to select which sets of weights to use in the sankey. You can think of this as your baseline. If you select the weights in 2016 then you will see how the panel, starting in 2016, progressed overtime (including dropping out). If you look at the weights in 2024, then you will see how those who are still in the panel in 2024 varied over the years prior. You should be able to hover over each strand to see the estimate of the size of that group. 
+
+Below each chart I also include a table showing the percent of individuals that were consistent based on their responses in 2024. For example, of those that voted for a Democrat in the 2024 Presidential election, 70% had consistently voted for a Democrat across the last three elections, 23% had voted for a Democrat in two out of three of the elections and 7% voted for a Democrat for the first time. 
+
+Along with [presidential vote choice](#presidential-vote-choice), I calculated estimates for [ideology](#ideology), opinions on [abortion](#abortion), [ending birthright citizenship](#ending-birthright-citizenship), and [the ease of buying guns](#buying-a-gun). 
+
+If there is any general trajectory in this data it appears that the _liberal_ position is more static than the conversation position. For example, of those in 2024 who opposed ending birthright citizenship 50% consistently did while only 37% of those who favored it consistently favored it. Among preferences towards abortion, 63% of those who said it should be a matter of choice in 2024 consistently said that while 48% who said it should never be be legal had consistently said that. The only place this isn't true is overall ideology where 38% of those who identify as extremely conservative did so consistently compared to 35% of those who identified as extremely liberal. 
+
+## Presidential Vote Choice 
+
+```{ojs}
+weights = [
+  {name: "2016", value: "value_2016"}, 
+  {name: "2020", value: "value_2020"}, 
+  {name: "2024", value: "value_2024"}
+]
+viewof dropdownValue = Inputs.select(weights, {label: "Weights from:", 
+  format: x => x.name, value: weights.find(w => w.name === "2024")}
+)
+```
+
+```{ojs}
+//| fig-cap: Presidential Vote Choice
+
+SankeyChart({
+  links: transpose(data_out_pres)
+}, {
+  nodeGroup: d => d.id.split("-")[0], // take first word for color
+  format: (f => d => `${f(d)}`)(d3.format(".0%")),
+  width,
+  height: 600,
+  nodeSort: sortWith(["Democrat", "Didn't Vote", "Missing", "Not Registered", "Other", "Republican"]),
+  nodeGroups: ["Democrat", "Didn't Vote", "Missing", "Not Registered", "Other", "Republican"],
+  colors: ["#002d9c", "#ee538b", "#b28600", "#a56eff", "#005d5d",  "#e1141e"],
+  linkValue: d => d[dropdownValue.value], // Use the selected value
+  linkTitle: d => `${d.id}\n${d3.format(".0%")(d.value)}`, // given d in (computed) links
+
+})
+
+```
+
+
+```{r}
+#| tbl-cap: "Trajectory by 2024 Vote Choice"
+#| label: tbl-2024
+library(gt)
+
+gt(ungroup(vote_table)) |>
+  fmt_percent(decimals = 0)
+
+
+```
+
+## Ideology
+
+```{r}
+#| output: false
+#|
+
+summarized_ideo <- df |>
+  drop_na(Ideo_2016, Ideo_2020, Ideo_2024) |>
+  group_by(Ideo_2016, Ideo_2020, Ideo_2024) |>
+  summarize(
+    value_2016 = sum(V160102),
+    value_2020 = sum(V200011b, na.rm = TRUE),
+    value_2024 = sum(V240106b, na.rm = TRUE)
+  ) |>
+  mutate(
+    Ideo_2016 = paste(Ideo_2016, "2016", sep = "-"),
+    Ideo_2020 = paste(Ideo_2020, "2020", sep = "-"),
+    Ideo_2024 = paste(Ideo_2024, "2024", sep = "-")
+  ) |>
+  ungroup() |>
+  mutate(cross_id = paste0(Ideo_2016, "->", Ideo_2020, "->", Ideo_2024))
+
+init_ideo <- summarized_ideo |>
+  select(Ideo_2016, Ideo_2020, value_2016, value_2020, value_2024, cross_id) |>
+  rename(source = Ideo_2016, target = Ideo_2020) |>
+  mutate(
+    value_2016 = value_2016 / sum(value_2016),
+    value_2020 = value_2020 / sum(value_2020),
+    value_2024 = value_2024 / sum(value_2024)
+  )
+second_ideo <- summarized_ideo |>
+  select(Ideo_2020, Ideo_2024, value_2016, value_2020, value_2024, cross_id) |>
+  rename(source = Ideo_2020, target = Ideo_2024) |>
+  mutate(
+    value_2016 = value_2016 / sum(value_2016),
+    value_2020 = value_2020 / sum(value_2020),
+    value_2024 = value_2024 / sum(value_2024)
+  )
+data_out_ideo <- rbind(init_ideo, second_ideo)
+#write_csv(data_out, here("blog", "data", "anes_panel.csv"))
+ojs_define(data_out_ideo = data_out_ideo)
+
+
+ideo_table <- df |>
+  drop_na(Ideo_2016, Ideo_2020, Ideo_2024) |>
+  mutate(
+    Consistent = (Ideo_2016 == Ideo_2020) + (Ideo_2020 == Ideo_2024)
+  ) |>
+  group_by(Ideo_2024, Consistent) |>
+  summarize(
+    value_2024 = sum(V240106b, na.rm = TRUE)
+  ) |>
+  group_by(Ideo_2024) |>
+  mutate(value_2024 = value_2024 / sum(value_2024)) |>
+  pivot_wider(
+    id_cols = Ideo_2024,
+    values_from = value_2024,
+    names_from = Consistent
+  ) |>
+  mutate(
+    Ideo_2024 = factor(
+      Ideo_2024,
+      levels = c(
+        "Extremely Lib",
+        "Liberal",
+        "Slightly Lib",
+        "Moderate",
+        "Slightly Con",
+        "Conservative",
+        "Extremely Con",
+        "Don't Know",
+        "Missing"
+      )
+    )
+  ) |>
+  arrange(Ideo_2024) |>
+  rename(
+    Consistent = `2`,
+    `2 out of 3` = `1`,
+    `First Time` = `0`,
+    `2024 Ideology` = Ideo_2024
+  )
+
+
+ideo_table_simplified <- df |>
+  drop_na(Ideo_2016, Ideo_2020, Ideo_2024) |>
+  mutate(
+    Ideo_2016 = case_when(
+      grepl("Lib", Ideo_2016) ~ "Liberal",
+      grepl("Con", Ideo_2016) ~ "Conservative",
+      .default = Ideo_2016
+    ),
+    Ideo_2020 = case_when(
+      grepl("Lib", Ideo_2020) ~ "Liberal",
+      grepl("Con", Ideo_2020) ~ "Conservative",
+      .default = Ideo_2020
+    ),
+    Ideo_2024 = case_when(
+      grepl("Lib", Ideo_2024) ~ "Liberal",
+      grepl("Con", Ideo_2024) ~ "Conservative",
+      .default = Ideo_2024
+    )
+  ) |>
+  mutate(
+    Consistent = (Ideo_2016 == Ideo_2020) + (Ideo_2020 == Ideo_2024)
+  ) |>
+  group_by(Ideo_2024, Consistent) |>
+  summarize(
+    value_2024 = sum(V240106b, na.rm = TRUE)
+  ) |>
+  group_by(Ideo_2024) |>
+  mutate(value_2024 = value_2024 / sum(value_2024)) |>
+  pivot_wider(
+    id_cols = Ideo_2024,
+    values_from = value_2024,
+    names_from = Consistent
+  ) |>
+  mutate(
+    Ideo_2024 = factor(
+      Ideo_2024,
+      levels = c(
+        "Liberal",
+        "Moderate",
+        "Conservative",
+        "Don't Know",
+        "Missing"
+      )
+    )
+  ) |>
+  arrange(Ideo_2024) |>
+  rename(
+    Consistent = `2`,
+    `2 out of 3` = `1`,
+    `First Time` = `0`,
+    `2024 Ideology` = Ideo_2024
+  )
+
+```
+
+
+
+```{ojs}
+
+viewof dropdownValueIdeo = Inputs.select(weights, {label: "Weights from:", 
+format: x => x.name, value: weights.find(w => w.name === "2024")}
+)
+```
+
+```{ojs}
+//| fig-cap: Ideology
+
+SankeyChart({
+links: transpose(data_out_ideo)
+}, {
+nodeGroup: d => d.id.split("-")[0], // take first word for color
+format: (f => d => `${f(d)}`)(d3.format(".1%")),
+width,
+height: 600,
+nodeSort: sortWith(["Extremely Lib", "Liberal", "Slightly Lib", "Moderate", "Don't Know", "Missing", "Slightly Con", "Conservative", "Extremely Con"]),
+linkValue: d => d[dropdownValueIdeo.value], // Use the selected value
+linkTitle: d => `${d.id}\n${d3.format(".1%")(d.value)}`, // given d in (computed) links
+
+})
+
+```
+
+
+```{r}
+#| tbl-cap: "Trajectory by 2024 Ideology"
+#| label: tbl-ideology
+
+library(gt)
+
+ideo_table_simplified <- ideo_table_simplified |> mutate(type = "Simplified")
+ideo_table |>
+  mutate(type = "Full") |>
+  rbind(ideo_table_simplified) |>
+  group_by(type) |>
+  gt(row_group_as_column = TRUE) |>
+  fmt_percent(decimals = 0) |>
+  sub_missing(missing_text = "-")
+
+```
+
+
+## Issues 
+
+
+
+### Abortion
+
+> There has been some discussion about abortion during recent years. Which one of the opinions on this page best agrees with your view? 
+
+- By law, abortion should never be permitted.
+- By law, only in case of rape, incest or woman's life in danger. 
+- By law, for reasons other than rape, incest or woman's life in danger if need established. 
+- By law, abortion as a mater of personal choice. 
+- Other 
+
+```{r}
+#| output: false
+#|
+
+Abortion_summarized <- df |>
+  drop_na(Abortion_2016, Abortion_2020, Abortion_2024) |>
+  group_by(Abortion_2016, Abortion_2020, Abortion_2024) |>
+  summarize(
+    value_2016 = sum(V160102),
+    value_2020 = sum(V200011b, na.rm = TRUE),
+    value_2024 = sum(V240106b, na.rm = TRUE)
+  ) |>
+  mutate(
+    Abortion_2016 = paste(Abortion_2016, "2016", sep = "-"),
+    Abortion_2020 = paste(Abortion_2020, "2020", sep = "-"),
+    Abortion_2024 = paste(Abortion_2024, "2024", sep = "-")
+  ) |>
+  ungroup() |>
+  mutate(
+    cross_id = paste0(Abortion_2016, "->", Abortion_2020, "->", Abortion_2024)
+  )
+
+Abortion_init <- Abortion_summarized |>
+  select(
+    Abortion_2016,
+    Abortion_2020,
+    value_2016,
+    value_2020,
+    value_2024,
+    cross_id
+  ) |>
+  rename(source = Abortion_2016, target = Abortion_2020) |>
+  mutate(
+    value_2016 = value_2016 / sum(value_2016),
+    value_2020 = value_2020 / sum(value_2020),
+    value_2024 = value_2024 / sum(value_2024)
+  )
+Abortion_second <- Abortion_summarized |>
+  select(
+    Abortion_2020,
+    Abortion_2024,
+    value_2016,
+    value_2020,
+    value_2024,
+    cross_id
+  ) |>
+  rename(source = Abortion_2020, target = Abortion_2024) |>
+  mutate(
+    value_2016 = value_2016 / sum(value_2016),
+    value_2020 = value_2020 / sum(value_2020),
+    value_2024 = value_2024 / sum(value_2024)
+  )
+Abortion_out <- rbind(Abortion_init, Abortion_second)
+#write_csv(data_out, here("blog", "data", "anes_panel.csv"))
+ojs_define(Abortion_out = Abortion_out)
+
+
+Abortion_table <- df |>
+  drop_na(Abortion_2016, Abortion_2020, Abortion_2024) |>
+  mutate(
+    Consistent = (Abortion_2016 == Abortion_2020) +
+      (Abortion_2020 == Abortion_2024)
+  ) |>
+  group_by(Abortion_2024, Consistent) |>
+  summarize(
+    value_2024 = sum(V240106b, na.rm = TRUE)
+  ) |>
+  group_by(Abortion_2024) |>
+  mutate(value_2024 = value_2024 / sum(value_2024)) |>
+  pivot_wider(
+    id_cols = Abortion_2024,
+    values_from = value_2024,
+    names_from = Consistent
+  ) |>
+  mutate(
+    Abortion_2024 = factor(
+      Abortion_2024,
+      levels = c(
+        "Never",
+        "Rape/Incest/Danger",
+        "Additional reasons",
+        "As a matter of choice",
+        "Other",
+        "Don't Know/Skipped"
+      )
+    )
+  ) |>
+  arrange(Abortion_2024) |>
+  rename(
+    Consistent = `2`,
+    `2 out of 3` = `1`,
+    `First Time` = `0`,
+    `2024 Position` = Abortion_2024
+  )
+
+```
+
+
+```{ojs}
+
+viewof dropdownValueAbortion = Inputs.select(weights, {label: "Weights from:", 
+format: x => x.name, value: weights.find(w => w.name === "2024")}
+)
+```
+
+```{ojs}
+//| fig-cap: Abortion
+
+SankeyChart({
+links: transpose(Abortion_out)
+}, {
+nodeGroup: d => d.id.split("-")[0], // take first word for color
+format: (f => d => `${f(d)}`)(d3.format(".1%")),
+width,
+height: 600,
+nodeSort: sortWith(["Never",
+        "Rape/Incest/Danger",
+        "Additional reasons",
+        "As a matter of choice",
+        "Other",
+        "Don't Know/Skipped"]),
+linkValue: d => d[dropdownValueAbortion.value], // Use the selected value
+linkTitle: d => `${d.id}\n${d3.format(".1%")(d.value)}`, // given d in (computed) links
+
+})
+
+```
+
+
+```{r}
+#| tbl-cap: "Trajectory by 2024 Position"
+#| label: tbl-abortion
+
+gt(ungroup(Abortion_table)) |>
+  fmt_percent(decimals = 0) |>
+  sub_missing(missing_text = "-")
+
+```
+
+
+### Ending Birthright Citizenship
+
+> Some people have proposed that the U.S. Constitution should be changed so that the children of unauthorized immigrants do not automatically get citizenship if they are born in this country. Do you favor, oppose, or neither favor nor oppose this proposal?
+
+
+
+```{r}
+#| output: false
+#|
+
+summarized_birth <- df |>
+  drop_na(Birth_2016, Birth_2020, Birth_2024) |>
+  group_by(Birth_2016, Birth_2020, Birth_2024) |>
+  summarize(
+    value_2016 = sum(V160102),
+    value_2020 = sum(V200011b, na.rm = TRUE),
+    value_2024 = sum(V240106b, na.rm = TRUE)
+  ) |>
+  mutate(
+    Birth_2016 = paste(Birth_2016, "2016", sep = "-"),
+    Birth_2020 = paste(Birth_2020, "2020", sep = "-"),
+    Birth_2024 = paste(Birth_2024, "2024", sep = "-")
+  ) |>
+  ungroup() |>
+  mutate(cross_id = paste0(Birth_2016, "->", Birth_2020, "->", Birth_2024))
+
+init_birth <- summarized_birth |>
+  select(
+    Birth_2016,
+    Birth_2020,
+    value_2016,
+    value_2020,
+    value_2024,
+    cross_id
+  ) |>
+  rename(source = Birth_2016, target = Birth_2020) |>
+  mutate(
+    value_2016 = value_2016 / sum(value_2016),
+    value_2020 = value_2020 / sum(value_2020),
+    value_2024 = value_2024 / sum(value_2024)
+  )
+second_birth <- summarized_birth |>
+  select(
+    Birth_2020,
+    Birth_2024,
+    value_2016,
+    value_2020,
+    value_2024,
+    cross_id
+  ) |>
+  rename(source = Birth_2020, target = Birth_2024) |>
+  mutate(
+    value_2016 = value_2016 / sum(value_2016),
+    value_2020 = value_2020 / sum(value_2020),
+    value_2024 = value_2024 / sum(value_2024)
+  )
+data_out_birth <- rbind(init_birth, second_birth)
+#write_csv(data_out, here("blog", "data", "anes_panel.csv"))
+ojs_define(data_out_birth = data_out_birth)
+
+
+birth_table <- df |>
+  drop_na(Birth_2016, Birth_2020, Birth_2024) |>
+  mutate(
+    Consistent = (Birth_2016 == Birth_2020) + (Birth_2020 == Birth_2024)
+  ) |>
+  group_by(Birth_2024, Consistent) |>
+  summarize(
+    value_2024 = sum(V240106b, na.rm = TRUE)
+  ) |>
+  group_by(Birth_2024) |>
+  mutate(value_2024 = value_2024 / sum(value_2024)) |>
+  pivot_wider(
+    id_cols = Birth_2024,
+    values_from = value_2024,
+    names_from = Consistent
+  ) |>
+  mutate(
+    Birth_2024 = factor(
+      Birth_2024,
+      levels = c(
+        "Favor",
+        "Neither",
+        "Oppose",
+        "Don't Know/Skipped"
+      )
+    )
+  ) |>
+  arrange(Birth_2024) |>
+  rename(
+    Consistent = `2`,
+    `2 out of 3` = `1`,
+    `First Time` = `0`,
+    `2024 Position` = Birth_2024
+  )
+
+```
+
+
+```{ojs}
+
+viewof dropdownValueBirth = Inputs.select(weights, {label: "Weights from:", 
+format: x => x.name, value: weights.find(w => w.name === "2024")}
+)
+```
+
+```{ojs}
+//| fig-cap: End Birth Right Citizenship?
+
+SankeyChart({
+links: transpose(data_out_birth)
+}, {
+nodeGroup: d => d.id.split("-")[0], // take first word for color
+format: (f => d => `${f(d)}`)(d3.format(".1%")),
+width,
+height: 600,
+nodeSort: sortWith(["Favor", "Neither", "Don't Know/Skipped", "Oppose"]),
+linkValue: d => d[dropdownValueBirth.value], // Use the selected value
+linkTitle: d => `${d.id}\n${d3.format(".1%")(d.value)}`, // given d in (computed) links
+
+})
+
+```
+
+
+
+
+```{r}
+#| tbl-cap: "Trajectory by 2024 Position"
+#| label: tbl-birthright
+
+library(gt)
+
+
+gt(ungroup(birth_table)) |>
+  fmt_percent(decimals = 0) |>
+  sub_missing(missing_text = "-")
+
+```
+
+
+### Buying a Gun 
+
+
+> Do you think the federal government should make it more difficult for people to buy a gun than it is now, make it easier for people to buy a gun, or keep these rules about the same as they are now?
+
+Note: The 2020 and 2024 versions were asked in the post-survey, 2016 was asked in the pre-survey. 
+
+
+```{r}
+#| output: false
+#|
+
+Gun_summarized <- df |>
+  drop_na(Buy_Gun_2016, Buy_Gun_2020, Buy_Gun_2024) |>
+  group_by(Buy_Gun_2016, Buy_Gun_2020, Buy_Gun_2024) |>
+  summarize(
+    value_2016 = sum(V160102),
+    value_2020 = sum(V200011b, na.rm = TRUE),
+    value_2024 = sum(V240106b, na.rm = TRUE)
+  ) |>
+  mutate(
+    Buy_Gun_2016 = paste(Buy_Gun_2016, "2016", sep = "-"),
+    Buy_Gun_2020 = paste(Buy_Gun_2020, "2020", sep = "-"),
+    Buy_Gun_2024 = paste(Buy_Gun_2024, "2024", sep = "-")
+  ) |>
+  ungroup() |>
+  mutate(
+    cross_id = paste0(Buy_Gun_2016, "->", Buy_Gun_2020, "->", Buy_Gun_2024)
+  )
+
+Gun_init <- Gun_summarized |>
+  select(
+    Buy_Gun_2016,
+    Buy_Gun_2020,
+    value_2016,
+    value_2020,
+    value_2024,
+    cross_id
+  ) |>
+  rename(source = Buy_Gun_2016, target = Buy_Gun_2020) |>
+  mutate(
+    value_2016 = value_2016 / sum(value_2016),
+    value_2020 = value_2020 / sum(value_2020),
+    value_2024 = value_2024 / sum(value_2024)
+  )
+Gun_birth <- Gun_summarized |>
+  select(
+    Buy_Gun_2020,
+    Buy_Gun_2024,
+    value_2016,
+    value_2020,
+    value_2024,
+    cross_id
+  ) |>
+  rename(source = Buy_Gun_2020, target = Buy_Gun_2024) |>
+  mutate(
+    value_2016 = value_2016 / sum(value_2016),
+    value_2020 = value_2020 / sum(value_2020),
+    value_2024 = value_2024 / sum(value_2024)
+  )
+Gun_out <- rbind(Gun_init, Gun_birth)
+#write_csv(data_out, here("blog", "data", "anes_panel.csv"))
+ojs_define(Gun_out = Gun_out)
+
+
+Gun_table <- df |>
+  drop_na(Buy_Gun_2016, Buy_Gun_2020, Buy_Gun_2024) |>
+  mutate(
+    Consistent = (Buy_Gun_2016 == Buy_Gun_2020) + (Buy_Gun_2020 == Buy_Gun_2024)
+  ) |>
+  group_by(Buy_Gun_2024, Consistent) |>
+  summarize(
+    value_2024 = sum(V240106b, na.rm = TRUE)
+  ) |>
+  group_by(Buy_Gun_2024) |>
+  mutate(value_2024 = value_2024 / sum(value_2024)) |>
+  pivot_wider(
+    id_cols = Buy_Gun_2024,
+    values_from = value_2024,
+    names_from = Consistent
+  ) |>
+  mutate(
+    Buy_Gun_2024 = factor(
+      Buy_Gun_2024,
+      levels = c(
+        "More difficult",
+        "Same",
+        "Easier",
+        "Don't Know/Skipped"
+      )
+    )
+  ) |>
+  arrange(Buy_Gun_2024) |>
+  rename(
+    Consistent = `2`,
+    `2 out of 3` = `1`,
+    `First Time` = `0`,
+    `2024 Position` = Buy_Gun_2024
+  )
+
+```
+
+
+```{ojs}
+
+viewof dropdownValueGun = Inputs.select(weights, {label: "Weights from:", 
+format: x => x.name, value: weights.find(w => w.name === "2024")}
+)
+```
+
+```{ojs}
+//| fig-cap: Buying a Gun?
+
+SankeyChart({
+links: transpose(Gun_out)
+}, {
+nodeGroup: d => d.id.split("-")[0], // take first word for color
+format: (f => d => `${f(d)}`)(d3.format(".1%")),
+width,
+height: 600,
+nodeSort: sortWith([ "More difficult",
+        "Same",
+        "Easier",
+        "Don't Know/Skipped"]),
+linkValue: d => d[dropdownValueGun.value], // Use the selected value
+linkTitle: d => `${d.id}\n${d3.format(".1%")(d.value)}`, // given d in (computed) links
+
+})
+
+```
+
+
+
+
+```{r}
+#| tbl-cap: "Trajectory by 2024 Position"
+#| label: tbl-gun
+
+library(gt)
+
+
+gt(ungroup(Gun_table)) |>
+  fmt_percent(decimals = 0) |>
+  sub_missing(missing_text = "-")
+
+```
+
+
+
+```{ojs}
+import {SankeyChart, sortWith} from "@reuning/sankey-diagram-component"
+```
+
+

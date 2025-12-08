@@ -16,3 +16,13 @@
     justify-content: center;
     display: grid;
 }
+
+
+
+.link {
+  fill: none;
+  stroke-opacity: .2;
+}
+.link:hover {
+  stroke-opacity: .5;
+}
