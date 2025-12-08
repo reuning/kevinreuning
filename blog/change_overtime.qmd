@@ -11,6 +11,7 @@ execute:
     warnings: false
     freeze: true
     echo: false
+image: "/blog/images/pres_vote_choice.png"
 ---
 
 
