@@ -1,6 +1,9 @@
 ---
 title: American Preference Changes from 2016 to 2024
-draft: false
+date: 2025-12-08
+categories:
+    - Survey
+    - Elections
 format: 
     html:
         code-fold: false
