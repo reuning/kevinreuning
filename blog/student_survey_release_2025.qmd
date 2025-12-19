@@ -1,0 +1,21 @@
+---
+title: Student Reports on 2025 Miami University Survey of Ohio Voters Opinions about the Midwest
+format: 
+  html:
+    page-layout: full
+    html-table-processing: none
+categories:
+    - Survey
+    - Midwest
+execute:
+    echo: false
+    warning: false 
+date: 2025-12-17
+image: "/blog/images/2025_student_plot.png"
+---
+
+As part of POL 307 students completed final projects using the data collected through our [survey of Ohio voters opinion about the Midwest](/blog/survey_release_2025.qmd). Below are some of the student reports that they were willing to share with the public. Each student picked two questions from the survey and then examined how responses vary across other questions.
+
+- [Tommy Feazell](https://sites.google.com/miamioh.edu/pol307finalprojecttommyfeazell/home) examined the relationship between identity as a Midwestern and time to the nearest grocery store. One thing that Tommy found was that men are more likely to identify as Midwesterners. 
+- [Hayley Schmidt](https://sites.google.com/miamioh.edu/schmidt-pol-307?usp=sharing) looked at perceptions of how accepting your community is of "racial minorities" and whether you believe the Midwest has improved over the last 25 years. She found, among other things, that those who have lived in Ohio the longest are the most pessimistic about the state of the Midwest. 
+- [Avery Scott](https://sites.google.com/miamioh.edu/pol307finalracialacceptance/home) investigated both questions on the acceptance of racial minorities (one asked about your own community, the other asked about the Midwest as a whole). She found that although non-White voters are likely to find their own community as accepting of racial minorities, they are more likely to view the Midwest as a whole as not accepting. 
