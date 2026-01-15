@@ -13,14 +13,13 @@ library(yaml)
 library(here)
 
 
-
-course_links <- function(file){
-    data <- read_yaml(here("teaching", "courses", file))[[2]]
-    out <- character(length(data))
-    for(ii in seq_along(data)){
-        out[ii] <- sprintf("[%s](syllabi/%s)", data[[ii]]$Sem, data[[ii]]$File)
-    }
-    cat(paste(out, collapse = "; "))
+course_links <- function(file) {
+  data <- read_yaml(here("teaching", "courses", file))[[2]]
+  out <- character(length(data))
+  for (ii in seq_along(data)) {
+    out[ii] <- sprintf("[%s](syllabi/%s)", data[[ii]]$Sem, data[[ii]]$File)
+  }
+  cat(paste(out, collapse = "; "))
 }
 
 
@@ -79,8 +78,10 @@ course_links("pol345y.yaml")
 
 ```
 
-## POL 491/591 Social Network Analysis
-POL 491/591 Social Network Analysis focuses on social network analysis for data analytics majors and advanced political science and sociology students. It covers a variety of network statistics as well as theory testing. The course also gives students a range of applications across a wide variety of fields including political science, sociology, criminology, anthropology, and business.
+## POL 491 Social Network Analysis
+POL 491 Social Network Analysis focuses on social network analysis for data analytics majors and advanced political science and sociology students. It covers a variety of network statistics as well as theory testing. The course also gives students a range of applications across a wide variety of fields including political science, sociology, criminology, anthropology, and business.
+
+Note: Up until 2025 there was a graduate level version of this course, but we ended our Masters program and so this is now an undergraduate only course. 
 
 ### Syllabi
 
