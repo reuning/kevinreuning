@@ -314,7 +314,7 @@ Dealing with edges can be a bit more confusing, they also have IDs. The best way
 ```{r}
 V(net)[5] # Rand
 V(net)[6] # Mat
-edid <- get.edge.ids(net, vp=c(V(net)[5], V(net)[6]))
+edid <- get.edge.ids(net, vp=cbind(V(net)[5], V(net)[6]))
 edid
 E(net)[edid]
 
@@ -889,7 +889,7 @@ colnames(mat) <- gsub("\\.", " ", colnames(mat))
 
 library(ca)
 
-ca_out <- ca(df)
+ca_out <- ca(mat)
 
 ```
 
@@ -2271,6 +2271,7 @@ source("network_data/project_bonac.r")
 
 mat <- as_biadjacency_matrix(net)
 bonac_normalized <- project_bonac(mat)
+diag(bonac_normalized) <- 0 ## temporay fix
 bonac_memb_net <- graph_from_adjacency_matrix(bonac_normalized, 
     diag=F, mode="undirected", weight=T)
 ```
@@ -2292,6 +2293,7 @@ If you want to get the other mode you need to transpose the matrix:
 #| cache: true
 
 bonac_trans <- project_bonac(t(mat)) #transposed 
+diag(bonac_trans) <- 0
 bonac_comp_net <- graph_from_adjacency_matrix(bonac_trans, 
     diag=F, mode="undirected", weight=T)
 ```
