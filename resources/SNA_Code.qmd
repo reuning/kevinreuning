@@ -15,7 +15,7 @@ For anyone discovering this, the code below here is pulled from quarto slides so
 - [igraph](https://r.igraph.org/): To do most of the network work here. 
 - [ggraph](https://ggraph.data-imaginist.com/): To visualize the networks. 
 - [smacof](https://cran.r-project.org/web/packages/smacof/index.html): For MDS scaling.  
-- [FactoMineR](http://factominer.free.fr/index.html): For correspondence analysis. 
+- [ca](https://cran.rstudio.org/web/packages/ca/index.html): For correspondence analysis. 
 - [blockmodeling](https://cran.r-project.org/web/packages/blockmodeling/index.html): For blockmodeling and structural equivalence.
 - [sna](https://cran.r-project.org/web/packages/sna/index.html): A few random things that igraph cannot do and QAP
 - [ergm](https://github.com/statnet/ergm): For ERGMs (not currently on this page).
@@ -677,7 +677,7 @@ ggplot(df_out, aes(x=indegree, y=outdegree)) +
 There are three main functions we will need for this: 
 
 - `mds()` from the [smacof](https://cran.r-project.org/web/packages/smacof/index.html) package. 
-- `CA()` from the [FactoMineR](http://factominer.free.fr/index.html) package. 
+- `ca()` from the [ca](https://cran.rstudio.org/web/packages/ca/index.html) package. 
 - `hclust()` a base R function (along with `cutree()` and `dist()`). 
 
 
@@ -877,62 +877,75 @@ groups[1:20]
 
 ## Correspondence Analysis 
 
-For correspondence analysis we use the `CA()` function, and can set the number of dimensions to estimate with `ncp=` (feel free to see this to something high)
+For correspondence analysis we use the `ca()` function, as a default it will estimate the largest possible number of dimensions. 
 
-The [data here](network_data/EU_seats.csv) shows the number of a country's EU MEPs are in each party group.
+The [data here](network_data/colleges.csv) shows the number of a majors that graduated from colleges in Ohio in 2024.
 
 ```{r}
 #| echo: true
-df <- read.csv(here::here("resources/network_data/EU_seats.csv"), row.names=1)
-library(FactoMineR)
+mat <- read.csv(here::here("resources/network_data/colleges.csv"), row.names = 1)
+mat <- as.matrix(mat)
+colnames(mat) <- gsub("\\.", " ", colnames(mat))
 
-ca <- CA(df, ncp=5)
+library(ca)
+
+ca_out <- ca(df)
 
 ```
 
 
-### Correspondence Analysis - Dimensions
+## Correspondence Analysis - Dimensions
 
-We can see how many dimensions to use by calling `output$eig`
-
+If you call `summary()` on your `ca()` object then the top of it will show you how much variance each dimension captures. 
 
 ```{r}
-#| echo: true 
-ca$eig
+#| echo: true
+summary(ca_out)
+
 ```
 
-### Plotting One Set
+## Correspondence Analysis - Plotting One Set
 
-If we want to extract the scales we use `output$row$coord` or `output$col$coord`. We can plot it easily, by converting it data.frame and sticking it into ggplot
-
+If we want to extract the scales we use `cacoord()` which has a variety of options under `type=`. What we want is either `"rowprincipal"` or `"colprincpal"`
 
 ```{r}
-#| echo: true 
+#| label: r-ca-one
+#| fig-asp: 1.2
+#| out-height: 80%
+#| echo: true
+#| fig-alt: "Basic scatter plot showing dots on a Dim 1 and Dim 2 axis. The points are the majors."
 
-countries <- as.data.frame(ca$row$coord)
-ggplot(countries, aes(x=`Dim 1`, y=`Dim 2`)) + 
-    geom_point(size=5) + theme_minimal() 
+majors_principal <- cacoord(ca_out, type = "rowprincipal")
+ggplot(majors_principal$rows, aes(x = Dim1, y = Dim2)) +
+  geom_point(size = 5) +
+  theme_minimal()
+
 ```
 
-### Plotting Both
+## Correspondence Analysis - Plotting Both
 
-If we want to plot them both we need to combine the two data.frames (using `rbind()`) giving them labels first:
+It will return an object with both `$rows` and `$columns`. If this is row principals then the rows are in principal components and the columns are standard components. 
 
- 
 ```{r}
-#| echo: true 
+#| label: r-ca-both
+#| fig-asp: 1.2
+#| out-height: 80%
+#| echo: true
+#| fig-alt: "Basic scatter plot showing dots on a Dim 1 and Dim 2 axis. The majors and schools are colored differently here."
 
-countries <- as.data.frame(ca$row$coord)
-countries$Type <- "Country" 
-countries$Name <- rownames(countries)
-parties <- as.data.frame(ca$col$coord)
-parties$Type <- "Party" 
-parties$Name <- rownames(parties)
+majors <- as.data.frame(majors_principal$rows)
+majors$Type <- "Majors"
+majors$Name <- rownames(majors)
+schools <- as.data.frame(majors_principal$columns)
+schools$Type <- "School"
+schools$Name <- rownames(schools)
 
-all <- rbind(countries, parties)
+all <- rbind(majors, schools)
 
-ggplot(all, aes(x=`Dim 1`, y=`Dim 2`, color=Type)) + 
-    geom_point(size=5) + theme_minimal() 
+ggplot(all, aes(x = Dim1, y = Dim2, color = Type)) +
+  geom_point(size = 5) +
+  theme_minimal()
+
 ```
 
 
@@ -2403,7 +2416,6 @@ gcor(cont_mat, trade_mat, mode="graph")
 
 To test the hypothesis we need: `gaptest()` which takes a list of networks, the function you want to use to calculate the test statistics, and two annoying indicators (`g1=1, g2=2`). Finally, `reps=` will tell it how many permutations to do. 
 
-\footnotesize 
 ```{r}
 #| echo: true
 #| cache: true
