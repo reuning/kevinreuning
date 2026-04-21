@@ -34,11 +34,7 @@ One basic format for network data is the matrix. You can make basic matrices usi
  
 ```{r}
 #| echo: true 
-mat <- matrix(c(0, 1, 0, 
-                0, 0, 0, 
-                1, 1, 0), 
-                nrow=3, ncol=3, 
-                byrow=T)
+mat <- matrix(c(0, 1, 0, 0, 0, 0, 1, 1, 0), nrow = 3, ncol = 3, byrow = T)
 mat
 ```
 
@@ -66,7 +62,7 @@ The `igraph` package has a `graph_from_adjacency_matrix()` function used to crea
 ```{r}
 #| echo: true
 library(igraph)
-net <- graph_from_adjacency_matrix(mat, mode="directed") 
+net <- graph_from_adjacency_matrix(mat, mode = "directed")
 ```
 
 
@@ -107,7 +103,10 @@ The data is [here](network_data/wheel_of_time_ep1.csv) and is an adjacency matri
 
 ```{r}
 #| echo: true
-net_mat <- read.csv(here::here("resources/network_data/wheel_of_time_ep1.csv"), row.names=1)
+net_mat <- read.csv(
+  here::here("resources/network_data/wheel_of_time_ep1.csv"),
+  row.names = 1
+)
 # setting row.names=1, turns the first column into rownames
 net_mat[1:5, 1:5] # look at first 5 rows and cols
 ```
@@ -122,8 +121,11 @@ We again use `graph_from_adjacency_matrix` to convert to an igraph object, but f
 ```{r}
 #| echo: true
 library(igraph)
-net <- graph_from_adjacency_matrix(as.matrix(net_mat),
-    mode="directed", weighted=TRUE) 
+net <- graph_from_adjacency_matrix(
+  as.matrix(net_mat),
+  mode = "directed",
+  weighted = TRUE
+)
 ```
 
 
@@ -135,7 +137,7 @@ If we ever want to go back to the adjacency matrix we can:
 
 ```{r}
 mat <- as.matrix(net)
-mat[1:5,1:5]
+mat[1:5, 1:5]
 ```
 
 ### Another Way to Access the Adj Matrix
@@ -145,7 +147,7 @@ The iGraph object actually has the adjacency matrix always there
 
 
 ```{r}
-net[1:5,1:5]
+net[1:5, 1:5]
 ```
 
 
@@ -186,7 +188,7 @@ For directed data it defaults to weak components, we can also switch to strong c
  
 
 ```{r}
-count_components(net, mode="strong")
+count_components(net, mode = "strong")
 ```
 
 ### Simple Plot
@@ -206,11 +208,9 @@ We can also create an undirected network out of a directed network using `as.und
  
 ```{r}
 #| echo: true 
-
-und_net <- as.undirected(net, mode="mutual") 
-## Undirected edge exists only if both have an edge 
-as.matrix(und_net)[1:5,1:5]
-
+und_net <- as.undirected(net, mode = "mutual")
+## Undirected edge exists only if both have an edge
+as.matrix(und_net)[1:5, 1:5]
 ```
 
 Switching it to `mode="collapse"`
@@ -218,12 +218,9 @@ Switching it to `mode="collapse"`
  
 ```{r}
 #| echo: true 
-
-
-und_net <- as.undirected(net, mode="collapse") 
-## Undirected edge exists if either have an edge 
-as.matrix(und_net)[1:5,1:5]
-
+und_net <- as.undirected(net, mode = "collapse")
+## Undirected edge exists if either have an edge
+as.matrix(und_net)[1:5, 1:5]
 ```
 
 ## Access Vertices and Edges
@@ -314,10 +311,9 @@ Dealing with edges can be a bit more confusing, they also have IDs. The best way
 ```{r}
 V(net)[5] # Rand
 V(net)[6] # Mat
-edid <- get.edge.ids(net, vp=cbind(V(net)[5], V(net)[6]))
+edid <- get.edge.ids(net, vp = cbind(V(net)[5], V(net)[6]))
 edid
 E(net)[edid]
-
 ```
 
 
@@ -328,10 +324,9 @@ E(net)[edid]
  
 
 ```{r}
-incident(net, V(net)[5], mode="in")
-incident(net, V(net)[5], mode="out")
-incident(net, V(net)[5], mode="all")
-
+incident(net, V(net)[5], mode = "in")
+incident(net, V(net)[5], mode = "out")
+incident(net, V(net)[5], mode = "all")
 ```
 
 
@@ -346,12 +341,11 @@ It can be useful to then add this back to our network data.
 
  
 ```{r}
-degree(net) [1:5] ## Show first 5 so I don't go off screen
+degree(net)[1:5] ## Show first 5 so I don't go off screen
 mean(degree(net)) # average degree
 V(net)$degree <- degree(net)
-V(net)$indegree <- degree(net, mode="in")
-V(net)$outdegree <- degree(net, mode="out")
-
+V(net)$indegree <- degree(net, mode = "in")
+V(net)$outdegree <- degree(net, mode = "out")
 ```
 
 ### Component Membership 
@@ -361,11 +355,10 @@ We can do the same thing but with membership in different components. We are goi
 
 
 ```{r}
-comps <- components(net, mode="strong")
-comps$no #number of components 
+comps <- components(net, mode = "strong")
+comps$no #number of components
 comps$membership #Which component each vertex is in
-V(net)$components <- comps$membership 
-
+V(net)$components <- comps$membership
 ```
 
 ### Tangent 
@@ -389,10 +382,9 @@ For directed networks this can _only_ identify cutpoints for weak components.
 articulation_points(net)
 
 cut_points <- articulation_points(net)
-V(net)$cuts <- FALSE 
+V(net)$cuts <- FALSE
 V(net)$cuts[cut_points] <- TRUE
 V(net)$cuts
-
 ```
 
 ### Bridges 
@@ -407,10 +399,9 @@ For directed networks this _only_ can identify bridges for weak components.
 bridges(net)
 
 bridge_edges <- bridges(net)
-E(net)$bridges <- FALSE 
+E(net)$bridges <- FALSE
 E(net)$bridges[bridge_edges] <- TRUE
 E(net)$bridges
-
 ```
 
 
@@ -422,7 +413,7 @@ We've saved a lot of useful information about our vertices in our network. It is
 
 \scriptsize
 ```{r}
-df_out <- as_data_frame(net, what="vertices")
+df_out <- as_data_frame(net, what = "vertices")
 tail(df_out, 5)
 ```
 
@@ -438,8 +429,8 @@ The last thing for this week is calculating geodesic distances. We use the `dist
 
 
 ```{r}
-dist <- distances(net, mode="out")
-dist[1:5, 1:5] 
+dist <- distances(net, mode = "out")
+dist[1:5, 1:5]
 ```
 
 ### Average Distances 
@@ -448,9 +439,8 @@ To calculate the average distances we can use the `mean_distance()` function. It
 
 
 ```{r}
-mean_distance(net, directed=TRUE)
-mean_distance(net, directed=FALSE)
-
+mean_distance(net, directed = TRUE)
+mean_distance(net, directed = FALSE)
 ```
 
 ### Distances Matrix Issues
@@ -461,9 +451,9 @@ One problem with the `distances()` function is that it returns unconnected dista
  
 
 ```{r}
-max(dist, na.rm=T) # BROKEN 
+max(dist, na.rm = T) # BROKEN
 dist[is.infinite(dist)] <- NA
-max(dist, na.rm=T) # not broken
+max(dist, na.rm = T) # not broken
 ```
 
 ## Loading Edge Lists
@@ -497,7 +487,7 @@ We can create the network the same way as before though we want to indicate this
 
  
 ```{r}
-leg_net <- graph_from_data_frame(edge_data, directed=FALSE)
+leg_net <- graph_from_data_frame(edge_data, directed = FALSE)
 leg_net
 ```
 
@@ -508,8 +498,11 @@ With an edge list we can also easily add in information about each node/vertex. 
  
 ```{r}
 vertex_data <- read.csv(here::here("resources/network_data/OH_134_people.csv"))
-leg_net <- graph_from_data_frame(edge_data, directed=FALSE, 
-            vertices=vertex_data)
+leg_net <- graph_from_data_frame(
+  edge_data,
+  directed = FALSE,
+  vertices = vertex_data
+)
 leg_net
 ```
 
@@ -528,7 +521,6 @@ All plots starts with `ggplot()` function that includes the _dataframe_ you are 
 #| echo: true 
 library(ggplot2)
 ggplot(df_out)
-
 ```
 
 
@@ -540,9 +532,7 @@ The other common part of a `ggplot()` call is a call to another function `aes()`
 
 ```{r}
 #| echo: true 
-
-ggplot(df_out, aes(x=indegree, y=outdegree))
-
+ggplot(df_out, aes(x = indegree, y = outdegree))
 ```
 
 
@@ -553,10 +543,8 @@ We use `geom_*()` functions to actually _add_ things to the plot. To do this we 
 
 ```{r}
 #| echo: true 
-
-ggplot(df_out, aes(x=indegree, y=outdegree)) + 
-    geom_point()
-
+ggplot(df_out, aes(x = indegree, y = outdegree)) +
+  geom_point()
 ```
 
 ### Changing Aesthetics for Everything 
@@ -566,10 +554,8 @@ We can change things about the points by adding other arguments to `geom_point()
 
 ```{r}
 #| echo: true 
-
-ggplot(df_out, aes(x=indegree, y=outdegree)) + 
-    geom_point(color="steelblue4", size=6)
-
+ggplot(df_out, aes(x = indegree, y = outdegree)) +
+  geom_point(color = "steelblue4", size = 6)
 ```
 
 
@@ -580,10 +566,8 @@ We can also use the `aes()` function within the `geom_point()` call to have diff
 
 ```{r}
 #| echo: true 
-
-ggplot(df_out, aes(x=indegree, y=outdegree)) + 
-    geom_point(aes(color=cuts), size=6)
-
+ggplot(df_out, aes(x = indegree, y = outdegree)) +
+  geom_point(aes(color = cuts), size = 6)
 ```
 
 ### Changing Geoms
@@ -593,11 +577,9 @@ The power of ggplot are all the geoms. Lets change `geom_point()` to `geom_jitte
 
 ```{r}
 #| echo: true 
-
-ggplot(df_out, aes(x=indegree, y=outdegree)) + 
-    geom_jitter(aes(color=cuts), size=6) + 
-    geom_smooth(method="lm")
-
+ggplot(df_out, aes(x = indegree, y = outdegree)) +
+  geom_jitter(aes(color = cuts), size = 6) +
+  geom_smooth(method = "lm")
 ```
 
 
@@ -608,12 +590,9 @@ Look what happens when you _move_ the `color=cuts` part to the `ggplot()` call. 
 
 ```{r}
 #| echo: true 
-
-ggplot(df_out, aes(x=indegree, y=outdegree, 
-    color=cuts)) + 
-    geom_jitter(size=6) + 
-    geom_smooth(method="lm")
-
+ggplot(df_out, aes(x = indegree, y = outdegree, color = cuts)) +
+  geom_jitter(size = 6) +
+  geom_smooth(method = "lm")
 ```
 
 ### Adding Labels
@@ -623,13 +602,10 @@ We can add or modify labels to our plot using the `labs()` function
 
 ```{r}
 #| echo: true 
-
-ggplot(df_out, aes(x=indegree, y=outdegree)) + 
-    geom_jitter(aes(color=cuts), size=6) + 
-    geom_smooth(method="lm") + 
-    labs(y="Out Degree", x="In Degree", 
-        title="Out vs In Degree")
-
+ggplot(df_out, aes(x = indegree, y = outdegree)) +
+  geom_jitter(aes(color = cuts), size = 6) +
+  geom_smooth(method = "lm") +
+  labs(y = "Out Degree", x = "In Degree", title = "Out vs In Degree")
 ```
 
 
@@ -640,15 +616,11 @@ There are also `scale_*_*()` functions that can be used to change the style and 
 
 ```{r}
 #| echo: true 
-
-ggplot(df_out, aes(x=indegree, y=outdegree)) + 
-    geom_jitter(aes(color=cuts), size=6) + 
-    geom_smooth(method="lm") + 
-    labs(y="Out Degree", x="In Degree", 
-        title="Out vs In Degree") + 
-    scale_color_brewer("Cut Point?", 
-        type="qual", palette=2)
-
+ggplot(df_out, aes(x = indegree, y = outdegree)) +
+  geom_jitter(aes(color = cuts), size = 6) +
+  geom_smooth(method = "lm") +
+  labs(y = "Out Degree", x = "In Degree", title = "Out vs In Degree") +
+  scale_color_brewer("Cut Point?", type = "qual", palette = 2)
 ```
 
 ### Themes
@@ -658,14 +630,12 @@ Finally you can use `theme_*()` to change the overall style of the plot
 
 ```{r}
 #| echo: true 
-
-ggplot(df_out, aes(x=indegree, y=outdegree)) + 
-    geom_jitter(aes(color=cuts), size=6) + geom_smooth(method="lm") + 
-    labs(y="Out Degree", x="In Degree", 
-        title="Out vs In Degree") + 
-    scale_color_brewer("Cut Point?", 
-        type="qual", palette=2) + theme_minimal()
-
+ggplot(df_out, aes(x = indegree, y = outdegree)) +
+  geom_jitter(aes(color = cuts), size = 6) +
+  geom_smooth(method = "lm") +
+  labs(y = "Out Degree", x = "In Degree", title = "Out vs In Degree") +
+  scale_color_brewer("Cut Point?", type = "qual", palette = 2) +
+  theme_minimal()
 ```
 
 # Scaling and Visualization 
@@ -701,10 +671,9 @@ R has an object `UScitiesD` that you can call at anytime which shows the distanc
 ```{r}
 #| echo: true 
 #| warning: false 
-
-# UScitiesD #Run this by itself to see 
+# UScitiesD #Run this by itself to see
 library(smacof)
-mds <- mds(UScitiesD, type="interval")
+mds <- mds(UScitiesD, type = "interval")
 mds$stress # The stress
 mds$conf # the actual points
 ```
@@ -715,12 +684,11 @@ We can plot this with `ggplot2`
 
 ```{r}
 #| echo: true 
-
 library(ggplot2)
 points <- as.data.frame(mds$conf)
-ggplot(points, aes(x=D1, y=D2)) + 
-    geom_point() + 
-    theme_minimal()
+ggplot(points, aes(x = D1, y = D2)) +
+  geom_point() +
+  theme_minimal()
 ```
 
 Lets add some labels 
@@ -728,11 +696,11 @@ Lets add some labels
 
 ```{r}
 #| echo: true 
-
 points$names <- rownames(points)
-ggplot(points, aes(x=D1, y=D2)) + 
-    geom_point() + geom_text(aes(label=names)) + 
-    theme_minimal()
+ggplot(points, aes(x = D1, y = D2)) +
+  geom_point() +
+  geom_text(aes(label = names)) +
+  theme_minimal()
 ```
 
 Flip the scales 
@@ -740,9 +708,9 @@ Flip the scales
 
 ```{r}
 #| echo: true 
-ggplot(points, aes(x=-D1, y=-D2)) + 
-    geom_text(aes(label=names)) + 
-    theme_minimal()
+ggplot(points, aes(x = -D1, y = -D2)) +
+  geom_text(aes(label = names)) +
+  theme_minimal()
 ```
 
 ## Finding the Number of MDS Dimensions 
@@ -754,12 +722,10 @@ For the next section we are going to use [data on UN Votes](network_data/distanc
 
 ```{r}
 #| echo: true
-
 UN_votes <- readRDS("network_data/distance_1960s.RData")
 
-out <- mds(UN_votes, ndim=2, type="ordinal")
+out <- mds(UN_votes, ndim = 2, type = "ordinal")
 out$stress
-
 ```
 
 ### Estimating Many Models 
@@ -770,10 +736,10 @@ If we want to check different levels of stress we could estimate several models 
 
 ```{r}
 #| echo: true
-out_1 <- mds(UN_votes, ndim=1, type="ordinal")
-out_2 <- mds(UN_votes, ndim=2, type="ordinal")
-out_3 <- mds(UN_votes, ndim=3, type="ordinal")
-out_4 <- mds(UN_votes, ndim=4, type="ordinal")
+out_1 <- mds(UN_votes, ndim = 1, type = "ordinal")
+out_2 <- mds(UN_votes, ndim = 2, type = "ordinal")
+out_3 <- mds(UN_votes, ndim = 3, type = "ordinal")
+out_4 <- mds(UN_votes, ndim = 4, type = "ordinal")
 ```
 
 This is repetitive, and good code minimizes repetition. 
@@ -787,9 +753,8 @@ Basic idea:
  
 ```{r}
 #| echo: true
-
-for(ii in 1:5){
-    print(ii)
+for (ii in 1:5) {
+  print(ii)
 }
 ```
 
@@ -800,10 +765,9 @@ We want to create something to store the results and then store it every time we
  
 ```{r}
 #| echo: true
-
 out <- numeric(5) ## Vector of length 5
-for(ii in 1:5){
-    out[ii] <- ii
+for (ii in 1:5) {
+  out[ii] <- ii
 }
 print(out)
 ```
@@ -816,11 +780,10 @@ We want to create something to store the results and then store it every time we
  
 ```{r}
 #| echo: true
-
 out <- numeric(5) ## Vector of length 5
-for(ii in 1:5){
-    tmp <- smacof::mds(UN_votes, ndim=ii, type="ordinal")
-    out[ii] <- tmp$stress
+for (ii in 1:5) {
+  tmp <- smacof::mds(UN_votes, ndim = ii, type = "ordinal")
+  out[ii] <- tmp$stress
 }
 print(out)
 ```
@@ -832,10 +795,7 @@ I use the basic `plot()` function to make a scree plot:
 
 ```{r}
 #| echo: true 
-plot(x=1:5, y=out, ylab="Stress", 
-    xlab="Dimensions", 
-    type="b")
-
+plot(x = 1:5, y = out, ylab = "Stress", xlab = "Dimensions", type = "b")
 ```
 
 ## Hierarchical Clustering 
@@ -846,7 +806,7 @@ The `hclust()` function needs a `distance` object to work. Our `UN_votes` data a
 ```{r}
 #| echo: true 
 hcl <- hclust(as.dist(UN_votes))
-plot(hcl) ## creates a dendrogram 
+plot(hcl) ## creates a dendrogram
 ```
 
 ### Methods of Aggregation  
@@ -856,8 +816,8 @@ You can change the method with the `method=` argument ("single", "complete", "av
 
 ```{r}
 #| echo: true 
-hcl <- hclust(as.dist(UN_votes), method="single")
-plot(hcl) ## creates a dendrogram 
+hcl <- hclust(as.dist(UN_votes), method = "single")
+plot(hcl) ## creates a dendrogram
 ```
 
 
@@ -869,10 +829,8 @@ The `cutree()` function "cuts the tree" to make clusters. Set `k=` to set the nu
 
 ```{r}
 #| echo: true
-
-groups <- cutree(hcl, k=4)
+groups <- cutree(hcl, k = 4)
 groups[1:20]
-
 ```
 
 ## Correspondence Analysis 
@@ -883,14 +841,16 @@ The [data here](network_data/colleges.csv) shows the number of a majors that gra
 
 ```{r}
 #| echo: true
-mat <- read.csv(here::here("resources/network_data/colleges.csv"), row.names = 1)
+mat <- read.csv(
+  here::here("resources/network_data/colleges.csv"),
+  row.names = 1
+)
 mat <- as.matrix(mat)
 colnames(mat) <- gsub("\\.", " ", colnames(mat))
 
 library(ca)
 
 ca_out <- ca(mat)
-
 ```
 
 
@@ -901,7 +861,6 @@ If you call `summary()` on your `ca()` object then the top of it will show you h
 ```{r}
 #| echo: true
 summary(ca_out)
-
 ```
 
 ## Correspondence Analysis - Plotting One Set
@@ -914,12 +873,10 @@ If we want to extract the scales we use `cacoord()` which has a variety of optio
 #| out-height: 80%
 #| echo: true
 #| fig-alt: "Basic scatter plot showing dots on a Dim 1 and Dim 2 axis. The points are the majors."
-
 majors_principal <- cacoord(ca_out, type = "rowprincipal")
 ggplot(majors_principal$rows, aes(x = Dim1, y = Dim2)) +
   geom_point(size = 5) +
   theme_minimal()
-
 ```
 
 ## Correspondence Analysis - Plotting Both
@@ -932,7 +889,6 @@ It will return an object with both `$rows` and `$columns`. If this is row princi
 #| out-height: 80%
 #| echo: true
 #| fig-alt: "Basic scatter plot showing dots on a Dim 1 and Dim 2 axis. The majors and schools are colored differently here."
-
 majors <- as.data.frame(majors_principal$rows)
 majors$Type <- "Majors"
 majors$Name <- rownames(majors)
@@ -945,7 +901,21 @@ all <- rbind(majors, schools)
 ggplot(all, aes(x = Dim1, y = Dim2, color = Type)) +
   geom_point(size = 5) +
   theme_minimal()
+```
 
+To add labels you can use `geom_repel_text()` from the ggrepel library.
+
+```{r}
+#| label: r-ca-repel
+#| fig-asp: 1.2
+#| out-height: 80%
+#| echo: true
+library(ggrepel)
+
+ggplot(all, aes(x = Dim1, y = Dim2, color = Type)) +
+  geom_point(size = 5) +
+  theme_minimal() +
+  geom_text_repel(aes(label = Name))
 ```
 
 
@@ -979,7 +949,10 @@ It is a communication network between workers at a sawmill. It also is a unique 
 ```{r}
 #| echo: true
 library(igraph)
-net <- read_graph(here::here("resources/network_data/strike.paj"), format="pajek")
+net <- read_graph(
+  here::here("resources/network_data/strike.paj"),
+  format = "pajek"
+)
 ecount(net)
 vcount(net)
 ```
@@ -994,7 +967,6 @@ Just like ggplot2 all visualizations will start with a call to `ggraph()`
 library(ggraph)
 theme_set(theme_graph())
 ggraph(net)
-
 ```
 
 ### Adding Nodes and Edges
@@ -1007,9 +979,7 @@ To add nodes and edges to this plot we will use `geom_node_point()` and `geom_ed
 
 ```{r}
 #| echo: true
-ggraph(net) + geom_node_point(size=6) +
-    geom_edge_link()
-
+ggraph(net) + geom_node_point(size = 6) + geom_edge_link()
 ```
 
 ## Layouts
@@ -1020,11 +990,14 @@ Laying out a plot can impact how useful it is by a lot:
 ```{r}
 #| layout-ncol: 2
 #| echo: false
-ggraph(net, layout="randomly") + geom_node_point(size=6) +
-    geom_edge_link() + labs(title="Random Layout")
-ggraph(net, layout="circle") + geom_node_point(size=6) +
-    geom_edge_link() + labs(title="Circle Layout")
-
+ggraph(net, layout = "randomly") +
+  geom_node_point(size = 6) +
+  geom_edge_link() +
+  labs(title = "Random Layout")
+ggraph(net, layout = "circle") +
+  geom_node_point(size = 6) +
+  geom_edge_link() +
+  labs(title = "Circle Layout")
 ```
 
 ### Layouts Two Broad Approaches:
@@ -1059,64 +1032,67 @@ How does this algorithm work?
 #| layout-ncol: 2
 #| layout-nrow: 2
 #| warning: false 
+set.seed(1)
+lo <- create_layout(net, layout = "igraph", algorithm = "fr", niter = 1)
+ggplot(lo) +
+  geom_node_point(size = 6) +
+  geom_edge_link() +
+  labs(title = "1 Iteration")
 
 set.seed(1)
-lo <- create_layout(net, layout="igraph", algorithm="fr", 
-    niter=1) 
-ggplot(lo) + geom_node_point(size=6) +
-    geom_edge_link() + labs(title="1 Iteration")
+lo <- create_layout(net, layout = "igraph", algorithm = "fr", niter = 2)
+ggplot(lo) +
+  geom_node_point(size = 6) +
+  geom_edge_link() +
+  labs(title = "2 Iterations")
 
 set.seed(1)
-lo <- create_layout(net, layout="igraph", algorithm="fr", 
-    niter=2) 
-ggplot(lo) + geom_node_point(size=6) +
-    geom_edge_link() + labs(title="2 Iterations")
+lo <- create_layout(net, layout = "igraph", algorithm = "fr", niter = 3)
+ggplot(lo) +
+  geom_node_point(size = 6) +
+  geom_edge_link() +
+  labs(title = "3 Iterations")
 
 set.seed(1)
-lo <- create_layout(net, layout="igraph", algorithm="fr", 
-    niter=3) 
-ggplot(lo) + geom_node_point(size=6) +
-    geom_edge_link() + labs(title="3 Iterations")
-
-set.seed(1)
-lo <- create_layout(net, layout="igraph", algorithm="fr", 
-    niter=4) 
-ggplot(lo) + geom_node_point(size=6) +
-    geom_edge_link() + labs(title="4 Iterations")
-
+lo <- create_layout(net, layout = "igraph", algorithm = "fr", niter = 4)
+ggplot(lo) +
+  geom_node_point(size = 6) +
+  geom_edge_link() +
+  labs(title = "4 Iterations")
 ```
 
 ```{r}
 #| layout-ncol: 2
 #| layout-nrow: 2
 #| warning: false 
-
-
 set.seed(1)
 
-lo <- create_layout(net, layout="igraph", algorithm="fr", 
-    niter=10) 
-ggplot(lo) + geom_node_point(size=6) +
-    geom_edge_link() + labs(title="10 Iteration")
+lo <- create_layout(net, layout = "igraph", algorithm = "fr", niter = 10)
+ggplot(lo) +
+  geom_node_point(size = 6) +
+  geom_edge_link() +
+  labs(title = "10 Iteration")
 
 set.seed(1)
-lo <- create_layout(net, layout="igraph", algorithm="fr", 
-    niter=25) 
-ggplot(lo) + geom_node_point(size=6) +
-    geom_edge_link() + labs(title="25 Iterations")
+lo <- create_layout(net, layout = "igraph", algorithm = "fr", niter = 25)
+ggplot(lo) +
+  geom_node_point(size = 6) +
+  geom_edge_link() +
+  labs(title = "25 Iterations")
 
 set.seed(1)
-lo <- create_layout(net, layout="igraph", algorithm="fr", 
-    niter=50) 
-ggplot(lo) + geom_node_point(size=6) +
-    geom_edge_link() + labs(title="50 Iterations")
+lo <- create_layout(net, layout = "igraph", algorithm = "fr", niter = 50)
+ggplot(lo) +
+  geom_node_point(size = 6) +
+  geom_edge_link() +
+  labs(title = "50 Iterations")
 
 set.seed(1)
-lo <- create_layout(net, layout="igraph", algorithm="fr", 
-    niter=100) 
-ggplot(lo) + geom_node_point(size=6) +
-    geom_edge_link() + labs(title="100 Iterations")
-
+lo <- create_layout(net, layout = "igraph", algorithm = "fr", niter = 100)
+ggplot(lo) +
+  geom_node_point(size = 6) +
+  geom_edge_link() +
+  labs(title = "100 Iterations")
 ```
 
 
@@ -1131,11 +1107,10 @@ If you want to create the _exact_ same layout every time run `set.seed()` direct
  
 ```{r}
 #| echo: true
-
 set.seed(1)
-ggraph(graph=net, layout="fr", niter=250) + 
-  geom_edge_link() +  geom_node_point(size=6)
-
+ggraph(graph = net, layout = "fr", niter = 250) +
+  geom_edge_link() +
+  geom_node_point(size = 6)
 ```
 
 ### Large Network - DNC
@@ -1147,11 +1122,14 @@ Network of DNC emails from [here.](https://networks.skewed.de/net/dnc)
 #| cache: true
 #| echo: true
 #| out-height: 40%
-dnc_net <- read_graph(here::here("resources/network_data/dnc.gml"), format='gml')
+dnc_net <- read_graph(
+  here::here("resources/network_data/dnc.gml"),
+  format = 'gml'
+)
 
-ggraph(graph=dnc_net, "graphopt") + 
-  geom_edge_link() +  geom_node_point()
-
+ggraph(graph = dnc_net, "graphopt") +
+  geom_edge_link() +
+  geom_node_point()
 ```
 
 ### Large Network - Only Main Component
@@ -1162,11 +1140,11 @@ We can use the function `largest_component()` to grab just that part. Also the `
 ```{r}
 #| echo: true
 #| cache: true
-
-dnc_net |> largest_component() |> 
-    ggraph("fr") + 
-    geom_edge_link() +  geom_node_point()
-
+dnc_net |>
+  largest_component() |>
+  ggraph("fr") +
+  geom_edge_link() +
+  geom_node_point()
 ```
 
 ### Large Network - No Isolates
@@ -1178,11 +1156,12 @@ Deleting all the isolates using `which()` and `delete_vertices()`.
 ```{r}
 #| echo: true
 #| cache: true 
-
-isolates <- which(igraph::degree(dnc_net)==0)
-dnc_net |> delete_vertices(v=isolates) |> 
-    ggraph("fr") + geom_edge_link() +  geom_node_point()
-
+isolates <- which(igraph::degree(dnc_net) == 0)
+dnc_net |>
+  delete_vertices(v = isolates) |>
+  ggraph("fr") +
+  geom_edge_link() +
+  geom_node_point()
 ```
 
 
@@ -1194,9 +1173,9 @@ We can use `geom_node_text()` or `geom_node_label()` to label our nodes.
 ```{r}
 #| echo: true
 #| out-height: 40%
-ggraph(graph=net, "stress") + 
-  geom_edge_link() +  
-  geom_node_label(aes(label=name)) 
+ggraph(graph = net, "stress") +
+  geom_edge_link() +
+  geom_node_label(aes(label = name))
 ```
 
 
@@ -1206,9 +1185,10 @@ They also have a `repel=T` argument that will move the labels away from the cent
 ```{r}
 #| echo: true
 #| out-height: 40%
-ggraph(graph=net, "stress") + 
-  geom_edge_link() +  geom_node_point() +
-  geom_node_text(aes(label=name), repel=T) 
+ggraph(graph = net, "stress") +
+  geom_edge_link() +
+  geom_node_point() +
+  geom_node_text(aes(label = name), repel = T)
 ```
 
 
@@ -1229,9 +1209,10 @@ Often we will scale a node size by a measure of importance, like degree:
 #| echo: true
 #| out-height: 40%
 V(net)$degree <- igraph::degree(net)
-ggraph(graph=net, "stress") + 
-  geom_edge_link() +  geom_node_point(aes(size=degree)) +
-  ggtitle("Sized by Degree") + 
+ggraph(graph = net, "stress") +
+  geom_edge_link() +
+  geom_node_point(aes(size = degree)) +
+  ggtitle("Sized by Degree") +
   scale_size("Degree")
 ```
 
@@ -1246,7 +1227,7 @@ This data is of [Spanish high school students](https://networks.skewed.de/net/sp
 #| echo: true 
 edges <- read.csv(here::here("resources/network_data/spanish_hs_edges.csv"))
 nodes <- read.csv(here::here("resources/network_data/spanish_hs_nodes.csv"))
-net <- graph_from_data_frame(edges, vertices=nodes, directed=T)
+net <- graph_from_data_frame(edges, vertices = nodes, directed = T)
 neg_edges <- which(E(net)$weight < 0)
 net <- delete_edges(net, neg_edges)
 net
@@ -1260,12 +1241,10 @@ We can color the nodes by setting `aes(color=)` to a vertex attribute.
  
 ```{r}
 #| echo: true 
-
-ggraph(graph=net, "stress") + 
-  geom_edge_link() +    
-  geom_node_point(aes(color=Sexo), size=4) +
+ggraph(graph = net, "stress") +
+  geom_edge_link() +
+  geom_node_point(aes(color = Sexo), size = 4) +
   ggtitle("Colored by Sex")
-
 ```
 
 ## Edges 
@@ -1282,11 +1261,10 @@ I think it is easier to see a network by making the edges gray.
  
 ```{r}
 #| echo: true 
-ggraph(graph=net, "stress") + 
-  geom_edge_link(color="gray") +    
-  geom_node_point(aes(color=Sexo), size=4) +
-  ggtitle("Colored by Sex") 
-
+ggraph(graph = net, "stress") +
+  geom_edge_link(color = "gray") +
+  geom_node_point(aes(color = Sexo), size = 4) +
+  ggtitle("Colored by Sex")
 ```
 
 ### Adding Arrows 
@@ -1296,12 +1274,13 @@ Arrows are _annoying_ to add here, but there is some good help [online](https://
  
 ```{r}
 #| echo: true 
-ggraph(graph=net, "stress") + 
-  geom_edge_link(color="gray", 
-    arrow = arrow(length = unit(4, 'mm')), 
-    end_cap = circle(3, 'mm')) +    
-  geom_node_point(aes(color=Sexo), size=4) 
-
+ggraph(graph = net, "stress") +
+  geom_edge_link(
+    color = "gray",
+    arrow = arrow(length = unit(4, 'mm')),
+    end_cap = circle(3, 'mm')
+  ) +
+  geom_node_point(aes(color = Sexo), size = 4)
 ```
 
 
@@ -1315,12 +1294,14 @@ Finally we can assign edge attributes to aesthetics
 ```{r}
 #| echo: true 
 #| out-height: 40%
-ggraph(graph=net, "stress") + 
-  geom_edge_link(color="gray", aes(width=weight), 
-    arrow = arrow(length = unit(4, 'mm')), 
-    end_cap = circle(3, 'mm')) +    
-  geom_node_point(aes(color=Sexo), size=4) 
-
+ggraph(graph = net, "stress") +
+  geom_edge_link(
+    color = "gray",
+    aes(width = weight),
+    arrow = arrow(length = unit(4, 'mm')),
+    end_cap = circle(3, 'mm')
+  ) +
+  geom_node_point(aes(color = Sexo), size = 4)
 ```
 
 
@@ -1332,11 +1313,13 @@ The default for ggraph is to show only a single edge when there are two mutual e
  
 ```{r}
 #| echo: true 
-ggraph(graph=net, "stress") + 
-  geom_edge_fan(aes(color=weight),
-    arrow = arrow(length = unit(4, 'mm')), 
-    end_cap = circle(3, 'mm')) +    
-  geom_node_point(aes(color=Sexo), size=4) 
+ggraph(graph = net, "stress") +
+  geom_edge_fan(
+    aes(color = weight),
+    arrow = arrow(length = unit(4, 'mm')),
+    end_cap = circle(3, 'mm')
+  ) +
+  geom_node_point(aes(color = Sexo), size = 4)
 ```
 
 # Network Centrality 
@@ -1352,7 +1335,7 @@ This data shows the relationships between donors in the Ohio legislature. You ca
 library(igraph)
 edges <- read.csv(here::here("resources/network_data/edge_OH.csv"))
 nodes <- read.csv(here::here("resources/network_data/meta_OH.csv"))
-net <- graph_from_data_frame(edges, directed=F, vertices=nodes)
+net <- graph_from_data_frame(edges, directed = F, vertices = nodes)
 ```
 
 ## Functions 
@@ -1373,13 +1356,11 @@ These are generally relatively simple to use by `eigen_centrality()` outputs a w
  
 ```{r}
 #| echo: true
-
-V(net)$degree <-  degree(net)
+V(net)$degree <- degree(net)
 tmp <- eigen_centrality(net)
-V(net)$eigen <-  tmp$vector
-tmp$value ## The eigenvalue 
-V(net)$beta <-  power_centrality(net, exponent=0.008)
-
+V(net)$eigen <- tmp$vector
+tmp$value ## The eigenvalue
+V(net)$beta <- power_centrality(net, exponent = 0.008)
 ```
 
 
@@ -1391,12 +1372,12 @@ V(net)$beta <-  power_centrality(net, exponent=0.008)
 ```{r}
 #| echo: true
 #| fig-align: "center"
-stats <- as_data_frame(net, what="vertices")
-ggplot(stats, aes(x=Total, y=eigen)) + 
-    geom_point() + theme_minimal() + 
-    geom_smooth(method="lm") + 
-    scale_x_log10()
-
+stats <- as_data_frame(net, what = "vertices")
+ggplot(stats, aes(x = Total, y = eigen)) +
+  geom_point() +
+  theme_minimal() +
+  geom_smooth(method = "lm") +
+  scale_x_log10()
 ```
 
 ### Plotting Relationship between Org Type Centrality
@@ -1406,11 +1387,10 @@ ggplot(stats, aes(x=Total, y=eigen)) +
 ```{r}
 #| echo: true
 #| fig-align: "center"
-
-ggplot(stats, aes(x=CatCodeGroup, y=eigen)) + 
-    geom_boxplot() + theme_minimal() + 
-    theme(axis.text.x = element_text(angle = 90, hjust = 1))
-
+ggplot(stats, aes(x = CatCodeGroup, y = eigen)) +
+  geom_boxplot() +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
 
 ## Betweenness and Closeness
@@ -1421,10 +1401,9 @@ Again, for the undirected unweighted version there isn't a lot too these:
 ```{r}
 #| echo: true
 #| fig-align: "center"
-
-V(net)$between <-  betweenness(net, normalized=T)
-V(net)$close <-  closeness(net, normalized=T)
-V(net)$harmonic <- harmonic_centrality(net, normalized=T)
+V(net)$between <- betweenness(net, normalized = T)
+V(net)$close <- closeness(net, normalized = T)
+V(net)$harmonic <- harmonic_centrality(net, normalized = T)
 V(net)$step_2 <- ego_size(net, 2) # Two step
 V(net)$step_3 <- ego_size(net, 3) # Three step
 ```
@@ -1434,23 +1413,20 @@ V(net)$step_3 <- ego_size(net, 3) # Three step
 #| echo: true
 #| fig-align: "center"
 #| cache: true 
-
-ggraph(net) + geom_edge_link(color="gray") + 
-    geom_node_point(aes(size=between))
-
-
+ggraph(net) +
+  geom_edge_link(color = "gray") +
+  geom_node_point(aes(size = between))
 ```
 
 ## Weighted 
 
 Things get a bit more complicated if we want to use edge weights, the data we have has something we can use to weight the edges:
 
-### Creating Matrix 
+### Creating Weights
 
 ```{r}
 #| echo: true 
 E(net)$weight <- ifelse(E(net)$edge == "Strong", 2, 1)
-
 ```
 
 ### Weighted Degree
@@ -1463,11 +1439,9 @@ Weighted degree is the `strength()` function.
 #| echo: true
 #| fig-align: "center"
 #| cache: true 
-
-
 weighted_degree <- strength(net)
 regular_degree <- igraph::degree(net)
-plot(x=regular_degree, y=weighted_degree)
+plot(x = regular_degree, y = weighted_degree)
 ```
 
 
@@ -1481,10 +1455,9 @@ If there is a `weight` edge attribute it will automatically use it, but you can 
 #| echo: true
 #| fig-align: "center"
 #| cache: true 
-
 weighted_eigen <- eigen_centrality(net)$vector
-regular_eigen <- eigen_centrality(net, weights=NA)$vector
-plot(x=regular_eigen, y=weighted_eigen)
+regular_eigen <- eigen_centrality(net, weights = NA)$vector
+plot(x = regular_eigen, y = weighted_eigen)
 ```
 
 ## Directed Networks 
@@ -1507,9 +1480,8 @@ Lets use the Spanish High School Network you used earlier this week:
 library(igraph)
 edges <- read.csv(here::here("resources/network_data/spanish_hs_edges.csv"))
 nodes <- read.csv(here::here("resources/network_data/spanish_hs_nodes.csv"))
-net <- graph_from_data_frame(edges, vertices=nodes, directed=T)
+net <- graph_from_data_frame(edges, vertices = nodes, directed = T)
 net <- delete_edges(net, E(net)[E(net)$weight <= 0])
-
 ```
 
 ## Density 
@@ -1521,7 +1493,6 @@ Density can be calculated with `edge_density()` There is an option to turn on lo
 
 ```{r}
 #| echo: true
-
 edge_density(net)
 ```
 
@@ -1535,11 +1506,9 @@ Degree can be calculated with `degree()` and then average it up with `mean()`
 
 ```{r}
 #| echo: true
-
-# note that this has gmode, instead of mode. why? 
+# note that this has gmode, instead of mode. why?
 deg <- igraph::degree(net)
 mean(deg)
-
 ```
 
 ## Component ratio:
@@ -1555,12 +1524,10 @@ So we need to calculate the number of components (c), and the number of nodes (n
 
 ```{r}
 #| echo: true
-
-comps <- components(net, mode="strong")$no
+comps <- components(net, mode = "strong")$no
 n <- vcount(net)
 
-(comps-1)/(n-1)
-
+(comps - 1) / (n - 1)
 ```
 
 ## Connectedness 
@@ -1572,11 +1539,10 @@ There is no native function to calculate connectedness but we have all the tools
 
 ```{r}
 #| echo: true
-dist <- distances(net, mode="out") ## Get the distances matrix
+dist <- distances(net, mode = "out") ## Get the distances matrix
 reachability <- is.finite(dist) ## Where are there finite paths?
 diag(reachability) <- NA ## Ignore the diag
-sum(reachability, na.rm=T) / (vcount(net) * (vcount(net) - 1))
-
+sum(reachability, na.rm = T) / (vcount(net) * (vcount(net) - 1))
 ```
 
 ## Compactness 
@@ -1589,11 +1555,9 @@ Again, no native function but we can get it relatively quickly in a similar mann
 
 ```{r}
 #| echo: true
-
-dist <- distances(net, mode="out") ## Get the distances matrix
+dist <- distances(net, mode = "out") ## Get the distances matrix
 diag(dist) <- NA ## Ignore the diag
-sum(1/dist, na.rm=T) / (vcount(net) * (vcount(net) - 1))
-
+sum(1 / dist, na.rm = T) / (vcount(net) * (vcount(net) - 1))
 ```
 
 
@@ -1607,10 +1571,8 @@ The default is to calculate arc-reciprocity, but we can switch it to the other (
  
 ```{r}
 #| echo: true
-
 reciprocity(net)
 edge_density(net)
-
 ```
 
 
@@ -1622,12 +1584,10 @@ There is a `transitivity()` function, which works well with _undirected_ network
 
 ```{r}
 #| echo: true
-
 transitivity(net) ## Treats as undirected
 
-mat_net <- as_adjacency_matrix(net, sparse=F) # Convert to adj mat
+mat_net <- as_adjacency_matrix(net, sparse = F) # Convert to adj mat
 sna::gtrans(mat_net) ## Call SNA function
-
 ```
 
 ## Centralization 
@@ -1645,11 +1605,9 @@ They also all output an object with multiple things to get the centralization sc
 
 ```{r}
 #| echo: true
-
 centr_betw(net)$centralization
 centr_degree(net)$centralization
 centr_eigen(net)$centralization
-
 ```
 
 
@@ -1668,12 +1626,13 @@ We are going to use the [Cocaine Mambo](network_data/COCAINE_MAMBO.csv) network 
  
 ```{r}
 #| echo: true
-
-df <- read.csv(here::here("resources/network_data/COCAINE_MAMBO.csv"), row.names=1)
+df <- read.csv(
+  here::here("resources/network_data/COCAINE_MAMBO.csv"),
+  row.names = 1
+)
 mat <- as.matrix(df)
-mat[mat>1] <- 1 # there is a weird cell with a 2, not a 1. 
-coke_net <- graph_from_adjacency_matrix(mat, mode="undirected")
-
+mat[mat > 1] <- 1 # there is a weird cell with a 2, not a 1.
+coke_net <- graph_from_adjacency_matrix(mat, mode = "undirected")
 ```
 
 
@@ -1689,10 +1648,9 @@ There are several igraph functions for cliques. We want to use `max_cliques()`
  
 ```{r}
 #| echo: true
-
-cl <- max_cliques(coke_net, min=3)
-length(cl) # number of cliques 
-cl[[1]] # the first clique 
+cl <- max_cliques(coke_net, min = 3)
+length(cl) # number of cliques
+cl[[1]] # the first clique
 ```
 
 
@@ -1705,13 +1663,12 @@ If we want to look at who is in each clique we are going to have to process this
  
 ```{r}
 #| echo: true 
-
-# Create a matixi of 0s 
-cl_mat <- matrix(0, nrow=vcount(coke_net), ncol=length(cl))
+# Create a matixi of 0s
+cl_mat <- matrix(0, nrow = vcount(coke_net), ncol = length(cl))
 
 # Use a for loop to step through the cliques
-for(ii in seq_along(cl)){
-    cl_mat[cl[[ii]] , ii] <- 1
+for (ii in seq_along(cl)) {
+  cl_mat[cl[[ii]], ii] <- 1
 }
 # We can add rownames
 rownames(cl_mat) <- V(coke_net)$name
@@ -1733,13 +1690,11 @@ We can calculate the number of cliques each individual is in and put that back o
 #| echo: true
 #| out-height: 50%
 #| fig-align: "center"
-
 V(coke_net)$numb_cliques <- rowSums(cl_mat)
 
-ggraph(coke_net) + geom_edge_link(color="gray") + 
-    geom_node_point(size=8, 
-    aes(color=numb_cliques))
-
+ggraph(coke_net) +
+  geom_edge_link(color = "gray") +
+  geom_node_point(size = 8, aes(color = numb_cliques))
 ```
 
 
@@ -1754,15 +1709,19 @@ With that matrix we can see easily how many cliques each person is in with every
 #| echo: true
 #| out-height: 45%
 #| fig-align: "center"
-# Multiply the matrix by its transpose 
+# Multiply the matrix by its transpose
 overlap_mat <- cl_mat %*% t(cl_mat)
-overlap_net <- graph_from_adjacency_matrix(overlap_mat, diag=F, 
-    mode="undirected", weighted=T)
+overlap_net <- graph_from_adjacency_matrix(
+  overlap_mat,
+  diag = F,
+  mode = "undirected",
+  weighted = T
+)
 # ignores the diag, has it undirected,
 # and uses the values (overlaps) as weights
-ggraph(overlap_net, "fr") + 
-    geom_edge_link(color="gray", aes(width=weight)) + 
-    geom_node_point(size=8, color="purple")
+ggraph(overlap_net, "fr") +
+  geom_edge_link(color = "gray", aes(width = weight)) +
+  geom_node_point(size = 8, color = "purple")
 ```
 
 
@@ -1785,7 +1744,6 @@ All you have to do is give it the network.
 
 ```{r}
 #| echo: true
-
 clust <- cluster_fast_greedy(coke_net)
 
 clust
@@ -1816,13 +1774,11 @@ I personally like giving each cluster a letter so we can do the following:
 #| echo: true
 #| out-height: 50%
 #| fig-align: "center"
-
 V(coke_net)$Cluster <- LETTERS[clust$membership]
 
-ggraph(coke_net) + geom_edge_link(color="gray") + 
-    geom_node_point(size=8, 
-    aes(color=Cluster))
-
+ggraph(coke_net) +
+  geom_edge_link(color = "gray") +
+  geom_node_point(size = 8, aes(color = Cluster))
 ```
 
 ### Extracting Data
@@ -1834,11 +1790,9 @@ We can use `as_data_frame()` to access the vertex data again from our network
  
 ```{r}
 #| echo: true 
-
-vertex_data <- igraph::as_data_frame(coke_net, what="vertices")
-vertex_data[1:5,]
+vertex_data <- igraph::as_data_frame(coke_net, what = "vertices")
+vertex_data[1:5, ]
 #write.csv(vertex_data, "tmp.csv", row.names=F)
-
 ```
 
 ### Dendrogram
@@ -1853,10 +1807,7 @@ Finally you can also plot the dendrogram (if it is applicable)
 #| echo: true
 #| out-height: 50%
 #| fig-align: "center"
-
 plot(as.dendrogram(clust))
-
-
 ```
 
 
@@ -1872,7 +1823,10 @@ The data we will use is a [london gang network](network_data/london.graphml).
 
 ```{r}
 #| echo: true
-net <- read_graph(here::here("resources/network_data/london.graphml"), format="graphml")
+net <- read_graph(
+  here::here("resources/network_data/london.graphml"),
+  format = "graphml"
+)
 net
 ```
 
@@ -1894,12 +1848,12 @@ It outputs a `dist` matrix.
 ```{r}
 #| echo: true 
 library(blockmodeling)
-## Convert to an adjacency matrix 
-mat <- as_adjacency_matrix(net, sparse=F)
+## Convert to an adjacency matrix
+mat <- as_adjacency_matrix(net, sparse = F)
 ## Calculate structural similarity using euclidean
-london_se <- sedist(mat, method="euclidean")
-## Look at first 5 rows/columns 
-as.matrix(london_se)[1:5,1:5]
+london_se <- sedist(mat, method = "euclidean")
+## Look at first 5 rows/columns
+as.matrix(london_se)[1:5, 1:5]
 ```
 
 ### Comparing it 
@@ -1914,11 +1868,10 @@ If we give `dist()` a single vector it will calculate the pairwise distance betw
 ```{r}
 #| echo: true
 ## Calculate the distance in ages
-age_dist <- dist(V(net)$Age, method="euclidean")
+age_dist <- dist(V(net)$Age, method = "euclidean")
 ## Check the value (person 1 and 2 are the same age)
-## Person 1 and 3 are off by one year. 
+## Person 1 and 3 are off by one year.
 as.matrix(age_dist)[1:5, 1:5]
-
 ```
 
 
@@ -1928,10 +1881,9 @@ as.matrix(age_dist)[1:5, 1:5]
 We need to convert our distance matrices into vectors and then stick it into a dataframe. 
 ```{r}
 #| echo: true 
-data <- data.frame("Age_Dist"=c(age_dist),
-                   "SE_Dist"=c(london_se))
+data <- data.frame("Age_Dist" = c(age_dist), "SE_Dist" = c(london_se))
 
-data[1:5,]
+data[1:5, ]
 ```
 
 ### Testing 
@@ -1941,12 +1893,12 @@ We can create a scatter plot or run a correlation (`cor()`):
  
 ```{r}
 #| echo: true 
-cor(data$Age_Dist, data$SE_Dist, use="complete.obs")
+cor(data$Age_Dist, data$SE_Dist, use = "complete.obs")
 
-ggplot(data, aes(x=Age_Dist, y=SE_Dist)) +
-  geom_jitter() + theme_minimal() + 
-  labs(y="Struct Distance", 
-       x="Age Distance")
+ggplot(data, aes(x = Age_Dist, y = SE_Dist)) +
+  geom_jitter() +
+  theme_minimal() +
+  labs(y = "Struct Distance", x = "Age Distance")
 ```
 
 ## Creating Clusters and Blockmodels 
@@ -1954,8 +1906,8 @@ ggplot(data, aes(x=Age_Dist, y=SE_Dist)) +
 We can also hierarchical cluster the output from `sedist()` just as we did before: 
 
 ```{r}
-london_se <- sedist(mat, method="euclidean")
-clu <- hclust(london_se) 
+london_se <- sedist(mat, method = "euclidean")
+clu <- hclust(london_se)
 plot(clu)
 ```
 
@@ -1967,7 +1919,7 @@ Remember `k=` sets the number of clusters you want, while `h=` says how far down
  
 ```{r}
 #| echo: true 
-memberships <- cutree(clu, k=4)
+memberships <- cutree(clu, k = 4)
 memberships[1:5]
 ```
 
@@ -1992,11 +1944,13 @@ We can use this to look at it as a blockmodel. There are a few ways to do this:
 ```{r}
 #| echo: true 
 #| layout-ncol: 2
-
-plotMat(M=mat, clu=memberships, orderClu=T, 
-        mar=c(0.1, 0.1, 0.1, 0.1))
-plotMat(M=mat>0, clu=memberships, orderClu=T,
-        mar=c(0.1, 0.1, 0.1, 0.1))
+plotMat(M = mat, clu = memberships, orderClu = T, mar = c(0.1, 0.1, 0.1, 0.1))
+plotMat(
+  M = mat > 0,
+  clu = memberships,
+  orderClu = T,
+  mar = c(0.1, 0.1, 0.1, 0.1)
+)
 ```
 
 
@@ -2008,9 +1962,8 @@ I use `mat >0` here as the matrix has weights and this just switches it only 1 a
 
 ```{r}
 #| echo: true 
-funByBlocks(M=mat>0, clu=memberships)
-funByBlocks(M=mat>0, clu=memberships, FUN=median, na.rm=T)
-
+funByBlocks(M = mat > 0, clu = memberships)
+funByBlocks(M = mat > 0, clu = memberships, FUN = median, na.rm = T)
 ```
 
 ## Direct Blockmodel Optimization 
@@ -2032,11 +1985,14 @@ It will automatically display the number of solutions and errors (for the best)
  
 ```{r}
 #| echo: true 
-
-blocks <- optRandomParC(M=mat, k= 4, approaches="bin", 
-                        blocks=c("nul", "com"), 
-                        rep=500, nCores=4)
-
+blocks <- optRandomParC(
+  M = mat,
+  k = 4,
+  approaches = "bin",
+  blocks = c("nul", "com"),
+  rep = 500,
+  nCores = 4
+)
 ```
 
 ### Looking at the Structure 
@@ -2068,9 +2024,7 @@ You can plot it as is
 
 ```{r}
 #| echo: true
-
-plot(x=blocks, mar=c(0.1, 0.1, 0.1, 0.1))
-
+plot(x = blocks, mar = c(0.1, 0.1, 0.1, 0.1))
 ```
 
 
@@ -2079,9 +2033,7 @@ Or ordered
 
 ```{r}
 #| echo: true
-
-plot(x=blocks, mar=c(0.1, 0.1, 0.1, 0.1), orderClu=T)
-
+plot(x = blocks, mar = c(0.1, 0.1, 0.1, 0.1), orderClu = T)
 ```
 
 
@@ -2096,17 +2048,18 @@ For igraph the `graph_from_biadjacency_matrix()` function can be used to convert
 
 ```{r}
 #| echo: true 
-
 library(igraph)
 library(ggraph)
 
-inc_df <- read.csv(here::here("resources/network_data/scotland.csv"), row.names=1)
+inc_df <- read.csv(
+  here::here("resources/network_data/scotland.csv"),
+  row.names = 1
+)
 inc_mat <- as.matrix(inc_df)
 
 net <- graph_from_biadjacency_matrix(inc_mat)
 
 net
-
 ```
 
 ### Type
@@ -2118,7 +2071,6 @@ The _important_ thing that sets this as a bipartite network is that there is a n
 ```{r}
 #| echo: true
 table(V(net)$type)
-
 ```
 
 
@@ -2129,8 +2081,8 @@ This is useful, but also frustrating, as it doesn't tell you what is what. I rec
 ```{r}
 #| echo: true 
 V(net)$label <- NA
-# I know which is which because 
-# I know there are 109 companies. 
+# I know which is which because
+# I know there are 109 companies.
 V(net)$label[V(net)$type] <- "Company"
 V(net)$label[!V(net)$type] <- "Board Member"
 
@@ -2148,9 +2100,9 @@ There is a layout for bipartite networks (I don't like it)
 #| fig-align: "center"
 #| output-location: slide
 #| cache: true
-ggraph(net, "bipartite") + 
-    geom_edge_link(color="gray") + 
-    geom_node_point(size=3, aes(color=label))
+ggraph(net, "bipartite") +
+  geom_edge_link(color = "gray") +
+  geom_node_point(size = 3, aes(color = label))
 ```
 
 ## Bipartite Statistics 
@@ -2166,7 +2118,6 @@ member_degree <- igraph::degree(net)[V(net)$label != "Company"]
 
 mean(corp_degree)
 mean(member_degree)
-
 ```
 
 ###  Density 
@@ -2177,8 +2128,7 @@ For density, we need the number of edges, and the number of each type:
 ```{r}
 #| echo: true 
 table(V(net)$type)
-ecount(net)/(136*108)
-
+ecount(net) / (136 * 108)
 ```
 
 
@@ -2193,15 +2143,13 @@ Projecting can be pretty easy:
  
 ```{r}
 #| echo: true
-
 ## Get the "true"
-company_net <- bipartite_projection(net, which="true")
+company_net <- bipartite_projection(net, which = "true")
 
 ## Get the "false"
-members_net <- bipartite_projection(net, which="false")
+members_net <- bipartite_projection(net, which = "false")
 
 members_net
-
 ```
 
 ### One-Mode Network and Plot   
@@ -2214,11 +2162,9 @@ We can then plot this
 #| echo: true 
 #| cache: true
 #| 
-
-ggraph(members_net, "kk") + 
-    geom_edge_link(color="gray", aes(width=weight)) + 
-    geom_node_point(size=3)
-
+ggraph(members_net, "kk") +
+  geom_edge_link(color = "gray", aes(width = weight)) +
+  geom_node_point(size = 3)
 ```
 
 
@@ -2232,7 +2178,6 @@ First identify what the distribution of edge weights looks like.
 #| cache: true
 #| 
 hist(E(members_net)$weight)
-
 ```
 
 
@@ -2248,10 +2193,9 @@ We can use `which()` to identify which edges are at a certain threshold and `del
 edge_to_delete <- which(E(members_net)$weight < 2)
 pruned_net <- delete_edges(members_net, edge_to_delete)
 
-ggraph(pruned_net, "kk") + 
-    geom_edge_link(color="gray", aes(width=weight)) + 
-    geom_node_point(size=3)
-
+ggraph(pruned_net, "kk") +
+  geom_edge_link(color = "gray", aes(width = weight)) +
+  geom_node_point(size = 3)
 ```
 
 ### Bonacich's Metric 
@@ -2267,13 +2211,17 @@ It works to the matrix, so we create that with `as_biadjacency_matrix()`
 #| cache: true
 #| 
 source("network_data/project_bonac.r")
-# you will now have a project_bonac() function 
+# you will now have a project_bonac() function
 
 mat <- as_biadjacency_matrix(net)
 bonac_normalized <- project_bonac(mat)
 diag(bonac_normalized) <- 0 ## temporay fix
-bonac_memb_net <- graph_from_adjacency_matrix(bonac_normalized, 
-    diag=F, mode="undirected", weight=T)
+bonac_memb_net <- graph_from_adjacency_matrix(
+  bonac_normalized,
+  diag = F,
+  mode = "undirected",
+  weight = T
+)
 ```
 
  
@@ -2281,9 +2229,10 @@ bonac_memb_net <- graph_from_adjacency_matrix(bonac_normalized,
 #| echo: true 
 #| cache: true
 #| 
-ggraph(bonac_memb_net, "kk") + 
-    geom_edge_link(color="gray", aes(width=weight)) + 
-    geom_node_point(size=3) + scale_edge_width(range=c(0.5, 2))
+ggraph(bonac_memb_net, "kk") +
+  geom_edge_link(color = "gray", aes(width = weight)) +
+  geom_node_point(size = 3) +
+  scale_edge_width(range = c(0.5, 2))
 ```
 
 If you want to get the other mode you need to transpose the matrix:
@@ -2291,11 +2240,14 @@ If you want to get the other mode you need to transpose the matrix:
 ```{r}
 #| echo: true 
 #| cache: true
-
-bonac_trans <- project_bonac(t(mat)) #transposed 
+bonac_trans <- project_bonac(t(mat)) #transposed
 diag(bonac_trans) <- 0
-bonac_comp_net <- graph_from_adjacency_matrix(bonac_trans, 
-    diag=F, mode="undirected", weight=T)
+bonac_comp_net <- graph_from_adjacency_matrix(
+  bonac_trans,
+  diag = F,
+  mode = "undirected",
+  weight = T
+)
 ```
 
  
@@ -2303,9 +2255,10 @@ bonac_comp_net <- graph_from_adjacency_matrix(bonac_trans,
 #| echo: true 
 #| cache: true
 #| 
-ggraph(bonac_comp_net, "kk") + 
-    geom_edge_link(color="gray", aes(width=weight)) + 
-    geom_node_point(size=3) + scale_edge_width(range=c(0.5, 2))
+ggraph(bonac_comp_net, "kk") +
+  geom_edge_link(color = "gray", aes(width = weight)) +
+  geom_node_point(size = 3) +
+  scale_edge_width(range = c(0.5, 2))
 ```
 
 
@@ -2316,17 +2269,15 @@ If you want to cluster the bipartite network using the Dual Louvain method then 
  
 ```{r}
 #| echo: true
-
 clust_1 <- cluster_louvain(members_net)
 clust_2 <- cluster_louvain(company_net)
 
 ## Put each label in the right spot
-node_select <- V(net)$label=="Board Member"
+node_select <- V(net)$label == "Board Member"
 V(net)$dual_cluster[node_select] <- letters[clust_1$membership]
 
-node_select <- V(net)$label=="Company"
+node_select <- V(net)$label == "Company"
 V(net)$dual_cluster[node_select] <- LETTERS[clust_2$membership]
-
 ```
 
 
@@ -2335,15 +2286,13 @@ V(net)$dual_cluster[node_select] <- LETTERS[clust_2$membership]
 ```{r}
 #| echo: true 
 #| cache: true
-
 # To clean things up I'm going to drop
 # the isolates
 
 plot_net <- delete_vertices(net, igraph::degree(net) == 0)
-ggraph(plot_net, "kk") + 
-    geom_edge_link(color="gray") + 
-    geom_node_point(size=3, 
-    aes(color=dual_cluster, shape=label)) 
+ggraph(plot_net, "kk") +
+  geom_edge_link(color = "gray") +
+  geom_node_point(size = 3, aes(color = dual_cluster, shape = label))
 ```
 
 # Quadratic Assignment Procedure (QAP)
@@ -2370,17 +2319,13 @@ library(igraph)
 
 mids_df <- read.csv(here::here("resources/network_data/cow/mids_net.csv"))
 nmc_data <- read.csv(here::here("resources/network_data/cow/nmc_vertex.csv"))
-mids_net <- graph_from_data_frame(mids_df, 
-        vertices=nmc_data, directed=F)
+mids_net <- graph_from_data_frame(mids_df, vertices = nmc_data, directed = F)
 
 trade_df <- read.csv(here::here("resources/network_data/cow/trade_net.csv"))
-trade_net <- graph_from_data_frame(trade_df,
-        vertices=nmc_data, directed=F)
+trade_net <- graph_from_data_frame(trade_df, vertices = nmc_data, directed = F)
 
 cont_df <- read.csv(here::here("resources/network_data/cow/cont_net.csv"))
-cont_net <- graph_from_data_frame(cont_df, 
-        vertices=nmc_data, directed=F)
-
+cont_net <- graph_from_data_frame(cont_df, vertices = nmc_data, directed = F)
 ```
 
 ## SNA Package and Matrices
@@ -2391,12 +2336,11 @@ Remember, we set `sparse=F` and if we want to use weights we set `attr="weight"`
 
 ```{r}
 #| echo: true
+mids_mat <- as_adjacency_matrix(mids_net, sparse = F)
 
-mids_mat <- as_adjacency_matrix(mids_net,sparse=F)
+trade_mat <- as_adjacency_matrix(trade_net, sparse = F)
 
-trade_mat <- as_adjacency_matrix(trade_net, sparse=F)
-
-cont_mat <- as_adjacency_matrix(cont_net, sparse=F)
+cont_mat <- as_adjacency_matrix(cont_net, sparse = F)
 ```
 
 ## Correlation
@@ -2408,10 +2352,8 @@ Set `mode="graph"` if you have an undirected network, or `mode="digraph"` if you
  
 ```{r}
 #| echo: true
-
 library(sna)
-gcor(cont_mat, trade_mat, mode="graph")
-
+gcor(cont_mat, trade_mat, mode = "graph")
 ```
 
 ## Hypothesis Testing Correlation 
@@ -2421,9 +2363,14 @@ To test the hypothesis we need: `gaptest()` which takes a list of networks, the 
 ```{r}
 #| echo: true
 #| cache: true
-
-qap <- qaptest(list(cont_mat, trade_mat), 
-    gcor, g1=1, g2=2, reps=1000, mode="graph")
+qap <- qaptest(
+  list(cont_mat, trade_mat),
+  gcor,
+  g1 = 1,
+  g2 = 2,
+  reps = 1000,
+  mode = "graph"
+)
 ```
 
 You can call `summary()` on your output to get details 
@@ -2440,9 +2387,8 @@ If you are curious you can access all the different correlations found through t
 
 ```{r}
 #| echo: true
-sum(abs(qap$dist) < qap$testval) # Two-sided p-value
+mean(abs(qap$dist) >= qap$testval) # Two-sided p-value
 hist(qap$dist)
-
 ```
 
 ## QAP Regression 
@@ -2462,12 +2408,13 @@ We already have our trade network, and contiguity network, so we can just put th
 ```{r}
 #| echo: true
 #| cache: true 
-
-mod <- netlogit(y=mids_mat,
-        x=list(trade_mat, cont_mat), 
-        reps=100, nullhyp="qapspp", 
-        mode="graph")
-
+mod <- netlogit(
+  y = mids_mat,
+  x = list(trade_mat, cont_mat),
+  reps = 100,
+  nullhyp = "qapspp",
+  mode = "graph"
+)
 ```
 
 
@@ -2497,10 +2444,8 @@ We talked about creating variables that indicate where two nodes are equal to, o
 
 ```{r}
 #| echo: true 
-
-test_vector <- c(1,3,5)
+test_vector <- c(1, 3, 5)
 outer(test_vector, test_vector, "+")
-
 ```
 
 
@@ -2508,12 +2453,10 @@ We can do this also with differences, but we should note that `a-b` is different
 
 ```{r}
 #| echo: true 
-
-test_vector <- c(1,3,5)
+test_vector <- c(1, 3, 5)
 outer(test_vector, test_vector, "-")
 
 outer(test_vector, test_vector, "-") |> abs()
-
 ```
 
 
@@ -2522,10 +2465,8 @@ It is often interesting to look at if two nodes are the same as other nodes. We 
 
 ```{r}
 #| echo: true 
-
 test_vector <- c("Miami", "OSU", "OU")
 outer(test_vector, test_vector, "==")
-
 ```
 
 ### Difference in Military Personnel 
@@ -2534,12 +2475,10 @@ So to add the difference in Mil Personnel we need to extract that vector from th
 
 ```{r}
 #| echo: true 
-
 mil_cap <- V(mids_net)$milper
-mil_cap[mil_cap==-9] <- 0 # Replacing missing values with 0s. 
+mil_cap[mil_cap == -9] <- 0 # Replacing missing values with 0s.
 mil_cap_mat <- outer(mil_cap, mil_cap, "-")
 mil_cap_mat <- (abs(mil_cap_mat))
-
 ```
 
 
@@ -2549,12 +2488,13 @@ We can add that matrix to the `netlogit` function just as we did with the networ
 ```{r}
 #| echo: true
 #| cache: true 
-
-mod <- netlogit(y=mids_mat,
-        x=list(trade_mat, cont_mat, mil_cap_mat), 
-        reps=100, mode="graph")
+mod <- netlogit(
+  y = mids_mat,
+  x = list(trade_mat, cont_mat, mil_cap_mat),
+  reps = 100,
+  mode = "graph"
+)
 summary(mod)
-
 ```
 
 
@@ -2568,9 +2508,8 @@ We are going to load the high school data we had before and then delete the node
 #| echo: true 
 edges <- read.csv(here::here("resources/network_data/spanish_hs_edges.csv"))
 nodes <- read.csv(here::here("resources/network_data/spanish_hs_nodes.csv"))
-net <- graph_from_data_frame(edges, vertices=nodes, directed=T)
+net <- graph_from_data_frame(edges, vertices = nodes, directed = T)
 net <- delete_vertices(net, which(is.na(V(net)$prosocial)))
-
 ```
 
 #### Model - DV
@@ -2595,8 +2534,7 @@ The dependent variable is easy enough using `as_adjacency_matrix()` and extracti
 
 ```{r}
 #| echo: true 
-
-dv_mat <- as_adjacency_matrix(net, attr="weight", sparse=F)
+dv_mat <- as_adjacency_matrix(net, attr = "weight", sparse = F)
 same_sex <- outer(V(net)$Sexo, V(net)$Sexo, "==")
 same_group <- outer(V(net)$Grupo, V(net)$Grupo, "==")
 ```
@@ -2608,7 +2546,6 @@ Remember `outer()` goes through each item in the _first_ argument along the rows
 
 ```{r}
 #| echo: true 
-
 send_male <- outer(V(net)$Sexo, rep("Male", length(V(net))), "==")
 rec_male <- outer(rep("Male", length(V(net))), V(net)$Sexo, "==")
 ```
@@ -2618,7 +2555,6 @@ We can do something similar with the prosocial variable but just multiply it by 
 
 ```{r}
 #| echo: true 
-
 send_soc <- outer(V(net)$prosocial, rep(1, length(V(net))), "*")
 rec_soc <- outer(rep(1, length(V(net))), V(net)$prosocial, "*")
 ```
@@ -2636,17 +2572,16 @@ We can estimate this just like before using `netlm()`. `mode="digraph"` is the d
 ```{r}
 #| echo: true 
 #| cache: true 
-mod <- netlm(y=dv_mat, x=list(same_sex, 
-                same_group,
-                send_male, rec_male, 
-                rec_soc, send_soc), 
-         mode="digraph")
+mod <- netlm(
+  y = dv_mat,
+  x = list(same_sex, same_group, send_male, rec_male, rec_soc, send_soc),
+  mode = "digraph"
+)
 ```
 
 
 ```{r}
 #| echo: true 
-
 mod
 ```
 
@@ -2664,12 +2599,12 @@ You'll see that the two-sided p-values are generally smaller in this case (excep
 
 ```{r}
 #| echo: true 
-
-mod_wrong <- netlm(y=dv_mat, x=list(same_sex, 
-                same_group,
-                send_male, rec_male, 
-                rec_soc, send_soc), 
-         mode="digraph", nullhyp="classic")
+mod_wrong <- netlm(
+  y = dv_mat,
+  x = list(same_sex, same_group, send_male, rec_male, rec_soc, send_soc),
+  mode = "digraph",
+  nullhyp = "classic"
+)
 mod_wrong
 ```
 
@@ -2691,8 +2626,10 @@ What do we need to do to test what leads to having more trading partners?
 #| echo: true 
 #| 
 V(trade_net)$degree <- igraph::degree(trade_net)
-trade_df <- as_data_frame(trade_net, what="vertices")
-democracy_df <- read.csv(here::here("resources/network_data/cow/democracy_data.csv"))
+trade_df <- as_data_frame(trade_net, what = "vertices")
+democracy_df <- read.csv(here::here(
+  "resources/network_data/cow/democracy_data.csv"
+))
 ```
 
 ### Merging Data 
@@ -2706,11 +2643,7 @@ To merge two datasets we use the `merge()` function:
 
 ```{r}
 #| echo: true 
-
-all_data <- merge(trade_df, democracy_df, 
-            by.x="name", 
-            by.y="COWcode")
-
+all_data <- merge(trade_df, democracy_df, by.x = "name", by.y = "COWcode")
 ```
 
 
@@ -2723,11 +2656,9 @@ Running the regression is pretty simple, and is similar to what you would do wit
 
 ```{r}
 #| echo: true 
-
 library(permuco)
 
-mod <- lmperm(degree~v2x_polyarchy + milper,
-        data=all_data, np=50)
+mod <- lmperm(degree ~ v2x_polyarchy + milper, data = all_data, np = 50)
 ```
 
 
@@ -2758,21 +2689,17 @@ library(intergraph)
 
 mids_df <- read.csv(here::here("resources/network_data/cow/mids_net.csv"))
 nmc_data <- read.csv(here::here("resources/network_data/cow/nmc_vertex.csv"))
-mids_net <- graph_from_data_frame(mids_df, 
-        vertices=nmc_data, directed=F)
-V(mids_net)$milper[V(mids_net)$milper<0] <- 0
+mids_net <- graph_from_data_frame(mids_df, vertices = nmc_data, directed = F)
+V(mids_net)$milper[V(mids_net)$milper < 0] <- 0
 mids_net <- asNetwork(mids_net)
 
 trade_df <- read.csv(here::here("resources/network_data/cow/trade_net.csv"))
-trade_net <- graph_from_data_frame(trade_df,
-        vertices=nmc_data, directed=F)
+trade_net <- graph_from_data_frame(trade_df, vertices = nmc_data, directed = F)
 trade_net <- asNetwork(trade_net)
 
 cont_df <- read.csv(here::here("resources/network_data/cow/cont_net.csv"))
-cont_net <- graph_from_data_frame(cont_df, 
-        vertices=nmc_data, directed=F)
+cont_net <- graph_from_data_frame(cont_df, vertices = nmc_data, directed = F)
 cont_net <- asNetwork(cont_net)
-
 ```
 
 
@@ -2783,12 +2710,13 @@ We started by incorporating our other networks into the model, we can do this he
 
 ```{r}
 #| echo: true 
-mod <- ergm(mids_net ~ edges + 
-            dyadcov(trade_net) + 
-            dyadcov(cont_net) )
+mod <- ergm(
+  mids_net ~ edges +
+    dyadcov(trade_net) +
+    dyadcov(cont_net)
+)
 
 summary(mod)
-
 ```
 
 
@@ -2809,12 +2737,12 @@ We will start by accounting for the absolute difference in military personnel.
 
 ```{r}
 #| echo: true 
-
-
-mod <- ergm(mids_net ~ edges + 
-            dyadcov(trade_net) + 
-            dyadcov(cont_net) + 
-            absdiff("milper") )
+mod <- ergm(
+  mids_net ~ edges +
+    dyadcov(trade_net) +
+    dyadcov(cont_net) +
+    absdiff("milper")
+)
 ```
 
 
@@ -2840,13 +2768,16 @@ You can set their decay with `decay=, fixed=TRUE`.
 ```{r}
 #| echo: true 
 #| cache: true
-full_mod <- ergm(mids_net ~ edges + dyadcov(trade_net) + 
-            dyadcov(cont_net) + nodecov("milper") +
-            gwdegree(decay=0.5, fixed=TRUE) + 
-            gwesp(decay=0.5, fixed=TRUE) )
+full_mod <- ergm(
+  mids_net ~ edges +
+    dyadcov(trade_net) +
+    dyadcov(cont_net) +
+    nodecov("milper") +
+    gwdegree(decay = 0.5, fixed = TRUE) +
+    gwesp(decay = 0.5, fixed = TRUE)
+)
 
 summary(full_mod)
-
 ```
 
 ### What does this mean? 
@@ -2873,9 +2804,8 @@ This can be done through the `gof()` function and then `plot()`.
 #| echo: false
 #| out-height: 100%
 est_gof <- gof(full_mod)
-par(mfrow=c(2,2)) # Creates a 2 by 2
+par(mfrow = c(2, 2)) # Creates a 2 by 2
 plot(est_gof)
-
 ```
 
 
@@ -2895,11 +2825,15 @@ I found [data of interactions](http://www.sociopatterns.org/datasets/test/) in a
 
 ```{r}
 #| echo: false 
-net <- read_graph(here::here("resources","network_data","french_office.graphml"), format="graphml")
+net <- read_graph(
+  here::here("resources", "network_data", "french_office.graphml"),
+  format = "graphml"
+)
 
-ggraph(net, "kk") + geom_edge_link(color="gray") + 
-  geom_node_point(aes(color=Department))  + 
-  scale_color_brewer(type="qual", palette=3)
+ggraph(net, "kk") +
+  geom_edge_link(color = "gray") +
+  geom_node_point(aes(color = Department)) +
+  scale_color_brewer(type = "qual", palette = 3)
 ```
 
 
@@ -2921,8 +2855,9 @@ summary(mod)
 #| echo: false 
 #| output: false 
 set.seed(1)
-mod_simple <- ergm(asNetwork(net)~edges + nodematch("Department") + 
-  nodefactor("Department") )
+mod_simple <- ergm(
+  asNetwork(net) ~ edges + nodematch("Department") + nodefactor("Department")
+)
 ```
 
 
@@ -2939,9 +2874,8 @@ The coefficient on `nodematch.Department` is 3.53 and has a two-sided p-value < 
 #| echo: false
 #| out-height: 100%
 est_gof <- gof(mod_simple)
-par(mfrow=c(2,2)) # Creates a 2 by 2
+par(mfrow = c(2, 2)) # Creates a 2 by 2
 plot(est_gof)
-
 ```
 
 
@@ -2968,10 +2902,13 @@ summary(mod_simple)
 #| echo: false 
 #| output: false
 set.seed(1)
-mod_full <- ergm(asNetwork(net)~edges + nodematch("Department") + 
-  nodefactor("Department") + 
-  gwdegree(decay=0.25, fixed=TRUE) +
-  gwesp(decay=0.25, fixed=TRUE)  )
+mod_full <- ergm(
+  asNetwork(net) ~ edges +
+    nodematch("Department") +
+    nodefactor("Department") +
+    gwdegree(decay = 0.25, fixed = TRUE) +
+    gwesp(decay = 0.25, fixed = TRUE)
+)
 ```
 
 ```{r}
@@ -2987,9 +2924,8 @@ The coefficient on homophily has decreased, so some of that effect was explained
 #| echo: false
 #| out-height: 100%
 est_gof <- gof(mod_full)
-par(mfrow=c(2,2)) # Creates a 2 by 2
+par(mfrow = c(2, 2)) # Creates a 2 by 2
 plot(est_gof)
-
 ```
 
 ## Different Example - High Schools
@@ -2999,28 +2935,28 @@ Need to do some cleaning to get the data in:
 
 ```{r}
 #| echo: true 
-
-
 edges <- read.csv(here::here("resources/network_data/spanish_hs_edges.csv"))
 nodes <- read.csv(here::here("resources/network_data/spanish_hs_nodes.csv"))
-net <- graph_from_data_frame(edges, vertices=nodes, directed=T)
+net <- graph_from_data_frame(edges, vertices = nodes, directed = T)
 net <- delete_vertices(net, which(is.na(V(net)$prosocial)))
 net <- delete_edges(net, which(E(net)$weight < 0))
-net <- as.undirected(net,   mode="mutual")
+net <- as.undirected(net, mode = "mutual")
 
 net <- asNetwork(net)
-
-
-
 ```
 
 
 Run our simple model. 
 
 ```{r}
-mod <- ergm(net ~ edges + nodematch("Sexo") + nodematch("Grupo") + 
-            nodefactor("Sexo") + nodefactor("Grupo") +
-            nodecov("prosocial"))
+mod <- ergm(
+  net ~ edges +
+    nodematch("Sexo") +
+    nodematch("Grupo") +
+    nodefactor("Sexo") +
+    nodefactor("Grupo") +
+    nodecov("prosocial")
+)
 summary(mod)
 ```
 
@@ -3028,7 +2964,7 @@ summary(mod)
 
 ```{r}
 est_gof <- gof(mod)
-par(mfrow=c(2,2)) # Creates a 2 by 2
+par(mfrow = c(2, 2)) # Creates a 2 by 2
 plot(est_gof)
 ```
 
@@ -3043,15 +2979,21 @@ Lets add in dyadic dependent terms, starting with a fixed decay of 0.
 #| cache: true
 #| output: false
 set.seed(1)
-mod <- ergm(net ~ edges +nodematch("Sexo") + nodematch("Grupo") + 
-            nodefactor("Sexo") + nodefactor("Grupo") +
-            nodecov("prosocial") + 
-    gwesp(decay=0.5, fixed=T) + gwdegree(0.5, fixed=T))
+mod <- ergm(
+  net ~ edges +
+    nodematch("Sexo") +
+    nodematch("Grupo") +
+    nodefactor("Sexo") +
+    nodefactor("Grupo") +
+    nodecov("prosocial") +
+    gwesp(decay = 0.5, fixed = T) +
+    gwdegree(0.5, fixed = T)
+)
 est_gof <- gof(mod)
 ```
 
 ```{r}
-par(mfrow=c(2,2)) 
+par(mfrow = c(2, 2))
 plot(est_gof)
 ```
 
@@ -3063,16 +3005,21 @@ plot(est_gof)
 ```{r ergm2}
 #| cache: true
 #| output: false
-
-mod <- ergm(net ~ edges +nodematch("Sexo") + nodematch("Grupo") + 
-            nodefactor("Sexo") + nodefactor("Grupo") +
-            nodecov("prosocial") + 
-    gwesp(decay=0.25, fixed=T) + gwdegree(0.25, fixed=T))
+mod <- ergm(
+  net ~ edges +
+    nodematch("Sexo") +
+    nodematch("Grupo") +
+    nodefactor("Sexo") +
+    nodefactor("Grupo") +
+    nodecov("prosocial") +
+    gwesp(decay = 0.25, fixed = T) +
+    gwdegree(0.25, fixed = T)
+)
 est_gof <- gof(mod)
 ```
 
 ```{r}
-par(mfrow=c(2,2)) 
+par(mfrow = c(2, 2))
 plot(est_gof)
 ```
 
@@ -3082,17 +3029,22 @@ No major improvement, maybe a little worse?
 ```{r ergm4}
 #| cache: true
 #| output: false
-
 set.seed(1)
-mod <- ergm(net ~ edges +nodematch("Sexo") + nodematch("Grupo") + 
-            nodefactor("Sexo") + nodefactor("Grupo") +
-            nodecov("prosocial") + 
-    gwesp(decay=0.75, fixed=T) + gwdegree(0.75, fixed=T))
+mod <- ergm(
+  net ~ edges +
+    nodematch("Sexo") +
+    nodematch("Grupo") +
+    nodefactor("Sexo") +
+    nodefactor("Grupo") +
+    nodecov("prosocial") +
+    gwesp(decay = 0.75, fixed = T) +
+    gwdegree(0.75, fixed = T)
+)
 est_gof <- gof(mod)
 ```
 
 ```{r}
-par(mfrow=c(2,2)) 
+par(mfrow = c(2, 2))
 plot(est_gof)
 summary(mod)
 ```
