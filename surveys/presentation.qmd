@@ -1,0 +1,446 @@
+---
+title: "The Midwest from Ohio"
+author: "Kevin Reuning"
+format: 
+    clean-revealjs:
+        width: 1600
+        height: 900
+        slide-number: false
+        callout-icon: false
+        execute:
+            echo: false
+            fig-align: "center"
+            warning: false
+---
+
+
+## Research Questions
+
+- How is the midwest regionally defined? 
+- Who identifies as midwesterner? 
+- Where is the midwest going? 
+
+## Survey
+
+## Data 
+
+```{r}
+library(here)
+library(tidyverse)
+library(srvyr)
+library(usmap)
+library(rlang)
+library(purrr)
+library(gt)
+library(scales)
+library(plotly)
+library(usmap)
+library(ggrepel)
+library(huxtable)
+
+get_data <- function(variable, data) {
+  data |>
+    group_by(!!rlang::sym(variable)) |>
+    summarize(survey_mean()) |>
+    rename("Response" = !!rlang::sym(variable)) |>
+    mutate(qname = variable) |>
+    mutate(
+      Response = factor(
+        Response,
+        levels = c(
+          "On",
+          "Off",
+          "Very representative",
+          "Somewhat representative",
+          "Not very representative",
+          "Not at all representative",
+          "Very accepting",
+          "Accepting",
+          "Somewhat accepting",
+          "Not very accepting",
+          "Not accepting at all",
+          "Strongly agree",
+          "Agree",
+          "Somewhat agree",
+          "Neither agree nor disagree",
+          "Somewhat disagree",
+          "Disagree",
+          "Strongly disagree",
+          "A great deal of difference",
+          "A big difference",
+          "A small difference",
+          "No difference",
+          "0-10 minutes",
+          "11-20 minutes",
+          "21-30 minutes",
+          "31-45 minutes",
+          "Yes",
+          "No",
+          "Less than 1",
+          "1-5 years",
+          "6-15 years",
+          "16-30 years",
+          "30-50 years",
+          "50+ years",
+          "City",
+          "Suburb",
+          "Town",
+          "Rural Area",
+          "Democrat",
+          "Republican",
+          "Independent",
+          "Donald Trump (Republican)",
+          "Kamala Harris (Democrat)",
+          "Someone else",
+          "Couldn't vote",
+          "Didn't vote",
+          "Don't remember",
+          "Man",
+          "Woman",
+          "Non-binary / third gender",
+          "Less than $25,000",
+          "$25,000-$49,999",
+          "$50,000-$74,999",
+          "$75,000-$99,999",
+          "$100,000-$149,999",
+          "$150,000 or more",
+          "Some high school or less",
+          "High school diploma or GED",
+          "Some college, but no degree",
+          "Associates or technical degree",
+          "Bachelor’s degree",
+          "Graduate or professional degree (MA, MS, MBA, PhD, JD, MD, DDS etc.)",
+          "Prefer not to say",
+          "Other",
+          "Not Sure",
+          "Not sure",
+          "Skipped"
+        )
+      )
+    ) |>
+    arrange(Response)
+}
+
+
+data <- read_csv(here("surveys", "2025", "survey_data_cleaned.csv"))
+
+svy_data <- as_survey(data, weights = weights)
+vars <- read_csv(here("surveys", "2025", "variables.csv"))
+
+n <- nrow(data)
+
+
+```
+
+
+## Identity and Partisanship 
+
+
+
+```{r}
+
+all <- get_data("Q10", svy_data) |>
+  mutate(Type = "All")
+dem <- get_data("Q10", filter(svy_data, grepl("Democrat", PID7))) |>
+  mutate(Type = "Dem")
+rep <- get_data("Q10", filter(svy_data, grepl("Republican", PID7))) |>
+  mutate(Type = "Rep")
+
+rbind(all, dem, rep) |>
+  pivot_wider(id_cols = Type, values_from = coef, names_from = Response) |>
+  hux() |>
+  set_number_format(row = 2:4, value = fmt_percent(digits = 0)) |>
+  set_bottom_border(row = 1, col = everything())
+
+```
+
+
+# What is the Midwest? 
+
+## Midwest from Ohio? 
+
+
+
+```{r}
+
+plot_data <- filter(data) |>
+  select(starts_with("Q3_")) |>
+  mutate(across(Q3_1:Q3_29, ~ .x == "On")) |>
+  summarize(across(Q3_1:Q3_29, ~ weighted.mean(.x, w = data$weights))) |>
+  pivot_longer(everything()) |>
+  left_join(vars, by = join_by(name == qname)) |>
+  select(sub, value) |>
+  mutate(fips = fips(sub))
+
+
+map_data <- us_map(region = "states", include = plot_data$sub) |>
+  left_join(plot_data, by = join_by(full == sub))
+
+ggplot(data = (map_data), aes(fill = value)) +
+  geom_sf() +
+  scale_fill_viridis_c(
+    "Midwest?",
+    option = "B",
+    end = 0.8,
+    labels = scales::label_percent()
+  ) +
+  geom_sf_text(
+    aes(label = scales::percent(value, accuracy = 1)),
+    color = "white",
+    size = 6
+  ) +
+  theme_void() +
+  theme(legend.position = "bottom")
+
+```
+
+
+## Partisan Differences
+
+```{r}
+
+dem_data <- filter(data, grepl("Democrat", PID7))
+dem_map <- dem_data |>
+  select(starts_with("Q3_")) |>
+  mutate(across(Q3_1:Q3_29, ~ .x == "On")) |>
+  summarize(across(Q3_1:Q3_29, ~ weighted.mean(.x, w = dem_data$weights))) |>
+  pivot_longer(everything()) |>
+  left_join(vars, by = join_by(name == qname)) |>
+  select(sub, value) |>
+  mutate(fips = fips(sub)) |>
+  rename(Dem = value)
+
+
+rep_data <- filter(data, grepl("Republican", PID7))
+rep_map <- rep_data |>
+  select(starts_with("Q3_")) |>
+  mutate(across(Q3_1:Q3_29, ~ .x == "On")) |>
+  summarize(across(Q3_1:Q3_29, ~ weighted.mean(.x, w = rep_data$weights))) |>
+  pivot_longer(everything()) |>
+  left_join(vars, by = join_by(name == qname)) |>
+  select(sub, value) |>
+  mutate(fips = fips(sub)) |>
+  rename(Rep = value)
+
+
+partisan_map_data <- left_join(rep_map, dem_map)
+
+```
+
+
+
+```{r}
+#| layout-ncol: 2
+
+partisan_map_data |>
+  ggplot(aes(x = Rep, y = Dem)) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dotted") +
+  geom_point(size = 4, alpha = 0.5) +
+  geom_text_repel(aes(label = sub), size = 4) +
+  theme_minimal() +
+  scale_x_continuous(labels = scales::label_percent()) +
+  scale_y_continuous(labels = scales::label_percent())
+
+
+partisan_map_data |>
+  mutate(Diff = Dem - Rep) |>
+  left_join(us_map(region = "states"), by = join_by(sub == full)) |>
+  ggplot(aes(fill = Diff, geometry = geom)) +
+  geom_sf() +
+  scale_fill_gradient2(
+    "More Dem?",
+    midpoint = 0,
+    low = "orangered4",
+    mid = "grey80",
+    high = "steelblue4",
+    labels = scales::label_percent()
+  ) +
+  geom_sf_text(
+    aes(label = scales::percent(Diff, accuracy = 1)),
+    color = "white",
+    size = 6
+  ) +
+  theme_void() +
+  theme(legend.position = "bottom")
+
+```
+
+# Who is Midwestern? 
+
+## Self-Identity 
+
+```{r}
+
+no_data <- filter(data, grepl("No", Q10))
+no_data <- no_data |>
+  select(starts_with("Q3_")) |>
+  mutate(across(Q3_1:Q3_29, ~ .x == "On")) |>
+  summarize(across(Q3_1:Q3_29, ~ weighted.mean(.x, w = no_data$weights))) |>
+  pivot_longer(everything()) |>
+  left_join(vars, by = join_by(name == qname)) |>
+  select(sub, value) |>
+  mutate(fips = fips(sub)) |>
+  rename(Not = value)
+
+
+yes_data <- filter(data, grepl("Yes", Q10))
+yes_data <- yes_data |>
+  select(starts_with("Q3_")) |>
+  mutate(across(Q3_1:Q3_29, ~ .x == "On")) |>
+  summarize(across(Q3_1:Q3_29, ~ weighted.mean(.x, w = yes_data$weights))) |>
+  pivot_longer(everything()) |>
+  left_join(vars, by = join_by(name == qname)) |>
+  select(sub, value) |>
+  mutate(fips = fips(sub)) |>
+  rename(Midwesterner = value)
+
+
+identity_data <- left_join(yes_data, no_data)
+
+
+```
+
+
+```{r}
+#| layout-ncol: 2
+
+identity_data |>
+  ggplot(aes(x = Midwesterner, y = Not)) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dotted") +
+  geom_point(size = 4, alpha = 0.5) +
+  geom_text_repel(aes(label = sub), size = 4) +
+  theme_minimal() +
+  scale_x_continuous(labels = scales::label_percent()) +
+  scale_y_continuous(labels = scales::label_percent())
+
+
+identity_data |>
+  mutate(Diff = Midwesterner - Not) |>
+  left_join(us_map(region = "states"), by = join_by(sub == full)) |>
+  ggplot(aes(fill = Diff, geometry = geom)) +
+  geom_sf() +
+  scale_fill_gradient2(
+    "Midwesterner\nMore Likely?",
+    midpoint = 0,
+    low = "orangered4",
+    mid = "grey80",
+    high = "steelblue4",
+    labels = scales::label_percent()
+  ) +
+  geom_sf_text(
+    aes(label = scales::percent(Diff, accuracy = 1)),
+    color = "white",
+    size = 6
+  ) +
+  theme_void() +
+  theme(legend.position = "bottom")
+
+```
+
+## Values of the Midwest
+
+
+```{r}
+
+value_vars <- c("Q4_1", "Q4_2", "Q4_3", "Q4_4", "Q4_5")
+out <- map(value_vars, get_data, data = svy_data)
+names(out) <- value_vars
+out <- list_rbind(out, names_to = "qname") |> left_join(vars)
+
+
+out |>
+  pivot_wider(id_cols = sub, names_from = Response, values_from = coef) |>
+  hux() |>
+  set_number_format(row = 2:6, value = fmt_percent(digits = 0)) |>
+  set_contents(row = 1, col = 1, value = "")
+
+```
+
+
+
+## Partisan Differences
+
+
+```{r}
+
+value_vars <- c("Q4_1", "Q4_2", "Q4_3", "Q4_4", "Q4_5")
+out_rep <- map(
+  value_vars,
+  get_data,
+  data = filter(svy_data, grepl("Republican", PID7))
+)
+names(out_rep) <- value_vars
+out_rep <- list_rbind(out_rep, names_to = "qname") |> left_join(vars)
+
+out_dem <- map(
+  value_vars,
+  get_data,
+  data = filter(svy_data, grepl("Democrat", PID7))
+)
+names(out_dem) <- value_vars
+out_dem <- list_rbind(out_dem, names_to = "qname") |> left_join(vars)
+
+out_dem$Party <- "Democratic"
+out_rep$Party <- "Republican"
+
+rbind(out_dem, out_rep) |>
+  pivot_wider(
+    id_cols = c(Response, sub),
+    names_from = Party,
+    values_from = coef
+  ) |>
+  mutate(Diff = Democratic - Republican) |>
+  pivot_wider(id_cols = sub, names_from = Response, values_from = Diff) |>
+  hux() |>
+  set_number_format(row = 2:6, value = fmt_percent(digits = 0)) |>
+  map_text_color(
+    -(1:2),
+    -1,
+    by_colorspace("orangered4", "grey20", "steelblue4")
+  ) |>
+  set_contents(row = 1, col = 1, value = "")
+
+```
+
+# Direction of the Midwest?
+
+## Direction of Midwest 
+
+Agree/Disagree:  "The Midwest is better off today than it was 25 years ago."
+
+```{r}
+
+value_vars <- c("Q7")
+out_dir <- map(value_vars, get_data, data = svy_data)
+names(out_dir) <- value_vars
+out_dir <- list_rbind(out_dir, names_to = "qname") |> left_join(vars)
+
+out_dir_dem <- map(
+  value_vars,
+  get_data,
+  data = filter(svy_data, grepl("Democrat", PID7))
+)
+names(out_dir_dem) <- value_vars
+out_dir_dem <- list_rbind(out_dir_dem, names_to = "qname") |> left_join(vars)
+
+out_dir_rep <- map(
+  value_vars,
+  get_data,
+  data = filter(svy_data, grepl("Republican", PID7))
+)
+names(out_dir_rep) <- value_vars
+out_dir_rep <- list_rbind(out_dir_rep, names_to = "qname") |> left_join(vars)
+
+
+out_dir$Type <- "All"
+out_dir_dem$Type <- "Dem"
+out_dir_rep$Type <- "Rep"
+
+rbind(out_dir, out_dir_dem, out_dir_rep) |>
+  pivot_wider(id_cols = Type, values_from = coef, names_from = Response) |>
+  hux() |>
+  set_number_format(row = 2:4, value = fmt_percent(digits = 0)) |>
+  set_contents(row = 1, col = 1, value = "Group")
+
+```
+
