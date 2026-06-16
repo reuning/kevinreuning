@@ -722,7 +722,7 @@ For the next section we are going to use [data on UN Votes](network_data/distanc
 
 ```{r}
 #| echo: true
-UN_votes <- readRDS("network_data/distance_1960s.RData")
+UN_votes <- readRDS(here::here("resources/network_data/distance_1960s.RData"))
 
 out <- mds(UN_votes, ndim = 2, type = "ordinal")
 out$stress
@@ -1524,7 +1524,7 @@ So we need to calculate the number of components (c), and the number of nodes (n
 
 ```{r}
 #| echo: true
-comps <- components(net, mode = "strong")$no
+comps <- igraph::components(net, mode = "strong")$no
 n <- vcount(net)
 
 (comps - 1) / (n - 1)
