@@ -1,0 +1,484 @@
+---
+title: "OpenAI Swarm"
+date: 2026-09-14
+image: image/ai_swarm_preview.png
+execute: 
+  freeze: true
+categories:
+    - SNA
+    - AI
+---
+
+Another ["AI Swarm" was recently found](https://collusion.wiki/index.html) abusing an old German wiki. The unsupervised OpenAI Agents generated text which left notes that became inputs for other OpenAI Agents. I do not understand the technical details of it, and really do not know how to feel about what these "swarms" mean;[^swarm] but after several years of teaching a Social Network Analysis course I do know new and interesting network data when I see it. 
+
+I decided to see what interesting things might come out of this data. Below I backbone the network and cluster it, discovering that most of the nodes can be placed in a relatively few nodes. 
+
+```{r}
+#| warning: false 
+#| echo: false
+
+library(tidyverse)
+library(jsonlite)
+library(ggraph)
+library(igraph)
+
+df <- stream_in(
+  file(here::here("blog/data/AI_Swarm/revisions.jsonl")),
+  verbose = FALSE
+)
+network_edges <- df |>
+  as_tibble() |>
+  select(Name = label, Page = name, Timestamp = time) |>
+  filter(Name != "", !str_starts(Name, "\\[")) |>
+  mutate(Name = paste("Name:", Name))
+
+collapsed_edges <- network_edges |>
+  group_by(Name, Page) |>
+  tally(name = "Revisions")
+
+g_full <- graph_from_data_frame(network_edges)
+
+V(g_full)$Label <- ifelse(
+  V(g_full)$name %in% collapsed_edges$Name,
+  "Name",
+  "Page"
+)
+
+full_stats <- table(V(g_full)$Label)
+
+g <- largest_component(g_full)
+comps <- components(g_full)
+
+largest_stat <- table(V(g)$Label)
+
+set.seed(1)
+v_layout <- create_layout(g, "lgl", maxiter = 200)
+e_layout <- get_edges()(v_layout)
+
+min_date <- min(network_edges$Timestamp)
+max_date <- max(network_edges$Timestamp)
+
+## Pass to OJS
+ojs_define(vertices = v_layout, edges = e_layout)
+```
+
+## Network Construction 
+
+For whatever reasons, the agents often, but not always, generated "names" as part of their edits. It is impossible to know if these names are a 1-to-1 match with the Agent that generated the edit text. For the purpose of this exercise I am going to treat each Name[^capitalization] as one part of a bipartite network, the other side is the Page that was edited. In addition, I exclude the few human edits[^ex] that were made and identified by [Von Arx et al](https://collusion.wiki/index.html) along with the edits lacking names. This leaves `r scales::number(full_stats['Name'], big.mark=",")` Names and `r scales::number(full_stats['Page'], big.mark=",")` Pages. You can divide a network into components (where each node can reach every other node). In this case, there are `r scales::number(comps$no)` total components. But of the total `r scales::number(sum(full_stats), big.mark=",")` nodes (Pages and Names), `r scales::number(max(comps$csize), big.mark=",")` are in a single component. The majority of the rest of the components represent a single Name making an edit on a single Page. 
+
+@fig-network shows the bipartite network of the largest component, with the colors of the edges indicative of _when_ the edit was made to the Page[^multi]. In addition @fig-hist shows the edits over time. You can use the Start and End fields to show edges during just certain periods as well. As with many networks of this size, it is hard to identify much signal from the noise here.
+
+[^swarm]: On the one hand I don't think it is useful to anthropomorphize text generation models. On the other hand, I'm not sure it matters if these models were "communicating" or not. At a basic level, the models generated text that could store part of that text on a website which other models used as inputs in their text generation. The fact this happens as the result of probabilistic models is wild to me. 
+
+[^capitalization]: I capitalize Name and Page to signify that these are types of nodes. 
+
+[^ex]: These appear to be the ones with `[..]` Names, so they were removed. This looks to be more than they initially said in their post, but still only a handful of human edits in total. 
+
+[^multi]: This is technically a [multigraph](https://en.wikipedia.org/wiki/Multigraph) where each node can have multiple edges between a graph. 
+
+
+
+```{ojs}
+//| echo: false
+//| fig-cap: Largest Component of AI Swarm
+//| label: fig-network
+
+Plot.plot({
+  grid: false,
+  color: {
+    legend: true, 
+    type: "utc", 
+    scheme: "Viridis", 
+    label: "Edit time"},
+  x: {axis:null},
+  y: {axis:null},
+  marks: [
+    Plot.dot(transpose(vertices), 
+        {
+            x: "x", 
+            y: "y", 
+            symbol: "Label", 
+            r: 2
+        }
+    ),
+    Plot.arrow(edgesFiltered, 
+        {
+            x1: "x", 
+            x2: "xend", 
+            y1: "y", 
+            y2: "yend", 
+            stroke: "Timestamp",
+            insetEnd: 5
+        }
+    )
+  ]
+})
+```
+
+```{ojs}
+//| echo: false 
+viewof start = Inputs.datetime(
+    {
+        label: "Start", 
+        value: "2026-05-24T06:02",
+        min: "2026-05-24T06:02",
+        max: "2026-07-02T17:25"
+    }
+)
+viewof end = Inputs.datetime(
+    {
+        label: "End", 
+        value: "2026-07-02T17:24",
+        min: "2026-05-24T06:02",
+        max: "2026-07-02T17:25"
+    }
+)
+
+parser = d3.timeParse("%Y-%m-%dT%H:%M:%SZ")
+edgesFiltered = transpose(edges).filter((d, i) => parser(d.Timestamp) >= start && parser(d.Timestamp) <= end)
+
+
+
+```
+
+
+```{ojs}
+//| echo: false
+//| label: fig-hist
+//| fig-cap: Edits Over Time
+
+Plot.plot({
+    x: {type: "time"},
+    marks: [
+        Plot.rectY(transpose(edges), 
+            Plot.binX(
+                {y: "count"}, 
+                {x: {thresholds: "6 hours", value:"Timestamp"}}))
+
+    ]
+}
+)
+
+```
+
+
+In order to improve upon this we can focus on what we are most interested in, the "Agents," or in this case the Names that are being used. What we are interested, in particular, is if they are acting in some sort of systematic way. This is a common problem in social network analysis: We have a bipartite network where we have two types of nodes (Names and Pages), and interactions only go between the types. Names might be used to edit the same Page at random (simply because the Name is being used a lot) or there might be "purposeful" (non-random) edits of the same Page using the same Names. What we want to extract are connections between Names that are non-random, this is called the **backbone** of the network. 
+
+Extracting the backbone of a bipartite network is difficult, and there is open research on the best way to do it. This particular network also poses some challenges, it is relatively large (thousands of nodes), and we have information not just on whether a Page has been edited by a Name but also the number of times. From my understanding the most [advanced methods](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0349258) to do this do not directly account for the number of interactions, just whether they have interacted. Because of this, and because I spent a long time implementing something similar for my dissertation, I opt for a slightly older backboning process. 
+
+::: {.callout-caution collapse="true"}
+## Expand To Learn Unnecessary Details
+
+Briefly, I adapt [Neal (2014)](https://www.sciencedirect.com/science/article/pii/S0378873314000343) by developing a null distribution of the number of interactions expected, and then testing whether the observed interactions are at a certain threshold above the expectations. To do this I estimate a Hurdle (a type of zero inflated model) Poisson model. Formally, let $y_{ij}$ be the number of times Name $i$ edits Page $j$, I predict this using the sum of the number of edits made by Name $i$ ($\log(\sum_{j=1\ldots J} y_{ij})$), the log number of edits made on Page $j$ ($\log(\sum_{i=1\ldots I} y_{ij})$) and their interaction.  
+
+I use this model to simulate the number of interactions ($\widehat{y_{ij}}$). This creates a simulated bipartite network. Taking the cross product of the adjacency matrix projects this into a single mode network where the cells represent the strength of co-edits between each Name. Finally, we can compare the simulated strength of co-edits against the observed co-edits from the actual data. We retain the edges where the observed co-edits are greater than 99% of the simulated, or null distribution. 
+
+The logic in all this is, what would happen if each Name was editing at random just based on their overall propensity to make edits. Is the observed similarity of edits between two Names greater than what would happen in this random scenario? If so, we assume that similarity is not driven solely by randomness. 
+
+:::
+
+
+```{r}
+#| echo: false
+#| warning: false
+#| output: false 
+
+library(fastglm)
+library(Matrix)
+library(sparseMatrixStats)
+
+#library(spatstat.sparse)
+V(g)$type <- V(g)$Label == "Name"
+mat <- as_biadjacency_matrix(g)
+
+df <- mat |>
+  reshape2::melt() |>
+  as_tibble() |>
+  rename(Page = Var1, Name = Var2) |>
+  group_by(Name) |>
+  mutate(Name_Deg = log(sum(value))) |>
+  group_by(Page) |>
+  mutate(Page_Deg = log(sum(value)))
+
+mod <- fastglm_hurdle(value ~ Name_Deg * Page_Deg, data = df, dist = "poisson")
+
+
+prob_zero <-
+  plogis(
+    matrix(
+      c(
+        rep(1, nrow(df)),
+        df$Name_Deg,
+        df$Page_Deg,
+        df$Name_Deg * df$Page_Deg
+      ),
+      ncol = 4,
+      nrow = nrow(df)
+    ) %*%
+      mod$coefficients$zero
+  )
+prob_count <-
+  exp(
+    matrix(
+      c(
+        rep(1, nrow(df)),
+        df$Name_Deg,
+        df$Page_Deg,
+        df$Name_Deg * df$Page_Deg
+      ),
+      ncol = 4,
+      nrow = nrow(df)
+    ) %*%
+      mod$coefficients$count
+  )
+
+n_row <- nrow(mat)
+n_col <- ncol(mat)
+
+n_sims <- 1000
+
+get_sims <- function(prob, count, nrow, ncol) {
+  pred_zero <- rbinom(n_row * n_col, 1, prob = prob)
+  pred_count <- rpois(n_row * n_col, lambda = count)
+
+  pred_unipart <- as(
+    crossprod(Matrix(
+      pred_zero * pred_count,
+      nrow = nrow,
+      ncol = ncol
+    )),
+    "generalMatrix"
+  )
+
+  pred_unipart
+}
+
+n_cells <- n_col * n_col
+
+set.seed(1)
+sim_results <- replicate(
+  n_sims,
+  get_sims(prob = prob_zero, count = prob_count, nrow = n_row, ncol = n_col),
+  simplify = FALSE
+)
+
+# Extract triplets from each sparse matrix, flatten row/col into 1D index,
+# then stack into one n_cells × n_sims sparse matrix so rowQuantiles never
+# densifies the individual projection matrices
+triplets <- lapply(seq_along(sim_results), function(idx) {
+  s <- summary(sim_results[[idx]])
+  data.frame(
+    cell = (s$j - 1L) * n_col + s$i,
+    sim = idx,
+    value = s$x
+  )
+})
+triplets <- do.call(rbind, triplets)
+
+sim_sparse <- Matrix::sparseMatrix(
+  i = triplets$cell,
+  j = triplets$sim,
+  x = triplets$value,
+  dims = c(n_cells, n_sims)
+)
+rm(triplets)
+gc(verbose = FALSE)
+
+expectations_vec <- rowQuantiles(sim_sparse, probs = 0.95)
+expectations <- matrix(expectations_vec, nrow = n_col, ncol = n_col)
+
+projected <- as.vector(crossprod(mat))
+
+actual <- matrix(projected > expectations, nrow = n_col, ncol = n_col)
+colnames(actual) <- colnames(mat)
+
+
+g_uni <- graph_from_adjacency_matrix(actual, mode = "upper", diag = FALSE, )
+
+#g_uni <- largest_component(g_uni)
+
+set.seed(1)
+cl <- cluster_leiden((g_uni), objective_function = "modularity")
+member <- membership(cl)
+cl_size <- table(member)
+member <- rank(-cl_size, ties.method = "first")[member]
+
+small <- which(table(member) < 50)
+member <- LETTERS[member]
+member[member %in% LETTERS[small]] <- "Other"
+
+
+names(member) <- names(membership(cl))
+V(g_uni)$Cluster <- member
+V(g_uni)$Degree <- degree(g_uni)
+
+tbl_out <- as_data_frame(g_uni, "vertices") |>
+  as_tibble() |>
+  group_by(Cluster) |>
+  slice_max(Degree, n = 5)
+
+set.seed(1)
+g_uni <- largest_component(g_uni)
+
+v_layout <- create_layout(g_uni, "lgl", maxiter = 500)
+e_layout <- get_edges()(v_layout)
+v_layout <- v_layout |>
+  mutate(name = gsub("Name: ", "", name))
+ojs_define(uni_vertices = v_layout, uni_edges = e_layout)
+```
+
+
+@fig-unimode displays the largest component of the backbone, along with clusters identified using the [Leiden method](https://en.wikipedia.org/wiki/Leiden_algorithm). There are `r length(cl_size)` clusters in total but many of these are small. There are only `r sum(cl_size>=50)` clusters with more than 50 members in them, and they make up the majority of the network. Cluster A is the largest, with `r cl_size["A"]` members, making up the large red blob in @fig-unimode. 
+
+
+```{ojs}
+//| echo: false
+//| fig-cap: Backbone of Network with Clusters (Largest Component)
+//| label: fig-unimode
+
+Plot.plot({
+  grid: false,
+  color: {
+    legend: true, 
+    scheme: "Set1", 
+    label: "Cluster"},
+  r: {
+    legend: true,
+    label: "Degree"
+  },
+  x: {axis:null},
+  y: {axis:null},
+  marks: [
+    Plot.arrow(transpose(uni_edges), 
+        {
+            x1: "x", 
+            x2: "xend", 
+            y1: "y", 
+            y2: "yend", 
+            headLength: 0,
+            stroke: "LightGray",
+            insetEnd: 5,
+            insetStart: 5
+        }
+    ),
+    Plot.dot(transpose(uni_vertices), 
+        {
+            x: "x", 
+            y: "y", 
+            fill: "Cluster", 
+            r: "Degree"
+        }
+    )
+  ]
+})
+
+
+
+```
+
+
+
+
+@tbl-edits displays the most unique Pages edited in each cluster along with the first and last time a Page was edited. I identify uniqueness by multiplying the number of edits on a Page from Names in each cluster by the [inverse cluster frequency of that Page](https://en.wikipedia.org/wiki/Tf%E2%80%93idf). This process down-weights Pages that were commonly edited by Names in each cluster. 
+
+You can view the specific edits [here](https://collusion.wiki/explorer/pages/1). If you pick a cluster and a Page that is unique to it, you'll notice that most (but not necessarily all) edits on that Page are from Names in the same cluster. This is unsurprising given that this is directly what the algorithm is designed to find. The question is, what does this reflect? 
+
+
+
+
+```{r}
+#| echo: false
+#| warning: false 
+#| label: tbl-edits
+#| tbl-cap: Commonly Edited Pages by Cluster
+
+library(gt)
+
+V(g)$Cluster <- ifelse(V(g)$Label == "Name", NA, "Page")
+V(g)$Cluster[V(g)$name %in% V(g_uni)$name] <- na.omit(member[V(g)$name])
+
+V(g)$Degree <- degree(simplify(g))
+#V(g)$Eigen <- eigen_centrality(g)$vector
+V(g)$Edits <- strength(g)
+
+
+tbl_out <- as_data_frame(g, "edges") |>
+  left_join(as_data_frame(g, "vertices"), by = join_by(from == name)) |>
+  #filter(Cluster != "Other") |>
+  group_by(Cluster, Page = to) |>
+  summarize(
+    Total = n(),
+    First = min(anytime::anytime(Timestamp)),
+    Last = max(anytime::anytime(Timestamp)),
+  ) |>
+  group_by(Page) |>
+  mutate(
+    idf = log(9 / sum(sign(Total)))
+  ) |>
+  group_by(Cluster) |>
+  mutate(tf = Total, tfidf = tf * idf) |>
+  slice_max(tfidf, n = 5)
+
+
+tbl_out |>
+  select(Cluster, Page, Edits = Total, `TF-IDF` = tfidf, First, Last) |>
+  ungroup() |>
+  gt() |>
+  cols_width(Cluster ~ pct(5)) |>
+  opt_interactive() |>
+  fmt_number(columns = `TF-IDF`, decimals = 2) |>
+  sub_missing(columns = Cluster, missing_text = "Not in Main Comp")
+
+## Pass to OJS
+#v_layout <- v_layout |>
+#  left_join(as_data_frame(g, what = "vertices")) |>
+#  mutate(name = gsub("Name: ", "", name))
+
+#g <- largest_component(delete_vertices(g, which(is.na(V(g)$Cluster))))
+#set.seed(1)
+#v_layout <- create_layout(g, "lgl")
+#e_layout <- get_edges()(v_layout)
+#v_layout <- v_layout |>
+#  mutate(name = gsub("Name: ", "", name))
+#ojs_define(vertices = v_layout, edges = e_layout)
+```
+
+
+There are a few different possibilities, and none of what I've done can distinguish between the two. First, it is possible these clusters are identifying separate AI agents that were "passing" information between each other. These clusters are Agents that were working more closely with each other. Second, it is possible that these clusters are actually each only one (or maybe a small number of Agents). In this case, the Names are not a 1-to-1 match with an Agent, but are being randomly created during the text generation process. And, of course, it could be a mixture of options one and two. 
+
+Finally, in @tbl-names I display each Name along with the identified Cluster from this whole process.
+
+```{r}
+#| echo: false
+#| warning: false 
+#| label: tbl-names
+#| tbl-cap: Names by Cluster
+
+tbl_out <- as_data_frame(g, "vertices") |>
+  as_tibble() |>
+  #filter(Cluster != "Other") |>
+  group_by(Cluster) |>
+  #slice_max(tibble(Degree, Edits), n = 5) |>
+  filter(Label == "Name") |>
+  mutate(name = gsub("Name: ", "", name)) |>
+  select(
+    Cluster,
+    Name = name,
+    `Pages Edited` = Degree,
+    `Total Edits` = Edits
+  )
+
+tbl_out |>
+  ungroup() |>
+  gt() |>
+  opt_interactive(use_filters = TRUE) |>
+  sub_missing(columns = Cluster, missing_text = "Not in Main Comp")
+```
+
+
+
+:::{.callout-note}
+
+I used an LLM to help with coding some of this and to "proofread" at the end. I use OpenRouter's auto router through Positron to do this.
+
+:::
