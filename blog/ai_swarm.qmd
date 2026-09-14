@@ -4,6 +4,7 @@ date: 2026-09-14
 image: images/ai_swarm_preview.png
 execute: 
   freeze: true
+  cache: true
 categories:
     - SNA
     - AI
@@ -59,7 +60,11 @@ min_date <- min(network_edges$Timestamp)
 max_date <- max(network_edges$Timestamp)
 
 ## Pass to OJS
-ojs_define(vertices = v_layout, edges = e_layout)
+
+write_csv(v_layout, here::here("blog/data/AI_Swarm/vertices.csv"))
+write_csv(e_layout, here::here("blog/data/AI_Swarm/edges.csv"))
+
+#ojs_define(vertices = v_layout, edges = e_layout)
 ```
 
 ## Network Construction 
@@ -93,7 +98,7 @@ Plot.plot({
   x: {axis:null},
   y: {axis:null},
   marks: [
-    Plot.dot(transpose(vertices), 
+    Plot.dot(vertices, 
         {
             x: "x", 
             y: "y", 
@@ -135,9 +140,10 @@ viewof end = Inputs.datetime(
 )
 
 parser = d3.timeParse("%Y-%m-%dT%H:%M:%SZ")
-edgesFiltered = transpose(edges).filter((d, i) => parser(d.Timestamp) >= start && parser(d.Timestamp) <= end)
+edgesFiltered = edges.filter((d, i) => (d.Timestamp) >= start && (d.Timestamp) <= end)
 
-
+vertices = FileAttachment("data/AI_Swarm/vertices.csv").csv({ typed: true })
+edges = FileAttachment("data/AI_Swarm/edges.csv").csv({ typed: true })
 
 ```
 
@@ -150,7 +156,7 @@ edgesFiltered = transpose(edges).filter((d, i) => parser(d.Timestamp) >= start &
 Plot.plot({
     x: {type: "time"},
     marks: [
-        Plot.rectY(transpose(edges), 
+        Plot.rectY(edges, 
             Plot.binX(
                 {y: "count"}, 
                 {x: {thresholds: "6 hours", value:"Timestamp"}}))
@@ -324,7 +330,11 @@ v_layout <- create_layout(g_uni, "lgl", maxiter = 500)
 e_layout <- get_edges()(v_layout)
 v_layout <- v_layout |>
   mutate(name = gsub("Name: ", "", name))
-ojs_define(uni_vertices = v_layout, uni_edges = e_layout)
+
+write_csv(v_layout, here::here("blog/data/AI_Swarm/uni_vertices.csv"))
+write_csv(e_layout, here::here("blog/data/AI_Swarm/uni_edges.csv"))
+
+#ojs_define(uni_vertices = v_layout, uni_edges = e_layout)
 ```
 
 
@@ -349,7 +359,7 @@ Plot.plot({
   x: {axis:null},
   y: {axis:null},
   marks: [
-    Plot.arrow(transpose(uni_edges), 
+    Plot.arrow(uni_edges, 
         {
             x1: "x", 
             x2: "xend", 
@@ -361,7 +371,7 @@ Plot.plot({
             insetStart: 5
         }
     ),
-    Plot.dot(transpose(uni_vertices), 
+    Plot.dot(uni_vertices, 
         {
             x: "x", 
             y: "y", 
@@ -372,6 +382,9 @@ Plot.plot({
   ]
 })
 
+
+uni_vertices = FileAttachment("data/AI_Swarm/uni_vertices.csv").csv({ typed: true })
+uni_edges = FileAttachment("data/AI_Swarm/uni_edges.csv").csv({ typed: true })
 
 
 ```
